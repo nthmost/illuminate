@@ -1,0 +1,93 @@
+<?xml version="1.0"?>
+<RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EnableCloud>false</EnableCloud>
+  <CopyManifests>false</CopyManifests>
+  <FlowcellRFIDTag>
+    <SerialNumber>000000000-A11RA</SerialNumber>
+    <PartNumber>15028382</PartNumber>
+    <ExpirationDate>2012-10-08T00:00:00</ExpirationDate>
+  </FlowcellRFIDTag>
+  <PR2BottleRFIDTag>
+    <SerialNumber>MS2005161-00PR2</SerialNumber>
+    <PartNumber>15023445</PartNumber>
+    <ExpirationDate>2013-04-06T00:00:00</ExpirationDate>
+  </PR2BottleRFIDTag>
+  <ReagentKitRFIDTag>
+    <SerialNumber>MS2008479-00300</SerialNumber>
+    <PartNumber>15028689</PartNumber>
+    <ExpirationDate>2012-09-22T00:00:00</ExpirationDate>
+  </ReagentKitRFIDTag>
+  <Resumable>true</Resumable>
+  <ManifestFiles />
+  <AfterRunWashMethod>Post-Run Wash</AfterRunWashMethod>
+  <Setup>
+    <SupportMultipleSurfacesInUI>false</SupportMultipleSurfacesInUI>
+    <ApplicationVersion>1.1.1</ApplicationVersion>
+    <NumTilesPerSwath>12</NumTilesPerSwath>
+    <NumSwaths>1</NumSwaths>
+    <NumLanes>1</NumLanes>
+    <Read1>0</Read1>
+    <Index1Read>0</Index1Read>
+    <Index2Read>0</Index2Read>
+    <Read2>0</Read2>
+    <ApplicationName>MiSeq Control Software</ApplicationName>
+  </Setup>
+  <RunID>120514_M00169_0036_AMS2008479-00300</RunID>
+  <ScannerID>M00169</ScannerID>
+  <RunNumber>35</RunNumber>
+  <FPGAVersion>9.3.0</FPGAVersion>
+  <CPLD>Not Specified</CPLD>
+  <CameraModel>Not Specified</CameraModel>
+  <CameraDriverVersion>Not Specified</CameraDriverVersion>
+  <CameraFirmwareVersion>Not Specified</CameraFirmwareVersion>
+  <MCSVersion>1.1.1</MCSVersion>
+  <RTAVersion>1.13.56</RTAVersion>
+  <Barcode>000000000-A11RA</Barcode>
+  <PR2BottleBarcode>MS2005161-00PR2</PR2BottleBarcode>
+  <ReagentKitBarcode>MS2008479-00300</ReagentKitBarcode>
+  <ExperimentName>RU1132:::/locus/data/run_data//0/1132</ExperimentName>
+  <Chemistry>Amplicon</Chemistry>
+  <Username>sbsuser</Username>
+  <SelectedTiles>
+    <int>0</int>
+    <int>1</int>
+    <int>2</int>
+    <int>3</int>
+    <int>4</int>
+    <int>5</int>
+    <int>6</int>
+    <int>7</int>
+    <int>8</int>
+    <int>9</int>
+    <int>10</int>
+    <int>11</int>
+  </SelectedTiles>
+  <Workflow>
+    <Analysis>Resequencing</Analysis>
+  </Workflow>
+  <EnableAnalysis>false</EnableAnalysis>
+  <Reads>
+    <RunInfoRead NumCycles="151" Number="1" IsIndexedRead="N" />
+    <RunInfoRead NumCycles="8" Number="2" IsIndexedRead="Y" />
+    <RunInfoRead NumCycles="8" Number="3" IsIndexedRead="Y" />
+    <RunInfoRead NumCycles="151" Number="4" IsIndexedRead="N" />
+  </Reads>
+  <TempFolder>D:\Illumina\MiSeqTemp\120514_M00169_0036_AMS2008479-00300</TempFolder>
+  <AnalysisFolder>D:\Illumina\MiSeqAnalysis\120514_M00169_0036_AMS2008479-00300</AnalysisFolder>
+  <RunStartDate>120514</RunStartDate>
+  <LastPostRunWashDate>Friday, May 11, 2012</LastPostRunWashDate>
+  <MostRecentWashType>PostRun</MostRecentWashType>
+  <RecipeFolder>C:\Illumina\MiSeq Control Software\CustomRecipe</RecipeFolder>
+  <ILMNOnlyRecipeFolder>C:\Illumina\MiSeq Control Software\Recipe</ILMNOnlyRecipeFolder>
+  <SampleSheetName>MS2008479-300</SampleSheetName>
+  <SampleSheetFolder>\\SEQNAS\sequencing\samplesheet</SampleSheetFolder>
+  <ManifestFolder>\\SEQNAS\sequencing\manifest</ManifestFolder>
+  <OutputFolder>\\SEQNAS\sequencing\output\120514_M00169_0036_AMS2008479-00300</OutputFolder>
+  <FlowcellName>A</FlowcellName>
+  <FocusMethod>AutoFocus</FocusMethod>
+  <SaveFocusImages>true</SaveFocusImages>
+  <SaveScanImages>true</SaveScanImages>
+  <CloudUsername />
+  <CloudRunId />
+  <SendInstrumentHealthToILMN>false</SendInstrumentHealthToILMN>
+</RunParameters>
