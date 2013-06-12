@@ -1,0 +1,10 @@
+syntax: glob
+
+*.pyc
+*.pyo
+.DS_Store
+locus_lib_lims.egg-info
+tmp
+ve
+dist
+*.egg-info
