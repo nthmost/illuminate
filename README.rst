@@ -1,7 +1,7 @@
 ILLUMINATE
 ==========
 
-Libraries and utilities to parse the metrics binaries output by Illumina sequencers.
+Python module and utilities to parse the metrics binaries output by Illumina sequencers.
 
 Machines supported::  
 
@@ -26,15 +26,82 @@ Available as standalone scripts/classes::
 (Note: above binaries may also be named "XxXxOut.bin"; this is an alias.)
 
 
-What For?
----------
+About Illuminate: What it is, who it's by, and what it's for.
+-------------------------------------------------
+
+Illumina's metrics data, until recently, could only be parsed and interpreted via
+Illumina's proprietary "SAV" software which only runs on Windows and can't be used as
+a resource in any capacity.
+
+This library, """illuminate""", developed as a response to the need to emulate Illumina SAV's
+output both for integration in other software and for running on the command line as a 
+quicker and more convenient method of checking the health of sequencing runs.
 
 This library was developed in-house at InVitae, a CLIA-certified genetic diagnostics 
-company that offers customizable, clinically-relevant next-generation sequencing panels
+company that offers customizable, clinically-relevant next-generation sequencing panels.
+
+InVitae currently uses these parsers in conjunction with site-specific reporting scripts
+to produce automated sequencing run metrics as a check on the health of the run and the
+machines themselves.
+
+The intent from the beginning was to battle-harden this tool and then release it open-source,
+given the apparent widespread need for such a thing.  Other libraries in other languages
+exist, but Illuminate is currently the only one written in Python.
+
+This package will be sporadically maintained by its main author, Naomi Most (nthmost).
+Contributions, suggestions, bug reports, and swear words are welcome. More of the former
+than the latter, please.
 
 
-Basic Usage
------------
+How To Install
+--------------
+
+Currently this package is only available through its repository on bitbucket.org.
+
+Clone this repository using Mercurial (hg)::
+
+  hg clone ssh://hg@bitbucket.org/nthmost/illuminate
+
+For integrated use in other code as well as for running the command-line utilities,
+it is recommended (though not required) to use virtualenv to create a virtual Python 
+environment in which to set up this package's dependencies.
+
+Follow the directions on this page for virtualenv, then, within your intended working
+directory, type::
+
+  virtualenv ve
+  source ve/bin/activate
+
+Now run the following command in this directory::
+
+  pip install numpy pandas
+
+This command can take many minutes (cup of tea, perhaps?) and throw off many warnings,
+but in the end it should say this::
+
+  Successfully installed numpy pandas python-dateutil pytz six
+  Cleaning up...
+
+Next, type::
+
+  python setup.py build
+  python setup.py install
+
+When these commands complete, you should be ready to roll.
+
+
+Basic Usage From Command Line
+-----------------------------
+
+This package includes some MiSeq and HiSeq data (metrics and metadata only) from live 
+sequencing runs so you can see how things work.
+
+Within your virtualenv (see "How to Install" above), 
+
+
+
+Basic Usage Within a Script
+---------------------------
 
 For wrapping an entire dataset and calling parsers as needed::
 
