@@ -1,24 +1,37 @@
 ILLUMINATE
 ==========
 
-A set of parsers for the datasets output by the Illumina sequencers.
+Libraries and utilities to parse the metrics binaries output by Illumina sequencers.
 
-Currently supported by integrated interop.py reporter::
+Machines supported::  
 
-  Tile Metrics (class and standalone)
-  Quality Metrics (class only)
-  Index Metrics (class and standalone)
+  HiSeq 
+  MiSeq
+
+Metrics supported by integrated reporter::
+
+  tile (InterOp/TileMetrics.bin) 
+  quality (InterOp/QMetrics.bin)
+  index (InterOp/IndexMetrics.bin)
   CompletedJobInfo.xml
   ResequencingRunStatistics.xml
 
-Also available as standalone classes::
+Available as standalone scripts/classes::
 
-  ControlMetrics.bin
-  CorrectedIntensityMetrics.bin
-  ExtractionMetrics.bin
-  ErrorMetrics.bin
+  control (InterOp/ControlMetrics.bin)
+  corrected intensity (InterOp/CorrectedIntensityMetrics.bin)
+  extraction (InterOp/ExtractionMetrics.bin)
+  error (InterOp/ErrorMetrics.bin)
 
-(Note: above files may also be named "XxXxOut.bin"; this is an alias.)
+(Note: above binaries may also be named "XxXxOut.bin"; this is an alias.)
+
+
+What For?
+---------
+
+This library was developed in-house at InVitae, a CLIA-certified genetic diagnostics 
+company that offers customizable, clinically-relevant next-generation sequencing panels
+
 
 Basic Usage
 -----------
