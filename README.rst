@@ -3,12 +3,29 @@ ILLUMINATE
 
 Python module and utilities to parse the metrics binaries output by Illumina sequencers.
 
-Machines supported::  
+Illuminate parses the metrics binaries that result from Illumina sequencer runs, and 
+provides usable data in the form of python dictionaries and dataframes.
+
+Intended to emulate the output of Illumina SAV, illuminate allows you to print sequencing run
+metrics to the command line as well as work with the data programmatically.
+
+This package was built with versatility in mind. There is a section in this README for each
+of the following typical use cases::
+
+  Running illuminate on the command line
+  Using illuminate as a python module
+  Parsing orphan binaries (e.g. just ErrorMetrics.bin) 
+
+
+Supported machines and files
+----------------------------
+
+Currently, only the following machines are supported (with any number of indices)::  
 
   HiSeq 
   MiSeq
 
-Metrics supported by integrated reporter::
+The integrated command-line reporter currently serves the following metrics/files::
 
   tile (InterOp/TileMetrics.bin) 
   quality (InterOp/QMetrics.bin)
@@ -16,41 +33,21 @@ Metrics supported by integrated reporter::
   CompletedJobInfo.xml
   ResequencingRunStatistics.xml
 
-Available as standalone scripts/classes::
+Unintegrated parsers for the following binaries:: 
 
   control (InterOp/ControlMetrics.bin)
   corrected intensity (InterOp/CorrectedIntensityMetrics.bin)
   extraction (InterOp/ExtractionMetrics.bin)
   error (InterOp/ErrorMetrics.bin)
 
-(Note: above binaries may also be named "XxXxOut.bin"; this is an alias.)
+(Note: binaries may also be named "XxXxOut.bin"; this is an alias.)
 
 
-About Illuminate: What it is, who it's by, and what it's for.
--------------------------------------------------
+Requirements
+------------
 
-Illumina's metrics data, until recently, could only be parsed and interpreted via
-Illumina's proprietary "SAV" software which only runs on Windows and can't be used as
-a resource in any capacity.
-
-This library, """illuminate""", developed as a response to the need to emulate Illumina SAV's
-output both for integration in other software and for running on the command line as a 
-quicker and more convenient method of checking the health of sequencing runs.
-
-This library was developed in-house at InVitae, a CLIA-certified genetic diagnostics 
-company that offers customizable, clinically-relevant next-generation sequencing panels.
-
-InVitae currently uses these parsers in conjunction with site-specific reporting scripts
-to produce automated sequencing run metrics as a check on the health of the run and the
-machines themselves.
-
-The intent from the beginning was to battle-harden this tool and then release it open-source,
-given the apparent widespread need for such a thing.  Other libraries in other languages
-exist, but Illuminate is currently the only one written in Python.
-
-This package will be sporadically maintained by its main author, Naomi Most (nthmost).
-Contributions, suggestions, bug reports, and swear words are welcome. More of the former
-than the latter, please.
+You'll need a UNIX-like environment to use this package. Both OS X and Linux have been 
+confirmed to work.
 
 
 How To Install
@@ -144,8 +141,29 @@ supply read_config and flowcell_layout as named arguments to these parsers, like
                             flowcell_layout = { 'lanecount': 1, 'surfacecount': 2,
                                                 'swathcount': 1, 'tilecount': 14 } )
 
-Setting Up (development)
-------------------------
 
-(To Be Written?)
+More Background, Support, Maintenance
+-------------------------------------
 
+Illumina's metrics data, until recently, could only be parsed and interpreted via
+Illumina's proprietary "SAV" software which only runs on Windows and can't be used as
+a resource in any capacity.
+
+This library was developed in-house at InVitae, a CLIA-certified genetic diagnostics 
+company that offers customizable, clinically-relevant next-generation sequencing panels, 
+as a response to the need to emulate Illumina SAV's output in a program-accessible way.
+
+InVitae currently uses these parsers in conjunction with site-specific reporting scripts
+to produce automated sequencing run metrics as a check on the health of the run and the
+machines themselves.
+
+The intent from the beginning was to battle-harden this tool and then release it open-source,
+given the apparent widespread need for such a thing.  Other libraries in other languages
+exist, but Illuminate is currently the only one written in Python.
+
+This package will be sporadically maintained by its main author, Naomi Most (nthmost).
+Contributions, suggestions, bug reports, and swear words are welcome. More of the former
+than the latter, please.
+
+naomi.most@invitae.com
+Spring 2013
