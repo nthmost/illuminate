@@ -73,7 +73,7 @@ For integrated use in other code as well as for running the command-line utiliti
 it is recommended (though not required) to use virtualenv to create a virtual Python 
 environment in which to set up this package's dependencies.
 
-Follow the directions on this page for virtualenv, then, within your intended working
+Follow the directions on this page (https://pypi.python.org/pypi/virtualenv) for virtualenv, then, within your intended working
 directory, type::
 
   virtualenv ve
