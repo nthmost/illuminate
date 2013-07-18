@@ -127,11 +127,14 @@ IlluminaDataset caches parsing data after the first run. To get a fresh re-parse
   tm = myDataset.TileMetrics(True)
 
 
-Parse Orphan Binaries
----------------------
+Parsing Orphan Binaries
+-----------------------
+
+If all you have is a single binary file, you can run just that one parser from the command
+line as well as loading it as a class.
 
 The parsers are designed to exist apart from their parent dataset, so it's possible to call any one of them without having the entire dataset directory at hand. However, some parsers (like TileMetrics and QualityMetrics) rely on information about the Read Configuration and/or Flowcell Layout (both pieces of data coming from the XML).
-interop.py has been seeded with some typical defaults for MiSeq, but to play it safe, supply read_config and flowcell_layout as named arguments to these parsers, like so:
+interop.py has been seeded with some typical defaults for MiSeq, but to play it safe, supply read_config and flowcell_layout as named arguments to these parsers, like so::
 
   from interop import InteropTileMetrics
   tilemetrics = InteropTileMetrics('/path/to/TileMetrics.bin',
@@ -144,11 +147,23 @@ interop.py has been seeded with some typical defaults for MiSeq, but to play it 
 Support and Maintenance
 -----------------------
 
-Illumina's metrics data, until recently, could only be parsed and interpreted via Illumina's proprietary "SAV" software which only runs on Windows and can't be used as a resource in any capacity.
-This library was developed in-house at InVitae, a CLIA-certified genetic diagnostics company that offers customizable, clinically-relevant next-generation sequencing panels, as a response to the need to emulate Illumina SAV's output in a program-accessible way.
-InVitae currently uses these parsers in conjunction with site-specific reporting scripts to produce automated sequencing run metrics as a check on the health of the run and the machines themselves.
-The intent from the beginning was to battle-harden this tool and then release it open-source, given the apparent widespread need for such a thing. Other libraries in other languages exist, but Illuminate is currently the only one written in Python.
-This package will be sporadically maintained by its main author, Naomi Most (nthmost). Contributions, suggestions, bug reports, and swear words are welcome. More of the former than the latter, please.
+Illumina's metrics data, until recently, could only be parsed and interpreted via Illumina's 
+proprietary "SAV" software which only runs on Windows and can't be sourced programmatically.
+
+This library was developed in-house at InVitae, a CLIA-certified genetic diagnostics 
+company that offers customizable, clinically-relevant sequencing panels, as a response to 
+the need to emulate Illumina SAV's output in a program-accessible way.
+
+InVitae currently uses these parsers in conjunction with site-specific reporting scripts to 
+produce automated sequencing run metrics as a check on the health of the run and the machines 
+themselves.
+
+This tool was intended from the beginning to be generalizable and open-sourced to the public.
+It comes with the MIT License, meaning you are free to modify it for commercial and non-
+commercial uses; just don't try to sell it as-is.
+
+Contributions, extensions, bug reports, suggestions, and swear words all happily accepted, 
+in that order.
 
 naomi.most@invitae.com 
 Spring 2013
