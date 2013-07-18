@@ -87,7 +87,6 @@ XML_FILEMAP = { 'runinfo': 'RunInfo.xml',
                 'reseqstats': 'ResequencingRunStatistics.xml',
                 'completed': 'CompletedJobInfo.xml' }
 
-
 ##
 # FUTURE: use ALIASES to select file (since there are several different filenames out there).
 
@@ -104,7 +103,6 @@ XML_FILEMAP = { 'runinfo': 'RunInfo.xml',
 #               'runparams': ['runParameters.xml'],
 #               'reseqstats': ['ResequencingRunStatistics.xml'],
 #               'completed': ['CompletedJobInfo.xml'] }
-
 
 
 #### END OF CONFIGURABLE THINGS ####
@@ -348,7 +346,7 @@ class InteropDataset:
 
     meta = None
 
-    def __init__(self, targetdir, CHECK_INTEGRITY=False):
+    def __init__(self, targetdir):
         """Supply a path (directory) that should contain XML files, with an InterOp directory within it.
         Supply True for second parameter to do a basic dataset integrity/existence check."""
 
@@ -359,9 +357,6 @@ class InteropDataset:
         
         self.meta = self.Metadata()
     
-        if CHECK_INTEGRITY:
-            self.check_integrity()
-
         # holders for the parser objects. Reference via *Metrics() classes.
         self._quality_metrics = None
         self._tile_metrics = None
@@ -448,45 +443,6 @@ class InteropDataset:
         return open(get_xml_path('reseqstats'))
 
 
-    # DATA INTEGRITY CHECKING
-    # Pretty basic at the moment: just checking existence and MIME type of each file.
-    
-    def check_file(self, filename, filetype):
-        "Basic MIME type check using the POSIX 'file' command."
-        
-        if filetype=="xml":
-            filepath = os.path.join(self.xmldir, filename)
-        elif filetype=="bin":
-            filepath = os.path.join(self.bindir, filename)
-        else:
-            raise InteropDatasetError("We don't like this type around here: %s. These are the types we like: xml bin" % filetype)
-        
-        res = subprocess.check_output(['file', '-b', '--mime', filepath ])
-        if res == FILETYPE_MIME_MAP[filetype]:
-            return True
-        elif "No such file or directory" in res:
-            #this should logically never happen, actually.
-            raise InteropDatasetError("That's weird, the file command says %s doesn't exist." % filepath )
-        else:
-            raise InteropDatasetError("Filename / MIME type mismatch: %s (%s)" % (filename, filetype), 1)
-   
-    def check_integrity(self):
-        "checks for a complete set of binary and xml files to define a sequencing run."
-        xmlfiles = os.listdir(self.xmldir)
-        for item in MVD_xml:
-            if item not in xmlfiles:
-                raise InteropDatasetIncompleteError("%s wasn't found among XML files" % item)
-            else:
-                self.check_file(item, 'xml')
-        
-        binfiles = os.listdir(self.bindir)
-        for item in MVD_bin:                # (filename.lower() for filename in MVD_bin):
-            if item not in binfiles:
-                #TODO: place item in a list, continue iterating, then raise following error with list instead.
-                raise InteropDatasetIncompleteError("%s wasn't found among binaries" % item)
-            else:
-                self.check_file(item, 'bin')
-
 def print_sample_dataset(dirname):
     one = InteropDataset(dirname, True)
     
@@ -545,7 +501,5 @@ if __name__=='__main__':
         sys.exit()
         
     print_sample_dataset(dirname)
-    
-    
     
     

@@ -8,3 +8,4 @@ tmp
 ve
 dist
 *.egg-info
+build
