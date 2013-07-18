@@ -51,6 +51,24 @@ Illuminate relies on three open-source packages available through the Python che
 
 Please let the maintainer of this package (Naomi.Most@invitae.com) know if any of these requirements make it difficult to use and integrate Illuminate in your software; this is useful feedback.
 
+Optional but Recommended:
+-------------------------
+
+Because Illuminate is currently not geared towards interactive usage, if you want to play 
+with the data, your best bet is to use iPython.  All of the parsers run from the command
+line were written with loading-in to iPython.
+
+Install ipython via pypi::
+
+  pip install ipython
+  
+More installation options and instructions are available on this page.
+
+Once you have iPython installed, you'll be able to run illuminate.py or any of the
+standalone parsers on your data and immediately (well, after a few seconds of parsing)
+have a data dictionary and a dataframe at your disposal.
+
+
 How To Install
 --------------
 
@@ -118,11 +136,13 @@ For wrapping an entire dataset and calling parsers as needed::
   qualitymetrics = myDataset.QualityMetrics()
 
 In the vast majority of cases, variables and data structures closely resemble the names and structures in the XML and BIN files that they came from.
-All XML information comes through the IlluminaMetadata class, which can be accessed through the meta attribute of InteropDataset::
+All XML information comes through the IlluminaMetadata class, which can be accessed through the meta attribute of InteropDataset:
 
   metadata = myDataset.meta
   
-IlluminaDataset caches parsing data after the first run. To get a fresh re-parse of any file, supply "True" as the sole parameter to any parser method::
+IlluminaDataset caches parsing data after the first run. To get a fresh re-parse of any file, supply "True" as the sole parameter to any parser method:
+
+.. code-block:: python
 
   tm = myDataset.TileMetrics(True)
 
@@ -130,11 +150,16 @@ IlluminaDataset caches parsing data after the first run. To get a fresh re-parse
 Parsing Orphan Binaries
 -----------------------
 
-If all you have is a single binary file, you can run just that one parser from the command
-line as well as loading it as a class.
+If you just have a single binary file, you can run the matching parser from the command line::
+
+.. code-block:: bash
+
+  $ ipython -i illuminate/error_metrics.py data/MiSeq-samples/2013-04_10_has_errors/InterOp/ErrorMetricsOut.bin 
 
 The parsers are designed to exist apart from their parent dataset, so it's possible to call any one of them without having the entire dataset directory at hand. However, some parsers (like TileMetrics and QualityMetrics) rely on information about the Read Configuration and/or Flowcell Layout (both pieces of data coming from the XML).
 interop.py has been seeded with some typical defaults for MiSeq, but to play it safe, supply read_config and flowcell_layout as named arguments to these parsers, like so::
+
+.. code-block:: Python
 
   from interop import InteropTileMetrics
   tilemetrics = InteropTileMetrics('/path/to/TileMetrics.bin',
