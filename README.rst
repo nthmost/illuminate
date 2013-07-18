@@ -177,13 +177,18 @@ If you just have a single binary file, you can run the matching parser from the 
 
   $ ipython -i illuminate/error_metrics.py data/MiSeq-samples/2013-04_10_has_errors/InterOp/ErrorMetricsOut.bin 
 
-The parsers are designed to exist apart from their parent dataset, so it's possible to call any one of them without having the entire dataset directory at hand. However, some parsers (like TileMetrics and QualityMetrics) rely on information about the Read Configuration and/or Flowcell Layout (both pieces of data coming from the XML).
-interop.py has been seeded with some typical defaults for MiSeq, but to play it safe, supply read_config and flowcell_layout as named arguments to these parsers, like so:
+The parsers are designed to exist apart from their parent dataset, so it's possible to call 
+any one of them without having the entire dataset directory at hand. However, some parsers 
+(like TileMetrics and QualityMetrics) rely on information about the Read Configuration and/or 
+Flowcell Layout (both pieces of data coming from the XML).
+
+Illuminate has been seeded with some typical defaults for MiSeq, but if you are using a HiSeq,
+or you know you have a different configuration, supply read_config and flowcell_layout as named 
+arguments to these parsers, like so:
 
 .. code-block:: Python
 
-  from interop import InteropTileMetrics
-  
+  from interop import InteropTileMetrics  
   tilemetrics = InteropTileMetrics('/path/to/TileMetrics.bin',
                          read_config=[{'read_num': 1, 'cycles': 151, 'is_index': 0},
                                       {'read_num': 2, 'cycles': 6, 'is_index': 1},
