@@ -70,10 +70,10 @@ if __name__=='__main__':
         print 'supply path to ErrorMetrics.bin (or ErrorMetricsOut.bin)'
         sys.exit()
     
-    EXM = InteropErrorMetrics(filename)
+    EM = InteropErrorMetrics(filename)
     
-    print 'Length of data: %i' % len(EXM.data['cycle'])
-    #print EXM.df.head()
+    print 'Length of data: %i' % len(EM.data['cycle'])
+    #print EM.df.head()
     
-    idf = EXM.make_coordinate_plane( EXM.df )
+    idf = EM.make_coordinate_plane(EM.df)
     print idf.head()
