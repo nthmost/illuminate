@@ -138,6 +138,8 @@ For wrapping an entire dataset and calling parsers as needed::
 In the vast majority of cases, variables and data structures closely resemble the names and structures in the XML and BIN files that they came from.
 All XML information comes through the IlluminaMetadata class, which can be accessed through the meta attribute of InteropDataset:
 
+.. code-block:: python
+
   metadata = myDataset.meta
   
 IlluminaDataset caches parsing data after the first run. To get a fresh re-parse of any file, supply "True" as the sole parameter to any parser method:
@@ -150,14 +152,14 @@ IlluminaDataset caches parsing data after the first run. To get a fresh re-parse
 Parsing Orphan Binaries
 -----------------------
 
-If you just have a single binary file, you can run the matching parser from the command line::
+If you just have a single binary file, you can run the matching parser from the command line:
 
 .. code-block:: bash
 
   $ ipython -i illuminate/error_metrics.py data/MiSeq-samples/2013-04_10_has_errors/InterOp/ErrorMetricsOut.bin 
 
 The parsers are designed to exist apart from their parent dataset, so it's possible to call any one of them without having the entire dataset directory at hand. However, some parsers (like TileMetrics and QualityMetrics) rely on information about the Read Configuration and/or Flowcell Layout (both pieces of data coming from the XML).
-interop.py has been seeded with some typical defaults for MiSeq, but to play it safe, supply read_config and flowcell_layout as named arguments to these parsers, like so::
+interop.py has been seeded with some typical defaults for MiSeq, but to play it safe, supply read_config and flowcell_layout as named arguments to these parsers, like so:
 
 .. code-block:: Python
 
