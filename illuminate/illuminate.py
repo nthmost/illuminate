@@ -444,7 +444,7 @@ class InteropDataset:
 
 
 def print_sample_dataset(dirname):
-    one = InteropDataset(dirname, True)
+    one = InteropDataset(dirname)
     
     meta = one.Metadata()
     

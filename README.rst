@@ -1,40 +1,131 @@
-ILLUMINATE
-==========
+******************************************************
+Illuminate: shedding light on Illumina sequencing runs
+******************************************************
 
-Libraries and utilities to parse the metrics binaries output by Illumina sequencers.
+Python module and utilities to parse the metrics binaries output by Illumina sequencers.
 
-Machines supported::  
+Illuminate parses the metrics binaries that result from Illumina sequencer runs, and provides usable data in the form of python dictionaries and dataframes.
+Intended to emulate the output of Illumina SAV, illuminate allows you to print sequencing run metrics to the command line as well as work with the data programmatically.
 
-  HiSeq 
+This package was built with versatility in mind. There is a section in this README for each of the following typical use cases::
+
+  Running illuminate on the command line
+  Using illuminate as a python module
+  Parsing orphan binaries (e.g. just ErrorMetrics.bin)
+
+Supported machines and files
+----------------------------
+
+Currently, only the following machines are supported (with any number of indices)::
+
+  HiSeq
   MiSeq
 
-Metrics supported by integrated reporter::
+The integrated command-line reporter currently serves the following metrics/files::
 
-  tile (InterOp/TileMetrics.bin) 
+  tile (InterOp/TileMetrics.bin)
   quality (InterOp/QMetrics.bin)
   index (InterOp/IndexMetrics.bin)
   CompletedJobInfo.xml
   ResequencingRunStatistics.xml
 
-Available as standalone scripts/classes::
+Unintegrated parsers for the following binaries::
 
   control (InterOp/ControlMetrics.bin)
   corrected intensity (InterOp/CorrectedIntensityMetrics.bin)
   extraction (InterOp/ExtractionMetrics.bin)
   error (InterOp/ErrorMetrics.bin)
 
-(Note: above binaries may also be named "XxXxOut.bin"; this is an alias.)
+(Note: binaries may also be named "XxXxOut.bin"; this is an alias.)
 
 
-What For?
----------
+Requirements
+------------
 
-This library was developed in-house at InVitae, a CLIA-certified genetic diagnostics 
-company that offers customizable, clinically-relevant next-generation sequencing panels
+You'll need a UNIX-like environment to use this package. Both OS X and Linux have been confirmed to work.
+Illuminate relies on three open-source packages available through the Python cheeseshop::
+
+  numpy
+  pandas
+  bitstring
+
+Please let the maintainer of this package (Naomi.Most@invitae.com) know if any of these requirements make it difficult to use and integrate Illuminate in your software; this is useful feedback.
+
+Optional but Recommended:
+-------------------------
+
+Because Illuminate is currently not geared towards interactive usage, if you want to play 
+with the data, your best bet is to use iPython.  All of the parsers run from the command
+line were written with loading-in to iPython.
+
+Install ipython via pypi::
+
+  pip install ipython
+  
+More installation options and instructions are available on this page.
+
+Once you have iPython installed, you'll be able to run illuminate.py or any of the
+standalone parsers on your data and immediately (well, after a few seconds of parsing)
+have a data dictionary and a dataframe at your disposal.
 
 
-Basic Usage
------------
+How To Install
+--------------
+
+Currently this package is only available through its repository on bitbucket.org.
+
+Clone this repository using Mercurial (hg)::
+
+  hg clone ssh://hg@bitbucket.org/nthmost/illuminate
+
+For integrated use in other code as well as for running the command-line utilities, it is recommended (though not required) to use virtualenv to create a virtual Python environment in which to set up this package's dependencies.
+
+Follow the directions on this page (https://pypi.python.org/pypi/virtualenv) for virtualenv, then, within your intended working directory, type::
+
+  virtualenv ve
+  source ve/bin/activate
+
+Now run the following command in this directory::
+
+  pip install numpy pandas
+
+This command can take many minutes (cup of tea, perhaps?) and throw off many warnings, but in the end it should say this::
+
+  Successfully installed numpy pandas python-dateutil pytz six
+  Cleaning up...
+
+Next, type::
+
+  python setup.py build
+  python setup.py install
+
+When these commands complete, you should be ready to roll.
+
+
+Basic Usage From Command Line
+-----------------------------
+
+This package includes some MiSeq and HiSeq data (metrics and metadata only) from live sequencing runs so you can see how things work.
+
+Activate your virtualenv (if you haven't already)::
+
+  source ve/bin/activate
+  
+Now enter the following to run the integrated parser against one of the test datasets::
+
+  python illuminate/illuminate.py data/MiSeq-samples/
+
+If all goes well, you should see the textual output of binary parsing represented in a 
+human-readable format which is also copy-and-pasteable into the ipython interactive 
+interpreter.
+
+At the moment no work is planned to increase user friendliness at the command line level.
+Please let the maintainer (Naomi.Most@Invitae.com) know how the command line interaction
+could be more useful to you.
+
+
+Basic Usage as a Module
+-----------------------
 
 For wrapping an entire dataset and calling parsers as needed::
 
@@ -44,41 +135,60 @@ For wrapping an entire dataset and calling parsers as needed::
   tilemetrics = myDataset.TileMetrics()
   qualitymetrics = myDataset.QualityMetrics()
 
-In the vast majority of cases, variables and data structures closely resemble the
-names and structures in the XML and BIN files that they came from.
+In the vast majority of cases, variables and data structures closely resemble the names and structures in the XML and BIN files that they came from.
+All XML information comes through the IlluminaMetadata class, which can be accessed through the meta attribute of InteropDataset:
 
-All XML information comes through the IlluminaMetadata class, which can be accessed
-through the meta attribute of InteropDataset::
+  metadata = myDataset.meta
+  
+IlluminaDataset caches parsing data after the first run. To get a fresh re-parse of any file, supply "True" as the sole parameter to any parser method:
 
-   metadata = myDataset.meta
+.. code-block:: python
 
-IlluminaDataset caches parsing data after the first run. To get a fresh re-parse of
-any file, supply "True" as the sole parameter to any parser method::
-
-   tm = myDataset.TileMetrics(True)
+  tm = myDataset.TileMetrics(True)
 
 
-Parse Orphan Binaries
----------------------
+Parsing Orphan Binaries
+-----------------------
 
-The parsers are designed to exist apart from their parent dataset, so it's possible to
-call any one of them without having the entire dataset directory at hand.  However,
-some parsers (like TileMetrics and QualityMetrics) rely on information about the Read
-Configuration and/or Flowcell Layout (both pieces of data coming from the XML).
+If you just have a single binary file, you can run the matching parser from the command line::
 
-interop.py has been seeded with some typical defaults for MiSeq, but to play it safe,
-supply read_config and flowcell_layout as named arguments to these parsers, like so::
+.. code-block:: bash
 
-   from interop import InteropTileMetrics
-   tilemetrics = InteropTileMetrics('/path/to/TileMetrics.bin',
-                            read_config=[{'read_num': 1, 'cycles': 151, 'is_index': 0},
-                                         {'read_num': 2, 'cycles': 6, 'is_index': 1},
-                                         {'read_num': 3, 'cycles': 151, 'is_index':0}],
-                            flowcell_layout = { 'lanecount': 1, 'surfacecount': 2,
-                                                'swathcount': 1, 'tilecount': 14 } )
+  $ ipython -i illuminate/error_metrics.py data/MiSeq-samples/2013-04_10_has_errors/InterOp/ErrorMetricsOut.bin 
 
-Setting Up (development)
-------------------------
+The parsers are designed to exist apart from their parent dataset, so it's possible to call any one of them without having the entire dataset directory at hand. However, some parsers (like TileMetrics and QualityMetrics) rely on information about the Read Configuration and/or Flowcell Layout (both pieces of data coming from the XML).
+interop.py has been seeded with some typical defaults for MiSeq, but to play it safe, supply read_config and flowcell_layout as named arguments to these parsers, like so::
 
-(To Be Written?)
+.. code-block:: Python
 
+  from interop import InteropTileMetrics
+  tilemetrics = InteropTileMetrics('/path/to/TileMetrics.bin',
+                         read_config=[{'read_num': 1, 'cycles': 151, 'is_index': 0},
+                                      {'read_num': 2, 'cycles': 6, 'is_index': 1},
+                                      {'read_num': 3, 'cycles': 151, 'is_index':0}],
+                         flowcell_layout = { 'lanecount': 1, 'surfacecount': 2,
+                                             'swathcount': 1, 'tilecount': 14 } )
+
+Support and Maintenance
+-----------------------
+
+Illumina's metrics data, until recently, could only be parsed and interpreted via Illumina's 
+proprietary "SAV" software which only runs on Windows and can't be sourced programmatically.
+
+This library was developed in-house at InVitae, a CLIA-certified genetic diagnostics 
+company that offers customizable, clinically-relevant sequencing panels, as a response to 
+the need to emulate Illumina SAV's output in a program-accessible way.
+
+InVitae currently uses these parsers in conjunction with site-specific reporting scripts to 
+produce automated sequencing run metrics as a check on the health of the run and the machines 
+themselves.
+
+This tool was intended from the beginning to be generalizable and open-sourced to the public.
+It comes with the MIT License, meaning you are free to modify it for commercial and non-
+commercial uses; just don't try to sell it as-is.
+
+Contributions, extensions, bug reports, suggestions, and swear words all happily accepted, 
+in that order.
+
+naomi.most@invitae.com 
+Spring 2013
