@@ -58,15 +58,17 @@ Because Illuminate is currently not geared towards interactive usage, if you wan
 with the data, your best bet is to use iPython.  All of the parsers run from the command
 line were written with loading-in to iPython.
 
-Install ipython via pypi::
+Install ipython via pypi:
 
-  pip install ipython
+.. code-block:: bash
+
+  $ pip install ipython
   
 More installation options and instructions are available on this page.
 
 Once you have iPython installed, you'll be able to run illuminate.py or any of the
 standalone parsers on your data and immediately (well, after a few seconds of parsing)
-have a data dictionary and a dataframe at your disposal.
+have a data dictionary and a dataframe at your disposal. See "Parsing Orphan Binaries".
 
 
 How To Install
@@ -74,30 +76,42 @@ How To Install
 
 Currently this package is only available through its repository on bitbucket.org.
 
-Clone this repository using Mercurial (hg)::
+Clone this repository using Mercurial (hg):
 
-  hg clone ssh://hg@bitbucket.org/nthmost/illuminate
+.. code-block:: bash
 
-For integrated use in other code as well as for running the command-line utilities, it is recommended (though not required) to use virtualenv to create a virtual Python environment in which to set up this package's dependencies.
+  $ hg clone ssh://hg@bitbucket.org/nthmost/illuminate
 
-Follow the directions on this page (https://pypi.python.org/pypi/virtualenv) for virtualenv, then, within your intended working directory, type::
+For integrated use in other code as well as for running the command-line utilities, it is 
+recommended (though not required) to use virtualenv to create a virtual Python environment 
+in which to set up this package's dependencies.
 
-  virtualenv ve
-  source ve/bin/activate
+Follow the directions on this page (https://pypi.python.org/pypi/virtualenv) for 
+virtualenv, then, within your intended working directory, type:
 
-Now run the following command in this directory::
+.. code-block:: bash
 
-  pip install numpy pandas
+  $ virtualenv ve
+  $ source ve/bin/activate
 
-This command can take many minutes (cup of tea, perhaps?) and throw off many warnings, but in the end it should say this::
+Now run the following command within the same directory::
+
+.. code-block:: bash
+
+  $ pip install numpy pandas
+
+The above process can take many minutes (cup of tea, perhaps?) and throw off many warnings, 
+but in the end it should say this::
 
   Successfully installed numpy pandas python-dateutil pytz six
   Cleaning up...
 
-Next, type::
+Next, type:
 
-  python setup.py build
-  python setup.py install
+.. code-block:: bash
+
+  $ python setup.py build
+  $ python setup.py install
 
 When these commands complete, you should be ready to roll.
 
@@ -105,15 +119,20 @@ When these commands complete, you should be ready to roll.
 Basic Usage From Command Line
 -----------------------------
 
-This package includes some MiSeq and HiSeq data (metrics and metadata only) from live sequencing runs so you can see how things work.
+This package includes some MiSeq and HiSeq data (metrics and metadata only) from live 
+sequencing runs so you can see how things work.
 
-Activate your virtualenv (if you haven't already)::
+Activate your virtualenv (if you haven't already):
 
-  source ve/bin/activate
+.. code-block:: bash
+
+  $ source ve/bin/activate
   
 Now enter the following to run the integrated parser against one of the test datasets::
 
-  python illuminate/illuminate.py data/MiSeq-samples/
+.. code-block:: bash
+
+  $ python illuminate/illuminate.py data/MiSeq-samples/MiSeq-samples/2013-04_01_high_PF/
 
 If all goes well, you should see the textual output of binary parsing represented in a 
 human-readable format which is also copy-and-pasteable into the ipython interactive 
@@ -164,12 +183,14 @@ interop.py has been seeded with some typical defaults for MiSeq, but to play it 
 .. code-block:: Python
 
   from interop import InteropTileMetrics
+  
   tilemetrics = InteropTileMetrics('/path/to/TileMetrics.bin',
                          read_config=[{'read_num': 1, 'cycles': 151, 'is_index': 0},
                                       {'read_num': 2, 'cycles': 6, 'is_index': 1},
                                       {'read_num': 3, 'cycles': 151, 'is_index':0}],
                          flowcell_layout = { 'lanecount': 1, 'surfacecount': 2,
                                              'swathcount': 1, 'tilecount': 14 } )
+
 
 Support and Maintenance
 -----------------------
