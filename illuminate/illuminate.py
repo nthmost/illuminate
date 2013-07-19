@@ -23,7 +23,7 @@ from tile_metrics import InteropTileMetrics
 from quality_metrics import InteropQualityMetrics
 
 
-# working, but not yet integrated into InteropDataset:
+# working, but not yet integrated into IlluminaDataset:
 
 from corint_metrics import InteropCorrectedIntensityMetrics 
 from control_metrics import InteropControlMetrics
@@ -45,7 +45,7 @@ BINFILE_DIR_NAME = "InterOp"
 # 
 # ...just enough XML and BIN to get what you need.
 #
-# These lists are used by the InteropDataset class to do a basic sanity check of the supplied data directory.
+# These lists are used by the IlluminaDataset class to do a basic sanity check of the supplied data directory.
 
 # Here are all the files available (known as of 3/8/2013)
 # MVD_xml = ["CompletedJobInfo.xml", "RunInfo.xml", "runParameters.xml", "ResequencingRunStatistics.xml"]
@@ -107,7 +107,7 @@ XML_FILEMAP = { 'runinfo': 'RunInfo.xml',
 
 #### END OF CONFIGURABLE THINGS ####
 
-class InteropMetadata:
+class IlluminaMetadata:
     "Parser for sequencer's XML files describing a single run. Supply with directory to instantiate."
     
     __version = 0.1     # version of this parser.
@@ -166,7 +166,7 @@ class InteropMetadata:
             try:
                 self.parse_ResequencingRunStats(os.path.join(xmldir, XML_FILEMAP['reseqstats']))
             except IOError:
-                dmesg("[InteropMetadata] Warning: ResequencingRunStatistics file not found.", 2)
+                dmesg("[IlluminaMetadata] Warning: ResequencingRunStatistics file not found.", 2)
                 
 
     def parse_Run_ET(self, run_ET):
@@ -316,13 +316,13 @@ class InteropMetadata:
         </RunInfo>"""
         
 
-class InteropDatasetIncompleteError(Exception):
+class IlluminaDatasetIncompleteError(Exception):
     def __init__(self, value):
         self.value = value
     def __str__(self):
         return repr(self.value)
 
-class InteropDatasetError(Exception):
+class IlluminaDatasetError(Exception):
     def __init__(self, value):
         self.value = value
     def __str__(self):
@@ -333,10 +333,10 @@ class InteropDatasetError(Exception):
 FILETYPE_MIME_MAP = { 'bin': 'application/octet-stream; charset=binary\n',
                       'xml': 'application/xml; charset=us-ascii\n' }
 
-class InteropDataset:
+class IlluminaDataset:
     """Encapsulates the physical files related to this sequencing run. 
        Absolves other classes of having to know about files and directories.
-       Raises custom errors: InteropDatasetIncompleteError InteropDatasetError"""
+       Raises custom errors: IlluminaDatasetIncompleteError IlluminaDatasetError"""
     
     directory = ""  # supplied directory name to instantiate class (relative path)
     fullpath = ""   # calculated absolute filesystem path after instantiation
@@ -373,9 +373,9 @@ class InteropDataset:
         return os.path.join(self.xmldir, XML_FILEMAP[codename])
     
     def Metadata(self, reload=False):
-        "returns InteropMetadata class generated from this dataset's XML files"
+        "returns IlluminaMetadata class generated from this dataset's XML files"
         if self.meta == None or reload == True:
-            self.meta = InteropMetadata(self.xmldir)
+            self.meta = IlluminaMetadata(self.xmldir)
         return self.meta
     
     # BINARY EXTRACTION METHODS
@@ -494,7 +494,7 @@ if __name__=='__main__':
         print "Example:  python generate.py /home/username/seqruns/2013-02/0"
         sys.exit()
         
-    ID = InteropDataset(dirname)
+    ID = IlluminaDataset(dirname)
 
     print_sample_dataset(ID)
     
