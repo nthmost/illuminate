@@ -46,18 +46,16 @@ class InteropQualityMetrics(InteropBinParser):
     def index_quality(self, target_qscore=30):
         "Convenience method to return index read's % quality for target_qscore (default 30)"
     
-        # Assumes only one Index read, which is true for MiSeqs but not true for HiSeqs. 
-        # (TODO: do something about there being more than one Index read?)
+        # TODO: N_Reads (HiSeqs have more than one index)
         for read in self.read_config:
             if read['is_index']:
                 return self.get_qscore_percentage(target_qscore, read['read_num']-1)
 
     def get_qscore_percentage(self, target_qscore=30, read_num=-1):
-        "Returns % of quality scores at or above target_qscore (default 30). 2nd argument specifies read number."
+        """Returns % of quality scores at or above target_qscore (default 30). 
+            2nd argument specifies read number. (Note: the counting starts at 0!)"""
     
-        # The following are nonsense numbers; don't actually use them.
-        # self.flowcell_layout = { 'lanecount': 13, 'surfacecount': 5, 'swathcount': 9, 'tilecount': 111 }
-    
+        # segment qscores into above-target_qscore and below-target_qscore dataframes.
         q_upper_cols = [x for x in self.data.keys() if x[0]=='q' and int(x[1:]) > target_qscore-1 ]
         q_upper_df = self.idf[q_upper_cols] 
 
@@ -67,8 +65,9 @@ class InteropQualityMetrics(InteropBinParser):
             q_total_sum = self.idf.values.sum()
 
         else:
+            # TODO: N_Reads (2 Index reads breaks this function.)
             # segment Qscores by read_num. Let IndexError be raised in case of too-high read_num.
-            # read_tiers example: [151,157,308] 
+            # read_tiers example (typical MiSeq): [151,157,308] 
         
             cycle_start = 0 if read_num==0 else self.read_tiers[read_num-1] + 1 
             cycle_end = self.read_tiers[read_num]
