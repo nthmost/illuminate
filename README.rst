@@ -51,8 +51,8 @@ Illuminate relies on three open-source packages available through the Python che
 
 Please let the maintainer of this package (Naomi.Most@invitae.com) know if any of these requirements make it difficult to use and integrate Illuminate in your software; this is useful feedback.
 
-Optional but Recommended:
--------------------------
+Optional but Recommended: IPython
+---------------------------------
 
 Because Illuminate is currently not geared towards interactive usage, if you want to play 
 with the data, your best bet is to use iPython.  All of the parsers run from the command
@@ -64,17 +64,18 @@ Install ipython via pypi:
 
   $ pip install ipython
   
-More installation options and instructions are available on this page.
+More installation options and instructions are available on `the iPython installation page <http://ipython.org/ipython-doc/stable/install/install.html>`_.
 
 Once you have iPython installed, you'll be able to run illuminate.py or any of the
 standalone parsers on your data and immediately (well, after a few seconds of parsing)
 have a data dictionary and a dataframe at your disposal. See "Parsing Orphan Binaries".
 
 
-How To Install
---------------
+How To Install Illuminate
+-------------------------
 
-Currently this package is only available through its repository on bitbucket.org.
+Currently this package is only available through its repository on bitbucket.org (but will
+soon be available through the Python Cheeseshop on pypi.org).
 
 Clone this repository using Mercurial (hg):
 
@@ -158,13 +159,14 @@ For wrapping an entire dataset and calling parsers as needed:
 In the vast majority of cases, variables and data structures closely resemble the names 
 and structures in the XML and BIN files that they came from.  All XML information comes 
 through the IlluminaMetadata class, which can be accessed through the meta attribute of 
-InteropDataset:
+IlluminaDataset:
 
 .. code-block:: python
 
   metadata = myDataset.meta
   
-IlluminaDataset caches parsing data after the first run. To get a fresh re-parse of any file, supply "True" as the sole parameter to any parser method:
+IlluminaDataset caches parsing data after the first run. To get a fresh re-parse of any 
+file, supply "True" as the sole parameter to any parser method:
 
 .. code-block:: python
 
@@ -174,13 +176,15 @@ IlluminaDataset caches parsing data after the first run. To get a fresh re-parse
 Using the Results
 -----------------
 
-Each parser class produces a `data` dictionary from the raw data.  The data dict reflects
+Each parser class produces a "data" dictionary from the raw data.  The data dict reflects
 the format of the binary itself, so each parser has a slightly different set of keys::
 
   TileMetrics.data.keys() 
   
   
-This dictionary is used to create a pandas DataFrame, which makes d
+This dictionary is used to create a pandas DataFrame, a tutorial for which is outside the
+scope of this document, but here's `a 10-minute Pandas tutorial <http://wesmckinney.com/blog/?p=647>`_ to get you going.
+
 
 
 Parsing Orphan Binaries
