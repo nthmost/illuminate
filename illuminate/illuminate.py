@@ -335,7 +335,6 @@ FILETYPE_MIME_MAP = { 'bin': 'application/octet-stream; charset=binary\n',
 
 class InteropDataset:
     """Encapsulates the physical files related to this sequencing run. 
-       Performs (superficial) checks for dataset completeness.
        Absolves other classes of having to know about files and directories.
        Raises custom errors: InteropDatasetIncompleteError InteropDatasetError"""
     
@@ -443,10 +442,8 @@ class InteropDataset:
         return open(get_xml_path('reseqstats'))
 
 
-def print_sample_dataset(dirname):
-    one = InteropDataset(dirname)
-    
-    meta = one.Metadata()
+def print_sample_dataset(ID):
+    meta = ID.Metadata()
     
     print "Resequencing Statistics:" 
     print meta.resequencing_stats
@@ -460,20 +457,20 @@ def print_sample_dataset(dirname):
     print meta.read_config
     print ""
     
-    tm = one.TileMetrics()
+    tm = ID.TileMetrics()
     print "Tile Metrics:"
     print tm.to_dict()
     print ""
     
     print "Quality Metrics (% >= Q30 per read):"
-    qm = one.QualityMetrics()
+    qm = ID.QualityMetrics()
     for read in meta.read_config:
         print "Read %i: %f %s" % (read['read_num'], qm.get_qscore_percentage(30, read['read_num']-1),
                                     "(Index)" if read['is_index'] else "")                        
     print ""
 
     print "Index Metrics (sum of PF clusters per index):"
-    im = one.IndexMetrics()
+    im = ID.IndexMetrics()
     #print im.df
     print im.to_dict()
     print ""
@@ -485,9 +482,6 @@ def print_sample_dataset(dirname):
     print "Percentage Reads Identified (PF): %f" % (float(im.total_ix_reads_pf / tm.num_clusters_pf)*100)
     print ""
     print im.pivot
-    
-    #import ipdb; ipdb.set_trace()
-
 
 
 if __name__=='__main__':
@@ -500,6 +494,8 @@ if __name__=='__main__':
         print "Example:  python generate.py /home/username/seqruns/2013-02/0"
         sys.exit()
         
-    print_sample_dataset(dirname)
+    ID = InteropDataset(dirname)
+
+    print_sample_dataset(ID)
     
     
