@@ -46,8 +46,7 @@ class InteropQualityMetrics(InteropBinParser):
     def index_quality(self, target_qscore=30):
         "Convenience method to return index read's % quality for target_qscore (default 30)"
     
-        # Assumes only one Index read, which is true for MiSeqs but not true for HiSeqs. 
-        # (TODO: do something about there being more than one Index read?)
+        # TODO: N_Reads (HiSeqs have more than one index)
         for read in self.read_config:
             if read['is_index']:
                 return self.get_qscore_percentage(target_qscore, read['read_num']-1)

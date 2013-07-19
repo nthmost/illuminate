@@ -41,28 +41,6 @@ from utils import dmesg
 # Name of directory containing Interop binaries. Usually "InterOp".
 BINFILE_DIR_NAME = "InterOp"
 
-#### MINIMUM VIABLE DATASETS
-# 
-# ...just enough XML and BIN to get what you need.
-#
-# These lists are used by the IlluminaDataset class to do a basic sanity check of the supplied data directory.
-
-# Here are all the files available (known as of 3/8/2013)
-# MVD_xml = ["CompletedJobInfo.xml", "RunInfo.xml", "runParameters.xml", "ResequencingRunStatistics.xml"]
-
-# ...but the following 2 provide everything we really need.
-MVD_xml = ["CompletedJobInfo.xml", "ResequencingRunStatistics.xml"]
-
-# Here all the files available in binary dataset (known as of 3/8/2012)
-# (quality metrics binary seems to always be QMetricsOut.bin, not QualityMetricsOut.bin as in the spec.)
-
-# MVD_bin = ["ExtractionMetricsOut.bin", "QMetricsOut.bin", "TileMetricsOut.bin", "IndexMetrics.bin",
-#       "CorrectedIntMetricsOut.bin", "ControlMetricsOut.bin", "ErrorMetricsOut.bin", "ImageMetricsOut.bin"]
-
-# ...but at the moment, we're just using the following.
-MVD_bin = ["QMetricsOut.bin", "TileMetricsOut.bin", "IndexMetricsOut.bin"]
-
-
 # BINARY and XML FILEMAPs
 #
 # "codenames" (rather than filenames) are used internally in SeqDataset to refer to files.
@@ -316,23 +294,6 @@ class IlluminaMetadata:
         </RunInfo>"""
         
 
-class IlluminaDatasetIncompleteError(Exception):
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return repr(self.value)
-
-class IlluminaDatasetError(Exception):
-    def __init__(self, value):
-        self.value = value
-    def __str__(self):
-        return repr(self.value)
-
-
-# used by MIME type checker
-FILETYPE_MIME_MAP = { 'bin': 'application/octet-stream; charset=binary\n',
-                      'xml': 'application/xml; charset=us-ascii\n' }
-
 class IlluminaDataset:
     """Encapsulates the physical files related to this sequencing run. 
        Absolves other classes of having to know about files and directories.
@@ -497,5 +458,4 @@ if __name__=='__main__':
     ID = IlluminaDataset(dirname)
 
     print_sample_dataset(ID)
-    
     
