@@ -94,7 +94,7 @@ virtualenv, then, within your intended working directory, type:
   $ virtualenv ve
   $ source ve/bin/activate
 
-Now run the following command within the same directory::
+Now run the following command within the same directory:
 
 .. code-block:: bash
 
@@ -128,7 +128,7 @@ Activate your virtualenv (if you haven't already):
 
   $ source ve/bin/activate
   
-Now enter the following to run the integrated parser against one of the test datasets::
+Now enter the following to run the integrated parser against one of the test datasets:
 
 .. code-block:: bash
 
@@ -146,16 +146,19 @@ could be more useful to you.
 Basic Usage as a Module
 -----------------------
 
-For wrapping an entire dataset and calling parsers as needed::
+For wrapping an entire dataset and calling parsers as needed:
+
+.. code-block:: python
 
   from illuminate import IlluminaDataset
   myDataset = IlluminaDataset('/path/to/data/')
-
   tilemetrics = myDataset.TileMetrics()
   qualitymetrics = myDataset.QualityMetrics()
 
-In the vast majority of cases, variables and data structures closely resemble the names and structures in the XML and BIN files that they came from.
-All XML information comes through the IlluminaMetadata class, which can be accessed through the meta attribute of InteropDataset:
+In the vast majority of cases, variables and data structures closely resemble the names 
+and structures in the XML and BIN files that they came from.  All XML information comes 
+through the IlluminaMetadata class, which can be accessed through the meta attribute of 
+InteropDataset:
 
 .. code-block:: python
 
@@ -166,6 +169,18 @@ IlluminaDataset caches parsing data after the first run. To get a fresh re-parse
 .. code-block:: python
 
   tm = myDataset.TileMetrics(True)
+
+
+Using the Results
+-----------------
+
+Each parser class produces a `data` dictionary from the raw data.  The data dict reflects
+the format of the binary itself, so each parser has a slightly different set of keys::
+
+  TileMetrics.data.keys() 
+  
+  
+This dictionary is used to create a pandas DataFrame, which makes d
 
 
 Parsing Orphan Binaries
