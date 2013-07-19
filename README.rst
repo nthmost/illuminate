@@ -16,7 +16,7 @@ This package was built with versatility in mind. There is a section in this READ
 Supported machines and files
 ----------------------------
 
-Currently, only the following machines are supported (with any number of indices)::
+Currently, the following Illumina machines are supported (any number of indices)::
 
   HiSeq
   MiSeq
@@ -29,7 +29,7 @@ The integrated command-line reporter currently serves the following metrics/file
   CompletedJobInfo.xml
   ResequencingRunStatistics.xml
 
-Unintegrated parsers for the following binaries::
+With standalone-only parsers for the following binaries::
 
   control (InterOp/ControlMetrics.bin)
   corrected intensity (InterOp/CorrectedIntensityMetrics.bin)
@@ -182,8 +182,8 @@ the format of the binary itself, so each parser has a slightly different set of 
   TileMetrics.data.keys() 
   
   
-This dictionary is used to create a pandas DataFrame, a tutorial for which is outside the
-scope of this document, but here's `a 10-minute Pandas tutorial <http://wesmckinney.com/blog/?p=647>`_ to get you going.
+This dictionary is used to create a `pandas <http://pandas.pydata.org/>`_ DataFrame, a tutorial for which is outside the
+scope of this document, but here's `an introduction to data structures in Pandas <http://pandas.pydata.org/pandas-docs/dev/dsintro.html>`_ to get you going.
 
 
 
