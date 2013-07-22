@@ -55,8 +55,7 @@ class InteropBinParser(object):
         "Stub class for binary parsing."
         print "InteropBinParser: Generic Binary Parser class"
         print ""
-        print "Subclass this class and overwrite the parse_binary method"
-        print "with your own parser."
+        print "Override this method with your own parsing method." 
         print ""
 
     def _init_variables(self):
@@ -69,7 +68,7 @@ class InteropBinParser(object):
         # TODO: rework to use logger instead.
         
         if version_num not in self.supported_versions:        
-            self.dmesg("[%s] Warning: apparent file version (%i) may not be supported by this parser" % 
+            dmesg("[%s] Warning: apparent file version (%i) may not be supported by this parser" % 
                 (self.__class__.__name__, self.apparent_file_version), 2)
 
     def make_coordinate_plane(self, df, flatten=False):
