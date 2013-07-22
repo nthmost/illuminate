@@ -25,27 +25,20 @@ class InteropBinParser(object):
 
     __version = 0.3      # version of this base class
     
-    flowcell_layout = FLOWCELL_LAYOUT_DEFAULTS
-    read_config = READ_CONFIG_DEFAULTS
-    
     num_tiles = 0
     num_reads = 0
+
+    read_config = READ_CONFIG_DEFAULTS
+    flowcell_layout = FLOWCELL_LAYOUT_DEFAULTS
     
     def __init__(self, bitstring_or_filename, **kwargs):
-        "Takes either a filename or a BitString object. Optional: flowcell_layout {}, read_config {}"
+        "Takes either a filename or a BitString object. Optional: flowcell_layout {}, read_config [{},]"
 
         self._init_variables()
 
-        try:
-            self.flowcell_layout = kwargs['flowcell_layout']
-        except:
-            pass
+        self.flowcell_layout = kwargs.get('flowcell_layout')
+        self.read_config = kwargs.get('read_config')
 
-        try:
-            self.read_config = kwargs['read_config']
-        except:
-            pass
-        
         # see if it's a filename or a bitstring (aka bitstream)
         try:
             bitstring_or_filename.all(1)    # attempts to perform the "are these bits all 1s" method
@@ -56,7 +49,7 @@ class InteropBinParser(object):
         self.num_tiles = reduce(lambda x, y: x*y, self.flowcell_layout.values())
         self.num_reads = len(self.read_config)
         
-        self.parse_binary()     #should this run automatically upon init? certainly simplifies code everywhere.
+        self.parse_binary() 
 
     def parse_binary(self):
         "Stub class for binary parsing."
