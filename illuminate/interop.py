@@ -1,18 +1,16 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# interop.py
-#
-# Library for parsing and manipulating the data in MiSeq and (soon) HiSeq output data.
+# ILLUMINATE
+# 
+# Library for parsing and manipulating the data in MiSeq and HiSeq output data.
 #
 # See USAGE_AND_STYLE.txt for intro and basic examples.
 #
-# March 2013
-#
 # by nthmost (naomi.most@invitae.com)
-# with lots of help from ECO (Eric Olivares)
+# with lots of help from ECO (eric.olivares@invitae.com)
 
-import time, os, subprocess   # subprocess purely for checking MIME types of files.
+import time, os
 from xml.etree import ElementTree as ET
 
 import pandas
@@ -22,8 +20,7 @@ from index_metrics import InteropIndexMetrics
 from tile_metrics import InteropTileMetrics
 from quality_metrics import InteropQualityMetrics
 
-
-# working, but not yet integrated into IlluminaDataset:
+# working, but not yet integrated into InteropDataset:
 
 from corint_metrics import InteropCorrectedIntensityMetrics 
 from control_metrics import InteropControlMetrics
@@ -82,10 +79,9 @@ XML_FILEMAP = { 'runinfo': 'RunInfo.xml',
 #               'reseqstats': ['ResequencingRunStatistics.xml'],
 #               'completed': ['CompletedJobInfo.xml'] }
 
-
 #### END OF CONFIGURABLE THINGS ####
 
-class IlluminaMetadata:
+class InteropMetadata(object):
     "Parser for sequencer's XML files describing a single run. Supply with directory to instantiate."
     
     __version = 0.1     # version of this parser.
@@ -138,13 +134,13 @@ class IlluminaMetadata:
         if AUTO:
             try:
                 self.parse_CompletedJobInfo(os.path.join(xmldir, XML_FILEMAP['completed']))
-            except IOError:
+            except IOError, AttributeError:
                 self.parse_RunInfo(os.path.join(xmldir, XML_FILEMAP['runinfo']))
 
             try:
                 self.parse_ResequencingRunStats(os.path.join(xmldir, XML_FILEMAP['reseqstats']))
             except IOError:
-                dmesg("[IlluminaMetadata] Warning: ResequencingRunStatistics file not found.", 2)
+                dmesg("[InteropMetadata] Warning: ResequencingRunStatistics file not found.", 2)
                 
 
     def parse_Run_ET(self, run_ET):
@@ -221,9 +217,12 @@ class IlluminaMetadata:
             self.runtype = ""
                 
         # Sheet / Header / *
-        self.investigator_name = header_ET.find("InvestigatorName").text
-        self.project_name = header_ET.find("ProjectName").text
-        self.experiment_name = header_ET.find("ExperimentName").text
+        try:
+            self.investigator_name = header_ET.find("InvestigatorName").text
+            self.project_name = header_ET.find("ProjectName").text
+            self.experiment_name = header_ET.find("ExperimentName").text
+        except AttributeError:
+            pass
 
         # RTARunInfo / Run / *          
         self.runID = run_ET.attrib["Id"]                        # 130208_M00612_0046_000000000-A316T
@@ -294,10 +293,11 @@ class IlluminaMetadata:
         </RunInfo>"""
         
 
-class IlluminaDataset:
+class InteropDataset(object):
     """Encapsulates the physical files related to this sequencing run. 
+       Performs (superficial) checks for dataset completeness.
        Absolves other classes of having to know about files and directories.
-       Raises custom errors: IlluminaDatasetIncompleteError IlluminaDatasetError"""
+       Raises custom errors: InteropDatasetIncompleteError InteropDatasetError"""
     
     directory = ""  # supplied directory name to instantiate class (relative path)
     fullpath = ""   # calculated absolute filesystem path after instantiation
@@ -334,9 +334,9 @@ class IlluminaDataset:
         return os.path.join(self.xmldir, XML_FILEMAP[codename])
     
     def Metadata(self, reload=False):
-        "returns IlluminaMetadata class generated from this dataset's XML files"
+        "returns InteropMetadata class generated from this dataset's XML files"
         if self.meta == None or reload == True:
-            self.meta = IlluminaMetadata(self.xmldir)
+            self.meta = InteropMetadata(self.xmldir)
         return self.meta
     
     # BINARY EXTRACTION METHODS
@@ -348,8 +348,8 @@ class IlluminaDataset:
         "Returns InteropQualityMetrics object from the 'quality' binary in this dataset."
         if self._quality_metrics == None or reload == True:
             self._quality_metrics = InteropQualityMetrics(self.get_binary_path('quality'), 
-                                    flowcell_layout = self.meta.flowcell_layout,
-                                    read_config = self.meta.read_config )
+                                    flowcell_layout=self.meta.flowcell_layout,
+                                    read_config=self.meta.read_config )
         return self._quality_metrics
         
     def TileMetrics(self, reload=False):
@@ -403,6 +403,7 @@ class IlluminaDataset:
         return open(get_xml_path('reseqstats'))
 
 
+## Command Line helper functions below
 def print_sample_dataset(ID):
     meta = ID.Metadata()
     
@@ -436,14 +437,13 @@ def print_sample_dataset(ID):
     print im.to_dict()
     print ""
     
-    print "IndexMetrics + TileMetrics = SAV INDEXING tab"
+    print "INDEXING"
     print ""
     print "Total Reads: %i" % tm.num_clusters
     print "Reads PF: %i" % tm.num_clusters_pf
     print "Percentage Reads Identified (PF): %f" % (float(im.total_ix_reads_pf / tm.num_clusters_pf)*100)
     print ""
     print im.pivot
-
 
 if __name__=='__main__':
     import sys
@@ -452,10 +452,10 @@ if __name__=='__main__':
         dirname = sys.argv[1] 
     except IndexError:
         print "Supply the absolute or relative path to a directory of sequencing rundata."
-        print "Example:  python generate.py /home/username/seqruns/2013-02/0"
+        print "Example:  python interop.py /home/username/seqruns/2013-02/0"
         sys.exit()
         
-    ID = IlluminaDataset(dirname)
+    myDataset = InteropDataset(dirname)
 
-    print_sample_dataset(ID)
+    print_sample_dataset(myDataset)
     

@@ -1,3 +1,3 @@
-from illuminate import (IlluminaDataset, IlluminaBinParser, IlluminaTileMetrics, IlluminaQualityMetrics, 
-                        IlluminaIndexMetrics, IlluminaErrorMetrics, IlluminaExtractionMetrics, 
-                        IlluminaControlMetrics, IlluminaCorrectedIntensityMetrics, print_sample_dataset)
+from interop import (InteropDataset, InteropBinParser, InteropTileMetrics, InteropQualityMetrics, 
+                        InteropIndexMetrics, InteropErrorMetrics, InteropExtractionMetrics, 
+                        InteropControlMetrics, InteropCorrectedIntensityMetrics, print_sample_dataset)
