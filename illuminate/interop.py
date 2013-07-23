@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# ILLUMINATE
-# 
+# interop.py
+#
 # Library for parsing and manipulating the data in MiSeq and HiSeq output data.
 #
 # See USAGE_AND_STYLE.txt for intro and basic examples.
+#
+# March 2013
 #
 # by nthmost (naomi.most@invitae.com)
 # with lots of help from ECO (eric.olivares@invitae.com)
@@ -14,19 +16,16 @@ import time, os
 from xml.etree import ElementTree as ET
 
 import pandas
-from bitstring import BitString
 
 from index_metrics import InteropIndexMetrics
 from tile_metrics import InteropTileMetrics
 from quality_metrics import InteropQualityMetrics
-
-# working, but not yet integrated into InteropDataset:
-
+from error_metrics import InteropErrorMetrics
 from corint_metrics import InteropCorrectedIntensityMetrics 
 from control_metrics import InteropControlMetrics
 from extraction_metrics import InteropExtractionMetrics
 
-from utils import dmesg
+from utils import dmesg, select_file_from_aliases
 
 #### CONFIGURABLE THINGS
 #
@@ -40,44 +39,44 @@ BINFILE_DIR_NAME = "InterOp"
 
 # BINARY and XML FILEMAPs
 #
-# "codenames" (rather than filenames) are used internally in SeqDataset to refer to files.
+# "codenames" (rather than filenames) are used internally in InteropDataset to refer to files.
 # (The files themselves contain no explicit indication of what's inside them.)
 #
 # The FILEMAP variables contain mappings of codename to filename.
 #
-##
-# FUTURE: use ALIASES to select file (since there are several different filenames out there).
 
-BIN_FILEMAP = { 'extraction': "ExtractionMetricsOut.bin",
-                 'quality': "QMetricsOut.bin",
-                 'error': "ErrorMetricsOut.bin",
-                 'tile': "TileMetricsOut.bin",
-                 'correctedintensity': "CorrectedIntensityMetricsOut.bin",
-                 'control': "ControlMetricsOut.bin",
-                 'image': "ImageMetricsOut.bin",
-                 'index': "IndexMetricsOut.bin" }
-
-XML_FILEMAP = { 'runinfo': 'RunInfo.xml',
-                'runparams': 'runParameters.xml',
-                'reseqstats': 'ResequencingRunStatistics.xml',
-                'completed': 'CompletedJobInfo.xml' }
+#BIN_FILEMAP = { 'extraction': "ExtractionMetricsOut.bin",
+#                 'quality': "QMetricsOut.bin",
+#                 'error': "ErrorMetricsOut.bin",
+#                 'tile': "TileMetricsOut.bin",
+#                 'corint': "CorrectedIntensityMetricsOut.bin",
+#                 'control': "ControlMetricsOut.bin",
+#                 'image': "ImageMetricsOut.bin",
+#                 'index': "IndexMetricsOut.bin" }
+#
+#XML_FILEMAP = { 'runinfo': 'RunInfo.xml',
+#                'runparams': 'runParameters.xml',
+#                'reseqstats': 'ResequencingRunStatistics.xml',
+#                'completed': 'CompletedJobInfo.xml' }
 
 ##
-# FUTURE: use ALIASES to select file (since there are several different filenames out there).
+# use ALIASES to select file (since there are several different filenames out there).
+# 
+# the first filename to be retrievable will be the one that gets parsed.
 
-#BIN_ALIASES = { 'extraction': ["ExtractionMetricsOut.bin", "ExtractionMetrics.bin"],
-#                'quality': ["QMetricsOut.bin", "QualityMetricsOut.bin", "QualityMetrics.bin"],
-#                'error': ["ErrorMetricsOut.bin", "ErrorMetrics.bin"],
-#                'tile': ["TileMetricsOut.bin", "TileMetrics.bin"],
-#                'correctedintensity': ["CorrectedIntensityMetricsOut.bin", "CorrectedIntensity.bin"],
-#                'control': ["ControlMetricsOut.bin", "ControlMetrics.bin"],
-#                'image': ["ImageMetricsOut.bin", "ImageMetrics.bin"] 
-#                'index': ["IndexMetricsOut.bin", "IndexMetrics.bin"] }}
+BIN_FILEMAP = { 'extraction': ["ExtractionMetricsOut.bin", "ExtractionMetrics.bin"],
+                'quality': ["QMetricsOut.bin", "QualityMetricsOut.bin", "QualityMetrics.bin"],
+                'error': ["ErrorMetricsOut.bin", "ErrorMetrics.bin"],
+                'tile': ["TileMetricsOut.bin", "TileMetrics.bin"],
+                'corint': ["CorrectedIntMetricsOut.bin", "CorrectedIntensityMetricsOut.bin", "CorrectedIntensity.bin"],
+                'control': ["ControlMetricsOut.bin", "ControlMetrics.bin"],
+                'image': ["ImageMetricsOut.bin", "ImageMetrics.bin"], 
+                'index': ["IndexMetricsOut.bin", "IndexMetrics.bin"] }
 
-#XML_ALIASES = { 'runinfo': ['RunInfo.xml'],
-#               'runparams': ['runParameters.xml'],
-#               'reseqstats': ['ResequencingRunStatistics.xml'],
-#               'completed': ['CompletedJobInfo.xml'] }
+XML_FILEMAP = { 'runinfo': ["RunInfo.xml"],
+               'runparams': ["runParameters.xml"],
+               'reseqstats': ["ResequencingRunStatistics.xml"],
+               'completed': ["CompletedJobInfo.xml"] }
 
 #### END OF CONFIGURABLE THINGS ####
 
@@ -113,7 +112,9 @@ class InteropMetadata(object):
     #               'unaligned': 18572490, 'unaligned_PF': 16973197 }   
     resequencing_stats = {}
 
-    def __init__(self, xmldir, AUTO=True):
+    _xml_priorities = ['completed', 'runinfo']
+
+    def __init__(self, xmldir):
         """Takes the absolute path of a sequencing run data directory as sole required variable.
            Attempts to parse CompletedJobInfo.xml (or viable alias). If not available, uses 
            runParameters.xml and/or runInfo.xml, which have some overlapping info (but not all).
@@ -126,23 +127,32 @@ class InteropMetadata(object):
         self.xmldir = xmldir
         
         # CompletedJobInfo.xml is the most complete XML file in the set for what we need,
-        # but in a pinch we can parse RunInfo.xml for some data.
+        # but in a pinch we can parse RunInfo.xml for the essentials.
+        #
         # (runParameters.xml can be available but not really usable for several reasons.)
         
-        # Getting a flowcell_layout is the top priority since it informs the binary parsers.
+        # Getting read_config and flowcell_layout are top priority since they inform the binary parsers.
 
-        if AUTO:
-            try:
-                self.parse_CompletedJobInfo(os.path.join(xmldir, XML_FILEMAP['completed']))
-            except IOError, AttributeError:
-                self.parse_RunInfo(os.path.join(xmldir, XML_FILEMAP['runinfo']))
+        try:  
+            self.parse_CompletedJobInfo(self.get_xml_path('completed'))
+        except Exception, e:
+            dmesg("[InteropMetadata] Exception: %s" % e, 2)
+            self.parse_RunInfo(self.get_xml_path('runinfo'))
 
-            try:
-                self.parse_ResequencingRunStats(os.path.join(xmldir, XML_FILEMAP['reseqstats']))
-            except IOError:
-                dmesg("[InteropMetadata] Warning: ResequencingRunStatistics file not found.", 2)
+        try:
+            self.parse_ResequencingRunStats(self.get_xml_path('reseqstats'))
+        except Exception, e:
+            dmesg("[InteropMetadata] Exception: %s" % e, 2)
+            dmesg("[InteropMetadata] ResequencingRunStatistics will not be available.", 2)
                 
-
+    def get_xml_path(self, codename):
+        "returns absolute path to XML file represented by data 'codename'"
+        result = select_file_from_aliases(codename, XML_FILEMAP, self.xmldir)
+        if result == None:
+            raise Exception, "File for codename %s not available" % codename
+        else:
+            return result
+    
     def parse_Run_ET(self, run_ET):
         "parses chunk of XML associated with the RTA Run Info blocks in (at least) 2 xml files."
 
@@ -168,8 +178,6 @@ class InteropMetadata(object):
             self.read_config.append( {'read_num': read_num,
                                       'cycles': int(item.attrib['NumCycles']), 
                                       'is_index': True if item.attrib["IsIndexedRead"]=="Y" else False } )      
-    
-    
     
     def parse_ResequencingRunStats(self, filepath):
         "parses ResequencingRunStatistics.xml (or viable alias) to fill instance variables."
@@ -292,6 +300,28 @@ class InteropMetadata(object):
           </Run>
         </RunInfo>"""
         
+    def prettyprint_read_config(self):
+        out = "Read Config:"
+        for read in self.read_config:
+            out += "    Read %i: %i cycles %s" % (read['read_num'], read['cycles'], 
+                                    "(Index)" if read['is_index'] else "")                        
+        
+        return out
+
+    def prettyprint_flowcell_layout(self):
+        out = """Flowcell Layout:
+        Tiles: %(tilecount)i
+        Lanes: %(lanecount)i
+        Surfaces: %(surfacecount)i
+        Swaths: %(swathcount)i""" % self.flowcell_layout
+        return out
+
+
+    def __str__(self):
+        "Print the most important metadata (flowcell layout and read config)"
+        out = self.prettyprint_read_config() + "\n" + self.prettyprint_flowcell_layout()
+        return out
+
 
 class InteropDataset(object):
     """Encapsulates the physical files related to this sequencing run. 
@@ -321,17 +351,18 @@ class InteropDataset(object):
         self._quality_metrics = None
         self._tile_metrics = None
         self._index_metrics = None
+        self._error_metrics = None
+        self._corint_metrics = None
+        self._extraction_metrics = None
+        self._control_metrics = None
         
         # aggregate results of parsing one or more XML files
         meta = None
+    
 
     def get_binary_path(self, codename):
         "returns absolute path to binary file represented by data 'codename'"
-        return os.path.join(self.bindir, BIN_FILEMAP[codename])
-    
-    def get_xml_path(self, codename):
-        "returns absolute path to XML file represented by data 'codename'"
-        return os.path.join(self.xmldir, XML_FILEMAP[codename])
+        return select_file_from_aliases(codename, BIN_FILEMAP, self.bindir)
     
     def Metadata(self, reload=False):
         "returns InteropMetadata class generated from this dataset's XML files"
@@ -339,11 +370,6 @@ class InteropDataset(object):
             self.meta = InteropMetadata(self.xmldir)
         return self.meta
     
-    # BINARY EXTRACTION METHODS
-    # Abstractions for the data files so we don't have to hard-code any filenames.
-    # Make sure to keep the BIN_FILEMAP (above) up to date.
-    
-    # convention: InterCaps() returns associated object. thing_metrics() returns bitstring from binary.
     def QualityMetrics(self, reload=False):
         "Returns InteropQualityMetrics object from the 'quality' binary in this dataset."
         if self._quality_metrics == None or reload == True:
@@ -368,82 +394,111 @@ class InteropDataset(object):
                                     read_config=self.meta.read_config )
         return self._index_metrics
 
-    # The following haven't been implemented as parsers yet.
-    def extraction_metrics(self):
-        "returns bitstream object from the 'extraction' binary in this dataset"
-        return BitString(bytes=open(self.get_binary_path('extraction'), 'rb').read())
+    def ControlMetrics(self, reload=False):
+        "Returns InteropControlMetrics object from the 'control' binary in this dataset."
+        if self._control_metrics == None or reload == True:
+            self._control_metrics = InteropControlMetrics(self.get_binary_path('control'), 
+                                    flowcell_layout=self.meta.flowcell_layout,
+                                    read_config=self.meta.read_config )
+        return self._control_metrics
 
-    def correctedintensity_metrics(self):
-        "returns bitstream object from the 'correctedintensity' binary in this dataset"
-        return BitString(bytes=open(self.get_binary_path('correctedintensity'), 'rb').read())
+    def ErrorMetrics(self, reload=False):
+        "Returns InteropErrorMetrics object from the 'error' binary in this dataset."
+        if self._error_metrics == None or reload == True:
+            self._error_metrics = InteropErrorMetrics(self.get_binary_path('error'), 
+                                    flowcell_layout=self.meta.flowcell_layout,
+                                    read_config=self.meta.read_config )
+        return self._error_metrics
 
-    def control_metrics(self):
-        "returns bitstream object from the 'control_metrics' binary in this dataset"
-        return BitString(bytes=open(self.get_binary_path('control'), 'rb').read())
+    def ExtractionMetrics(self, reload=False):
+        "Returns InteropExtractionMetrics object from the 'extraction' binary in this dataset."
+        if self._extraction_metrics == None or reload == True:
+            self._extraction_metrics = InteropExtractionMetrics(self.get_binary_path('extraction'), 
+                                    flowcell_layout=self.meta.flowcell_layout,
+                                    read_config=self.meta.read_config )
+        return self._extraction_metrics
 
-    def image_metrics(self):
+    def CorrectedIntensityMetrics(self, reload=False):
+        "Returns InteropCorrectedIntensityMetrics object from the 'extraction' binary in this dataset."
+        if self._error_metrics == None or reload == True:
+            self._corint_metrics = InteropCorrectedIntensityMetrics(self.get_binary_path('corint'), 
+                                    flowcell_layout=self.meta.flowcell_layout,
+                                    read_config=self.meta.read_config )
+        return self._corint_metrics
+
+    def ImageMetrics(self, reload=False):
         "returns bitstream object from the 'image_metrics' binary in this dataset"
-        return BitString(bytes=open(self.get_binary_path('image'), 'rb').read())
+        if self._image_metrics == None or reload == True:
+            self._image_metrics = InteropImageMetrics(self.get_binary_path('image'), 
+                                    flowcell_layout=self.meta.flowcell_layout,
+                                    read_config=self.meta.read_config )
+        return self._image_metrics
     
-    def error_metrics(self):
-        "returns bitstream object from the 'error' binary in this dataset"
-        return BitString(bytes=open(self.get_binary_path('error'), 'rb').read())
         
-    # XML FILEHANDLE METHODS (not currently used for anything...)
-    def runInfo(self):
-        return open(get_xml_path('runinfo'))
-
-    def runParameters(self):
-        return open(get_xml_path('runparams'))
-        
-    def completedInfo(self):
-        return open(get_xml_path('completed'))
-        
-    def reseqStats(self):
-        return open(get_xml_path('reseqstats'))
-
-
 ## Command Line helper functions below
 def print_sample_dataset(ID):
     meta = ID.Metadata()
+
+    print ""
+    print "METADATA"
+    print "--------"
+    print meta
+    print ""
     
     print "Resequencing Statistics:" 
     print meta.resequencing_stats
     print ""
     
-    print "Flowcell Layout:"
-    print meta.flowcell_layout
-    print ""
-    
-    print "Read Configuration:"
-    print meta.read_config
-    print ""
-    
     tm = ID.TileMetrics()
-    print "Tile Metrics:"
-    print tm.to_dict()
+    print "SUMMARY"
+    print "-------"
+    print "(tile metrics)"
+    print tm
     print ""
     
-    print "Quality Metrics (% >= Q30 per read):"
+    # QualityMetrics usually take a while...
+    print "QUALITY"
+    print "-------"
     qm = ID.QualityMetrics()
-    for read in meta.read_config:
-        print "Read %i: %f %s" % (read['read_num'], qm.get_qscore_percentage(30, read['read_num']-1),
-                                    "(Index)" if read['is_index'] else "")                        
+    print "(% >= Q30 per read):"
+    print qm
     print ""
 
-    print "Index Metrics (sum of PF clusters per index):"
     im = ID.IndexMetrics()
-    #print im.df
-    print im.to_dict()
-    print ""
-    
     print "INDEXING"
-    print ""
+    print "--------"
     print "Total Reads: %i" % tm.num_clusters
     print "Reads PF: %i" % tm.num_clusters_pf
     print "Percentage Reads Identified (PF): %f" % (float(im.total_ix_reads_pf / tm.num_clusters_pf)*100)
     print ""
     print im.pivot
+    print ""
+
+    print "ERRORS"
+    print "------"
+    try:
+        em = ID.ErrorMetrics()
+        print "(sum of all types of errors across all reads)"
+        idf = em.make_coordinate_plane(em.df)
+        print idf.sum()
+    except TypeError:
+        print "None. (no error metrics binary in this dataset.)"
+    finally:
+        print ""
+
+    print "INTENSITY"
+    print "---------"
+    try:
+        cm = ID.CorrectedIntensityMetrics()
+        print "(sample of raw data)"
+        print cm.idf.head()
+    except TypeError:
+        print "No CorrectedIntensityMetrics binary in this dataset."
+    finally:
+        print ""
+
+
+
 
 if __name__=='__main__':
     import sys
@@ -456,6 +511,8 @@ if __name__=='__main__':
         sys.exit()
         
     myDataset = InteropDataset(dirname)
+
+    #print myDataset.meta.read_config
 
     print_sample_dataset(myDataset)
     

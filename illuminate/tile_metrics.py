@@ -4,6 +4,8 @@ import pandas
 
 from base_parser_class import InteropBinParser
 
+from utils import dmesg
+
 class InteropTileMetrics(InteropBinParser):
     "ILMN Tile Metrics parser (child class of InteropBinParser)."
 
@@ -13,7 +15,6 @@ class InteropTileMetrics(InteropBinParser):
     # given by __init__ (from InteropBinParser):  read_config {}, flowcell_layout {}
 
     def _init_variables(self):
-
         # Map of binary's "code" to what it means. Filled during parsing.
         self.codemap = { }
     
@@ -107,10 +108,8 @@ class InteropTileMetrics(InteropBinParser):
         self.percent_pf_clusters = 100 * float(self.num_clusters_pf / self.num_clusters)
     
         # Phasing and Prephasing averages per read
-        # TODO: check against SAV (these may need to be calc'd like mean_cluster_density above).
-    
         for read in self.read_config:
-            # There are only ever 28 entries per phasing and pre-phasing code, so 
+            # There are only ever (lanes * tiles) entries per phasing and pre-phasing code, so 
             # we don't need to do the "last cycle" trick as above.
             
             self.mean_phasing.append(pivot_mean[200 + (read['read_num']-1) * 2])
@@ -124,7 +123,7 @@ class InteropTileMetrics(InteropBinParser):
         out += '\n  Percentage of Clusters PF: %f' % self.percent_pf_clusters
         out += '\n  Read - PHASING / PRE-PHASING:'
         for read_num in range(self.num_reads):
-            out += '\n    %i - %f / %f' % (read_num, self.mean_phasing[read_num], self.mean_prephasing[read_num])
+            out += '\n    %i - %f / %f' % (read_num+1, self.mean_phasing[read_num], self.mean_prephasing[read_num])
         out += '\n'
         return out
 

@@ -25,9 +25,6 @@ class InteropIndexMetrics(InteropBinParser):
         assert len(self.data['index_str']) == \
                   self.flowcell_layout['tilecount'] * self.flowcell_layout['surfacecount'] * \
                   len(self.results.keys()) * self.flowcell_layout['lanecount']
-        
-        # How many indexes should we have based on read_config? How many are apparent?
-        # TODO
                 
     def _init_variables( self ):
         self.data = {

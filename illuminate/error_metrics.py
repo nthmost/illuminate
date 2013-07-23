@@ -75,5 +75,5 @@ if __name__=='__main__':
     print 'Length of data: %i' % len(EM.data['cycle'])
     #print EM.df.head()
     
-    idf = EM.make_coordinate_plane(EM.df)
+    idf = EM.make_coordinate_plane( EM.df )
     print idf.head()

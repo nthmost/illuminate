@@ -120,6 +120,12 @@ When these commands complete, you should be ready to roll.
 Basic Usage From Command Line
 -----------------------------
 
+While not intended for command-line usage, Illuminate contains a simple command-line utility
+on the top-level of the directory called illuminate.py that will print out the most 
+commonly looked-at statistics from Illumina SAV.
+
+
+
 This package includes some MiSeq and HiSeq data (metrics and metadata only) from live 
 sequencing runs so you can see how things work.
 
@@ -133,7 +139,7 @@ Now enter the following to run the integrated parser against one of the test dat
 
 .. code-block:: bash
 
-  $ python illuminate/illuminate.py data/MiSeq-samples/MiSeq-samples/2013-04_01_high_PF/
+  $ python illuminate.py data/MiSeq-samples/MiSeq-samples/2013-04_01_high_PF/
 
 If all goes well, you should see the textual output of binary parsing represented in a 
 human-readable format which is also copy-and-pasteable into the ipython interactive 
@@ -146,6 +152,8 @@ could be more useful to you.
 
 Basic Usage as a Module
 -----------------------
+
+
 
 For wrapping an entire dataset and calling parsers as needed:
 

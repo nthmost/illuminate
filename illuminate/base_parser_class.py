@@ -23,21 +23,16 @@ READ_CONFIG_DEFAULTS = [{'read_num': 1, 'cycles': 151, 'is_index': 0},
 class InteropBinParser(object):
     "Generic binary parser for ILMN files typically found in InterOp directory. Subclass (do not use directly)."
 
-    __version = 0.3      # version of this base class
+    __version = 0.4      # version of this base class
     
     num_tiles = 0
     num_reads = 0
 
-    read_config = READ_CONFIG_DEFAULTS
-    flowcell_layout = FLOWCELL_LAYOUT_DEFAULTS
-    
     def __init__(self, bitstring_or_filename, **kwargs):
         "Takes either a filename or a BitString object. Optional: flowcell_layout {}, read_config [{},]"
 
-        self._init_variables()
-
-        self.flowcell_layout = kwargs.get('flowcell_layout')
-        self.read_config = kwargs.get('read_config')
+        self.flowcell_layout = kwargs.get('flowcell_layout', FLOWCELL_LAYOUT_DEFAULTS)
+        self.read_config = kwargs.get('read_config', READ_CONFIG_DEFAULTS)
 
         # see if it's a filename or a bitstring (aka bitstream)
         try:
@@ -48,7 +43,8 @@ class InteropBinParser(object):
             
         self.num_tiles = reduce(lambda x, y: x*y, self.flowcell_layout.values())
         self.num_reads = len(self.read_config)
-        
+
+        self._init_variables()
         self.parse_binary() 
 
     def parse_binary(self):
@@ -64,8 +60,6 @@ class InteropBinParser(object):
     
     def check_version(self, version_num):
         "Compare parsed binary's version against parser's supported_versions list."
-        
-        # TODO: rework to use logger instead.
         
         if version_num not in self.supported_versions:        
             dmesg("[%s] Warning: apparent file version (%i) may not be supported by this parser" % 
