@@ -2,15 +2,15 @@ from docopt import docopt
 from interop import InteropDataset
 
 __doc__="""Usage: illuminate [options] <datapath>...
-illuminate load <datapath>
 
   -h --help             Show this screen.
   --version             Show version.
   -v, --verbose         Increase verbosity           
   -q, --quiet           Suppress all console output   
   -d, --dump=<outfile>  Output parser results to file. 
+  -i, --interactive     Load dataset into iPython for interactive fun.
 
-  --meta            Parse metadata                      [default: True]
+  --meta            Print metadata                      [default: True]
   --quality         Parse quality metrics               [default: True]
   --tile            Parse tile metrics                  [default: True]
   --index           Parse index metrics                 [default: True]
@@ -60,12 +60,11 @@ def run_metrics_object(InteropObject, title):
 
 if __name__=='__main__':
 
-    args = docopt(__doc__,version='0.1')
+    args = docopt(__doc__,version='0.4')
 
-    if args['load']:
+    if args['--interactive']:
         from IPython import embed
-        # when "load" command is used, datapath is a string, not a list.
-        ID = InteropDataset(args['<datapath>']) 
+        myDataset = InteropDataset(args['<datapath>'][0]) 
         embed()
     else:
         calculate_verbosity(args['--verbose'], args['--quiet'])
