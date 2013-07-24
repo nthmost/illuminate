@@ -24,23 +24,23 @@ Currently, the following Illumina machines are supported (any number of indices)
   HiSeq
   MiSeq
 
-The integrated command-line reporter currently serves the following metrics/files::
+The integrated command-line reporter currently serves the following xml files::
+
+  RunInfo.xml
+  CompletedJobInfo.xml
+  ResequencingRunStatistics.xml
+
+...and the following binary files::
 
   tile (InterOp/TileMetrics.bin)
   quality (InterOp/QMetrics.bin)
   index (InterOp/IndexMetrics.bin)
-  CompletedJobInfo.xml
-  ResequencingRunStatistics.xml
-
-With standalone-only parsers for the following binaries::
-
   control (InterOp/ControlMetrics.bin)
   corrected intensity (InterOp/CorrectedIntensityMetrics.bin)
   extraction (InterOp/ExtractionMetrics.bin)
   error (InterOp/ErrorMetrics.bin)
 
 (Note: binaries may also be named "XxXxOut.bin"; this is an alias.)
-
 
 Requirements
 ------------
