@@ -5,18 +5,18 @@ __doc__="""Usage: illuminate.py [options] <datapath>...
 
   -h --help             Show this screen.
   --version             Show version.
-  -v, --verbose         Increase verbosity              [default:False]
-  -q, --quiet           Suppress all console output     [default:False]
-  -d, --dump=<outfile>  Output parser results to file.  [default:False] 
+  -v, --verbose         Increase verbosity           
+  -q, --quiet           Suppress all console output   
+  -d, --dump=<outfile>  Output parser results to file. 
 
-  --meta            Parse metadata                      [default:True]
-  --quality         Parse quality metrics               [default:True]
-  --tile            Parse tile metrics                  [default:True]
-  --index           Parse index metrics                 [default:True]
-  --error           Parse error metrics                 [default:False]
-  --corint          Parse corrected intensity metrics   [default:False]
-  --extraction      Parse extraction metrics            [default:False]
-  --control         Parse control metrics               [default:False]
+  --meta            Parse metadata                      [default: True]
+  --quality         Parse quality metrics               [default: True]
+  --tile            Parse tile metrics                  [default: True]
+  --index           Parse index metrics                 [default: True]
+  --error           Parse error metrics                 [default: False]
+  --corint          Parse corrected intensity metrics   [default: False]
+  --extraction      Parse extraction metrics            [default: False]
+  --control         Parse control metrics               [default: False]
   --image           Parse image metrics (not yet supported)
 
   --csv=<csv_filename> Output results as CSV (not yet supported)  [default:'results.csv']
@@ -56,20 +56,17 @@ def run_metrics_object(InteropObject, title):
     dmesg(title, 1)
     dmesg('-' * len(title), 1)
     dmesg('%s' % InteropObject, 1)
-    dmesg('\n', 1)
-
 
 if __name__=='__main__':
 
     args = docopt(__doc__,version='0.1')
-
     calculate_verbosity(args['--verbose'], args['--quiet'])
     arrange_writing_to_file(args['--dump'])
 
     for datapath in args['<datapath>']:
         ID = InteropDataset(datapath)
         if args['--meta']:
-            run_metrics_object(ID.meta)
+            run_metrics_object(ID.meta, "METADATA")
         if args['--tile']:
             run_metrics_object(ID.TileMetrics(), "SUMMARY")
         if args['--quality']:

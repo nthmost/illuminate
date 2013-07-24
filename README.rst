@@ -128,12 +128,9 @@ When these commands complete, you should be ready to roll.
 Basic Usage From Command Line
 -----------------------------
 
-While not intended for command-line usage, Illuminate contains a simple command-line utility
-on the top-level of the directory called illuminate.py that will print out the most 
-commonly looked-at statistics from Illumina SAV.
-
-
-
+Illuminate contains a simple command-line utility that prints out the most commonly 
+commonly desired statistics from Illumina SAV.
+ 
 This package includes some MiSeq and HiSeq data (metrics and metadata only) from live 
 sequencing runs so you can see how things work.
 
@@ -147,11 +144,17 @@ Now enter the following to run the integrated parser against one of the test dat
 
 .. code-block:: bash
 
-  $ python illuminate.py data/MiSeq-samples/MiSeq-samples/2013-04_01_high_PF/
+  $ python illuminate --tile --quality --index sampledata/MiSeq-samples/MiSeq-samples/2013-04_01_high_PF/
 
-If all goes well, you should see the textual output of binary parsing represented in a 
-human-readable format which is also copy-and-pasteable into the ipython interactive 
-interpreter.
+You can also output to a file by using the --dump=filename option:
+
+.. code-block:: bash
+
+  $ python illuminate --dump=RU1234.txt /path/to/dataset
+
+And you can suppress command-line output by using the --quiet option.
+
+--help will get you a list of all of the options you can use (and some you can't, yet).
 
 At the moment no work is planned to increase user friendliness at the command line level.
 Please let the maintainer (Naomi.Most@Invitae.com) know how the command line interaction
@@ -161,20 +164,39 @@ could be more useful to you.
 Basic Usage as a Module
 -----------------------
 
+Illuminate was made to be integrated in code to make it easy to report on sequencing runs.
 
-
-For wrapping an entire dataset and calling parsers as needed:
+The usual way to start is to point the wrapping class, InteropDataset, at a sequencing
+run path, like so:
 
 .. code-block:: python
 
-  from illuminate import IlluminaDataset
-  myDataset = IlluminaDataset('/path/to/data/')
+  from illuminate import InteropDataset
+  myDataset = InteropDataset('/path/to/data/')
+
+When this class is built, the RunInfo.xml or CompletedJobInfo.xml metadata files will be
+read to collected Flowcell Layout and Read Configuration at the very least, which are 
+required for some aspects of binary parsing.
+
+The binary parsers are not run until they are specifically requested. In many cases this 
+operation can take several seconds, depending on the size of the binary file.
+
+.. code-block:: python
+
   tilemetrics = myDataset.TileMetrics()
   qualitymetrics = myDataset.QualityMetrics()
+  indexmetrics = myDataset.IndexMetrics()
+  controlmetrics = myDataset.ControlMetrics()
+  corintmetrics = myDataset.CorrectedIntensityMetrics()
+  extractionmetrics = myDataset.ExtractionMetrics()
+  errormetrics = myDataset.ErrorMetrics()
+
+Note that not all datasets contain all binaries. Particularly, ErrorMetrics.bin will be 
+missing if no errors were recorded / reported by the sequencer.
 
 In the vast majority of cases, variables and data structures closely resemble the names 
 and structures in the XML and BIN files that they came from.  All XML information comes 
-through the IlluminaMetadata class, which can be accessed through the meta attribute of 
+through the InteropMetadata class, which can be accessed through the meta attribute of 
 IlluminaDataset:
 
 .. code-block:: python
@@ -216,7 +238,7 @@ If you just have a single binary file, you can run the matching parser from the 
 
 .. code-block:: bash
 
-  $ python illuminate/error_metrics.py data/MiSeq-samples/2013-04_10_has_errors/InterOp/TileMetricsOut.bin 
+  $ ipython -i illuminate/error_metrics.py sampledata/MiSeq-samples/2013-04_10_has_errors/InterOp/TileMetricsOut.bin 
 
 The parsers are designed to exist apart from their parent dataset, so it's possible to call 
 any one of them without having the entire dataset directory at hand. However, some parsers 
