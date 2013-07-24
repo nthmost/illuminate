@@ -176,11 +176,10 @@ providing it with a valid run path, like so:
   myDataset = InteropDataset('/path/to/data/')
 
 When this class is built, the RunInfo.xml or CompletedJobInfo.xml metadata files will be
-read to collected Flowcell Layout and Read Configuration at the very least, which are 
-required for some aspects of binary parsing.
+read, filling important variables like Flowcell Layout and Read Configuration.
 
-The binary parsers are not run until they are specifically requested. In many cases this 
-operation can take several seconds, depending on the size of the binary file.
+The binary parsers are not run until they are specifically requested. Many parsing operations
+can take several seconds, depending on the size of the binary file.
 
 .. code-block:: python
 
