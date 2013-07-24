@@ -59,6 +59,13 @@ class InteropErrorMetrics( InteropBinParser ):
 
         self.df = pandas.DataFrame(self.data)
     
+    def __str__(self):
+        #TODO: Improve output
+        out = '(sum of all types of errors across all reads)\n'
+        idf = self.make_coordinate_plane(self.df)
+        out += '%s' % idf.sum()
+        return out
+
     
 if __name__=='__main__':
     
@@ -73,7 +80,5 @@ if __name__=='__main__':
     EM = InteropErrorMetrics(filename)
     
     print 'Length of data: %i' % len(EM.data['cycle'])
-    #print EM.df.head()
+    print EM
     
-    idf = EM.make_coordinate_plane( EM.df )
-    print idf.head()

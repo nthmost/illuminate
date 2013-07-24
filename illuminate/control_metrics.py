@@ -64,6 +64,11 @@ class InteropControlMetrics( InteropBinParser ):
     
         self.df = pandas.DataFrame(self.data)
 
+    def __str__(self):
+        #TODO: better printout
+        out = '%s' % self.df.head()
+        return out
+
 
 if __name__=='__main__':
     import sys
@@ -75,7 +80,4 @@ if __name__=='__main__':
         sys.exit()
     
     CM = InteropControlMetrics(filename)
-
-    print "Length of data: %i" % len(CM.data['clusters'])
-
-    print CM.df.head()
+    print CM

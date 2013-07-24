@@ -93,6 +93,13 @@ class InteropCorrectedIntensityMetrics(InteropBinParser):
         # place each metric into a coordinate plane so we can sort into reads.
         self.idf = self.make_coordinate_plane(self.df)
 
+    def __str__(self):
+        out = "%i entries in CorrectedIntensityMetrics binary" % len(self.data['cycle'])
+        out = "\nSample from lane/cycle/tile start:"
+        out += "%s" % self.idf.head()
+        return out
+ 
+
 
 if __name__=='__main__':
 
@@ -105,7 +112,4 @@ if __name__=='__main__':
         sys.exit()
 
     CIM = InteropCorrectedIntensityMetrics(filename)
-
-    print 'Length of data: %i' % len(CIM.data['cycle'])
-
-    print CIM.idf.head()
+    print CIM

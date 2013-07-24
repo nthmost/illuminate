@@ -69,7 +69,12 @@ class InteropExtractionMetrics(InteropBinParser):
     
         self.df = pandas.DataFrame(self.data)
 
-        self.idf = self.make_coordinate_plane(self.df)
+        #self.idf = self.make_coordinate_plane(self.df)
+
+    def __str__(self): 
+        #TODO: better printout
+        out += '%s' % self.df.head()
+        return out
 
 if __name__=='__main__':
     import sys
@@ -81,8 +86,4 @@ if __name__=='__main__':
         sys.exit()
     
     EM = InteropExtractionMetrics(filename)
-
-    print 'Length of data: %i' % len(EM.data['cycle'])
-
-    print EM.df.head()
-    print EM.idf.head()
+    print EM
