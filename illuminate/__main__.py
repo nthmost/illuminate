@@ -1,6 +1,5 @@
 from docopt import docopt
-
-from illuminate import InteropDataset, print_sample_dataset
+from interop import InteropDataset
 
 __doc__="""Usage: illuminate.py [options] <datapath>...
 
