@@ -123,10 +123,10 @@ With numpy and pandas installed, now type:
 
 When these commands complete, you should be ready to roll.
 
-Basic Usage From Command Line
------------------------------
+Illuminate as a Command Line Tool
+---------------------------------
 
-Illuminate contains a simple command-line utility that prints out the most commonly 
+Illuminate contains a simple command-line utility that prints out the most 
 commonly desired statistics from Illumina SAV.
  
 This package includes some MiSeq and HiSeq data (metrics and metadata only) from live 
@@ -258,6 +258,12 @@ arguments to these parsers, like so:
                          flowcell_layout = { 'lanecount': 1, 'surfacecount': 2,
                                              'swathcount': 1, 'tilecount': 14 } )
 
+More Sample Data
+----------------
+
+More sample data from MiSeq and HiSeq machines can be found in the 
+`Downloads <https://bitbucket.org/nthmost/illuminate/downloads>`_
+section of this bitbucket repository.
 
 Support and Maintenance
 -----------------------
