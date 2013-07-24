@@ -70,10 +70,9 @@ Install ipython via pypi:
   
 More installation options and instructions are available on `the iPython installation page <http://ipython.org/ipython-doc/stable/install/install.html>`_.
 
-Once you have iPython installed, you'll be able to run illuminate.py or any of the
+Once you have iPython installed, you'll be able to run illuminate or any of the
 standalone parsers on your data and immediately (well, after a few seconds of parsing)
-have a data dictionary and a dataframe at your disposal. See "Parsing Orphan Binaries".
-
+have a data dictionary and a dataframe at your disposal. See also "Parsing Orphan Binaries".
 
 How To Install Illuminate
 -------------------------
@@ -123,7 +122,6 @@ With numpy and pandas installed, now type:
   (ve) $ python setup.py build install
 
 When these commands complete, you should be ready to roll.
-
 
 Basic Usage From Command Line
 -----------------------------
@@ -213,7 +211,6 @@ file, supply "True" as the sole parameter to any parser method:
 
   tm = myDataset.TileMetrics(True)
 
-
 Using the Results
 -----------------
 
@@ -232,7 +229,6 @@ For example::
   
 This dictionary is used to set up `pandas <http://pandas.pydata.org/>`_ DataFrame, a tutorial for which is outside the
 scope of this document, but here's `an introduction to data structures in Pandas <http://pandas.pydata.org/pandas-docs/dev/dsintro.html>`_ to get you going.
-
 
 Parsing Orphan Binaries
 -----------------------
