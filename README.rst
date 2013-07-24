@@ -249,7 +249,7 @@ arguments to these parsers, like so:
 
 .. code-block:: python
 
-  from interop import InteropTileMetrics  
+  from illuminate import InteropTileMetrics  
   tilemetrics = InteropTileMetrics('/path/to/TileMetrics.bin',
                          read_config = [{'read_num': 1, 'cycles': 151, 'is_index': 0},
                                         {'read_num': 2, 'cycles': 6, 'is_index': 1},
