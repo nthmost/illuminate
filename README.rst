@@ -46,7 +46,7 @@ Requirements
 ------------
 
 You'll need a UNIX-like environment to use this package. Both OS X and Linux have been confirmed to work.
-Illuminate relies on three open-source packages available through the Python cheeseshop::
+Illuminate relies on four open-source packages available through the Python cheeseshop::
 
   numpy
   pandas
