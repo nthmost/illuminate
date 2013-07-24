@@ -13,6 +13,9 @@ This package was built with versatility in mind. There is a section in this READ
   Using illuminate as a python module
   Parsing orphan binaries (e.g. just ErrorMetrics.bin)
 
+But first you'll need to get set up. Jump to "Requirements" below.
+
+
 Supported machines and files
 ----------------------------
 
@@ -48,6 +51,7 @@ Illuminate relies on three open-source packages available through the Python che
   numpy
   pandas
   bitstring
+  docopt
 
 Please let the maintainer of this package (Naomi.Most@invitae.com) know if any of these requirements make it difficult to use and integrate Illuminate in your software; this is useful feedback.
 
@@ -107,12 +111,16 @@ but in the end it should say this::
   Successfully installed numpy pandas python-dateutil pytz six
   Cleaning up...
 
-Next, type:
+If you get an error saying you are missing Python.H, you will need to install the python development
+package for your system. On Ubuntu or Debian, you'll probably do::
+
+  apt-get install python-dev
+
+With numpy and pandas installed, now type:
 
 .. code-block:: bash
 
-  $ python setup.py build
-  $ python setup.py install
+  $ python setup.py build install
 
 When these commands complete, you should be ready to roll.
 
@@ -184,15 +192,21 @@ file, supply "True" as the sole parameter to any parser method:
 Using the Results
 -----------------
 
-Each parser class produces a "data" dictionary from the raw data.  The data dict reflects
-the format of the binary itself, so each parser has a slightly different set of keys::
+The two main methods you have access to in every parser class are the data dictionary
+and the DataFrame, accessed as .data and .df respectively.
+
+Each parser produces a "data" dictionary from the raw data.  The data dict reflects
+the format of the binary itself, so each parser has a slightly different set of keys.
+For example::
 
   TileMetrics.data.keys() 
-  
-  
-This dictionary is used to create a `pandas <http://pandas.pydata.org/>`_ DataFrame, a tutorial for which is outside the
-scope of this document, but here's `an introduction to data structures in Pandas <http://pandas.pydata.org/pandas-docs/dev/dsintro.html>`_ to get you going.
 
+...produces::
+
+  ['tile', 'lane', 'code', 'value']
+  
+This dictionary is used to set up `pandas <http://pandas.pydata.org/>`_ DataFrame, a tutorial for which is outside the
+scope of this document, but here's `an introduction to data structures in Pandas <http://pandas.pydata.org/pandas-docs/dev/dsintro.html>`_ to get you going.
 
 
 Parsing Orphan Binaries
@@ -202,7 +216,7 @@ If you just have a single binary file, you can run the matching parser from the 
 
 .. code-block:: bash
 
-  $ ipython -i illuminate/error_metrics.py data/MiSeq-samples/2013-04_10_has_errors/InterOp/ErrorMetricsOut.bin 
+  $ python illuminate/error_metrics.py data/MiSeq-samples/2013-04_10_has_errors/InterOp/TileMetricsOut.bin 
 
 The parsers are designed to exist apart from their parent dataset, so it's possible to call 
 any one of them without having the entire dataset directory at hand. However, some parsers 
