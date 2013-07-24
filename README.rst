@@ -85,7 +85,7 @@ Clone this repository using Mercurial (hg):
 
 .. code-block:: bash
 
-  $ hg clone ssh://hg@bitbucket.org/nthmost/illuminate
+  $ hg clone https://hg@bitbucket.org/nthmost/illuminate
 
 For integrated use in other code as well as for running the command-line utilities, it is 
 recommended (though not required) to use virtualenv to create a virtual Python environment 
@@ -103,7 +103,7 @@ Now run the following command within the same directory:
 
 .. code-block:: bash
 
-  $ pip install numpy pandas
+  (ve) $ pip install numpy pandas
 
 The above process can take many minutes (cup of tea, perhaps?) and throw off many warnings, 
 but in the end it should say this::
@@ -112,15 +112,15 @@ but in the end it should say this::
   Cleaning up...
 
 If you get an error saying you are missing Python.H, you will need to install the python development
-package for your system. On Ubuntu or Debian, you'll probably do::
+package for your system. For example, on Ubuntu or Debian, you'd do::
 
-  apt-get install python-dev
+  $ sudo apt-get install python-dev
 
 With numpy and pandas installed, now type:
 
 .. code-block:: bash
 
-  $ python setup.py build install
+  (ve) $ python setup.py build install
 
 When these commands complete, you should be ready to roll.
 
@@ -144,13 +144,13 @@ Now enter the following to run the integrated parser against one of the test dat
 
 .. code-block:: bash
 
-  $ python illuminate --tile --quality --index sampledata/MiSeq-samples/MiSeq-samples/2013-04_01_high_PF/
+  (ve) $ python illuminate --tile --quality --index sampledata/MiSeq-samples/MiSeq-samples/2013-04_01_high_PF/
 
 You can also output to a file by using the --dump=filename option:
 
 .. code-block:: bash
 
-  $ python illuminate --dump=RU1234.txt /path/to/dataset
+  (ve) $ python illuminate --dump=RU1234.txt /path/to/dataset
 
 And you can suppress command-line output by using the --quiet option.
 
@@ -166,8 +166,8 @@ Basic Usage as a Module
 
 Illuminate was made to be integrated in code to make it easy to report on sequencing runs.
 
-The usual way to start is to point the wrapping class, InteropDataset, at a sequencing
-run path, like so:
+The usual way to start is to instantiate a "dataset" through the InteropDataset class,  
+providing it with a valid run path, like so:
 
 .. code-block:: python
 
@@ -191,7 +191,7 @@ operation can take several seconds, depending on the size of the binary file.
   extractionmetrics = myDataset.ExtractionMetrics()
   errormetrics = myDataset.ErrorMetrics()
 
-Note that not all datasets contain all binaries. Particularly, ErrorMetrics.bin will be 
+Note that not all run data will contain all binaries. Particularly, ErrorMetrics.bin will be 
 missing if no errors were recorded / reported by the sequencer.
 
 In the vast majority of cases, variables and data structures closely resemble the names 

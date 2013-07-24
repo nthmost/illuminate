@@ -1,7 +1,8 @@
 from docopt import docopt
 from interop import InteropDataset
 
-__doc__="""Usage: illuminate.py [options] <datapath>...
+__doc__="""Usage: illuminate [options] <datapath>...
+illuminate load <datapath>
 
   -h --help             Show this screen.
   --version             Show version.
@@ -60,27 +61,34 @@ def run_metrics_object(InteropObject, title):
 if __name__=='__main__':
 
     args = docopt(__doc__,version='0.1')
-    calculate_verbosity(args['--verbose'], args['--quiet'])
-    arrange_writing_to_file(args['--dump'])
 
-    for datapath in args['<datapath>']:
-        ID = InteropDataset(datapath)
-        if args['--meta']:
-            run_metrics_object(ID.meta, "METADATA")
-        if args['--tile']:
-            run_metrics_object(ID.TileMetrics(), "SUMMARY")
-        if args['--quality']:
-            run_metrics_object(ID.QualityMetrics(), "QUALITY")
-        if args['--index']:
-            run_metrics_object(ID.IndexMetrics(), "INDEXING")
-        if args['--error']:
-            run_metrics_object(ID.ErrorMetrics(), "ERRORS")
-        if args['--corint']:
-            run_metrics_object(ID.CorrectedIntensityMetrics(), "INTENSITY")
-        if args['--extraction']:
-            run_metrics_object(ID.ExtractionMetrics(), "EXTRACTION")
-        if args['--control']:
-            run_metrics_object(ID.ControlMetrics(), "CONTROL")
+    if args['load']:
+        from IPython import embed
+        # when "load" command is used, datapath is a string, not a list.
+        ID = InteropDataset(args['<datapath>']) 
+        embed()
+    else:
+        calculate_verbosity(args['--verbose'], args['--quiet'])
+        arrange_writing_to_file(args['--dump'])
+
+        for datapath in args['<datapath>']:
+            ID = InteropDataset(datapath)
+            if args['--meta']:
+                run_metrics_object(ID.meta, "METADATA")
+            if args['--tile']:
+                run_metrics_object(ID.TileMetrics(), "SUMMARY")
+            if args['--quality']:
+                run_metrics_object(ID.QualityMetrics(), "QUALITY")
+            if args['--index']:
+                run_metrics_object(ID.IndexMetrics(), "INDEXING")
+            if args['--error']:
+                run_metrics_object(ID.ErrorMetrics(), "ERRORS")
+            if args['--corint']:
+                run_metrics_object(ID.CorrectedIntensityMetrics(), "INTENSITY")
+            if args['--extraction']:
+                run_metrics_object(ID.ExtractionMetrics(), "EXTRACTION")
+            if args['--control']:
+                run_metrics_object(ID.ControlMetrics(), "CONTROL")
 
     if OUTFILE:
         OUTFILE.close()
