@@ -159,8 +159,8 @@ the dataset object directly into iPython. (This suppresses the normal printouts.
 
   (ve) $ python illuminate -i /path/to/dataset
 
-Within iPython, you'll have the myDataset object at your disposal, which leads naturally
-into the next section about using Illuminate in code.
+Within iPython, you'll have the myDataset object at your disposal. This leads us naturally
+to a discussion of how to use illuminate in code.
 
 Using Illuminate as a Python Module
 -----------------------------------
