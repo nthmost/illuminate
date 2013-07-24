@@ -93,12 +93,12 @@ class InteropIndexMetrics(InteropBinParser):
 
         self.df = pandas.DataFrame( self.data )
 
-        pivot = self.df.pivot_table('clusters', rows='index_str', aggfunc='sum')
+        cluster_pivot = self.df.pivot_table('clusters', rows='index_str', aggfunc='sum')
  
-        self.total_ix_reads_pf = pivot.sum()
+        self.total_ix_reads_pf = cluster_pivot.sum()
     
         for ix in self.df.index_str.unique():
-            self.results[ix] = pivot[ix]
+            self.results[ix] = cluster_pivot[ix]
         
         self.pivot = self.df.pivot_table('clusters', rows=['index_str', 'project_str', 'name_str'], aggfunc='sum')
         
@@ -112,8 +112,8 @@ class InteropIndexMetrics(InteropBinParser):
         return self.results
 
     def __str__(self):    
-        return 'Got %i rows' % len(self.data['lane'])
-        
+        out = '\n%s\n' % self.pivot
+        return out 
 
 if __name__=='__main__':
     import sys
@@ -127,7 +127,5 @@ if __name__=='__main__':
     IM = InteropIndexMetrics(filename)
 
     print 'Length of data: %i' % len(IM.data['clusters'])
+    print IM
 
-    #print IM.to_dict()
-    print IM.pivot
-    

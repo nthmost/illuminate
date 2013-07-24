@@ -4,11 +4,11 @@ from illuminate import InteropDataset, print_sample_dataset
 
 USAGE = """Usage: illuminate.py <datapath>...
 
-  -h --help     Show this screen.
-  --version     Show version.
-  -v, --verbose Increase verbosity
-  -q, --quiet   Suppress all console output including errors.
-  -d, --dump=<out_filename>  Output parser results to file. [default: False] 
+  -h --help             Show this screen.
+  --version             Show version.
+  -v, --verbose         Increase verbosity              [default:False]
+  -q, --quiet           Suppress all console output     [default:False]
+  -d, --dump=<outfile>  Output parser results to file.  [default: False] 
 
   --quality         Parse quality metrics               [default:True]
   --tile            Parse tile metrics                  [default:True]
@@ -64,7 +64,7 @@ if __name__=='__main__':
     args = docopt(USAGE,version='0.1')
 
     calculate_verbosity(args['--verbose'], args['--quiet'])
-    arrange_writing_to_file(args['--dump'])
+    arrange_writing_to_file(args['<outfile>'])
 
     for datapath in args['<datapath>']:
         ID = InteropDataset(args['<datapath>'])
@@ -84,6 +84,4 @@ if __name__=='__main__':
             run_metrics_object(ID.ExtractionMetrics(), "EXTRACTION")
         if args['--control']:
             run_metrics_object(ID.ControlMetrics(), "CONTROL")
-         
-        print_sample_dataset(myDataset)
 

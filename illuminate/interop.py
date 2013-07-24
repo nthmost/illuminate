@@ -455,7 +455,7 @@ def print_sample_dataset(ID):
     print "Reads PF: %i" % tm.num_clusters_pf
     print "Percentage Reads Identified (PF): %f" % (float(im.total_ix_reads_pf / tm.num_clusters_pf)*100)
     print ""
-    print im.pivot
+    print im
     print ""
 
     print "ERRORS"
