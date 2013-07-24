@@ -142,7 +142,7 @@ Now enter the following to run the integrated parser against one of the test dat
 
 .. code-block:: bash
 
-  (ve) $ python illuminate --tile --quality --index sampledata/MiSeq-samples/MiSeq-samples/2013-04_01_high_PF/
+  (ve) $ python illuminate --tile --quality --index sampledata/MiSeq-samples/2013-04_01_high_PF/
 
 You can also output to a file by using the --dump=filename option:
 

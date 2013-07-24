@@ -1,7 +1,9 @@
 from docopt import docopt
 from interop import InteropDataset
 
-__doc__="""Usage: illuminate [options] <datapath>...
+__doc__="""ILLUMINATE
+
+Usage: illuminate [options] <datapath>...
 
   -h --help             Show this screen.
   --version             Show version.
@@ -10,17 +12,26 @@ __doc__="""Usage: illuminate [options] <datapath>...
   -d, --dump=<outfile>  Output parser results to file. 
   -i, --interactive     Load dataset into iPython for interactive fun.
 
-  --meta            Print metadata                      [default: True]
-  --quality         Parse quality metrics               [default: True]
-  --tile            Parse tile metrics                  [default: True]
-  --index           Parse index metrics                 [default: True]
-  --error           Parse error metrics                 [default: False]
-  --corint          Parse corrected intensity metrics   [default: False]
-  --extraction      Parse extraction metrics            [default: False]
-  --control         Parse control metrics               [default: False]
+  --all             Parse and print everything
+
+  --meta            Print metadata
+  --quality         Parse quality metrics
+  --tile            Parse tile metrics
+  --index           Parse index metrics
+  --error           Parse error metrics
+  --corint          Parse corrected intensity metrics
+  --extraction      Parse extraction metrics
+  --control         Parse control metrics
   --image           Parse image metrics (not yet supported)
 
-  --csv=<csv_filename> Output results as CSV (not yet supported)  [default:'results.csv']
+  --csv=<csv_filename> Output results as CSV (not yet supported)
+"""
+
+#TODO: SAV_emu
+"""
+  --analysis        Print an emulation of the Analysis screen
+  --summary         Print an emulation of the Summary screen
+  --indexing        Print an emulation of the Indexing screen
 """
 
 VERBOSITY = 1
@@ -72,23 +83,24 @@ if __name__=='__main__':
 
         for datapath in args['<datapath>']:
             ID = InteropDataset(datapath)
-            if args['--meta']:
+            if args['--all'] or args['--meta']:
                 run_metrics_object(ID.meta, "METADATA")
-            if args['--tile']:
+            if args['--all'] or args['--tile']:
                 run_metrics_object(ID.TileMetrics(), "SUMMARY")
-            if args['--quality']:
+            if args['--all'] or args['--quality']:
                 run_metrics_object(ID.QualityMetrics(), "QUALITY")
-            if args['--index']:
+            if args['--all'] or args['--index']:
                 run_metrics_object(ID.IndexMetrics(), "INDEXING")
-            if args['--error']:
+            if args['--all'] or args['--error']:
                 run_metrics_object(ID.ErrorMetrics(), "ERRORS")
-            if args['--corint']:
+            if args['--all'] or args['--corint']:
                 run_metrics_object(ID.CorrectedIntensityMetrics(), "INTENSITY")
-            if args['--extraction']:
+            if args['--all'] or args['--extraction']:
                 run_metrics_object(ID.ExtractionMetrics(), "EXTRACTION")
-            if args['--control']:
+            if args['--all'] or args['--control']:
                 run_metrics_object(ID.ControlMetrics(), "CONTROL")
 
+        #TODO: SAV_emu
     if OUTFILE:
         OUTFILE.close()
 
