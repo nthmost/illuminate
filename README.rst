@@ -226,7 +226,7 @@ For example::
 
   ['tile', 'lane', 'code', 'value']
   
-This dictionary is used to set up `pandas <http://pandas.pydata.org/>`_ DataFrame, a tutorial for which is outside the
+This dictionary is used to set up a `pandas <http://pandas.pydata.org/>`_ DataFrame, a tutorial for which is outside the
 scope of this document, but here's `an introduction to data structures in Pandas <http://pandas.pydata.org/pandas-docs/dev/dsintro.html>`_ to get you going.
 
 Parsing Orphan Binaries
@@ -251,18 +251,21 @@ arguments to these parsers, like so:
 
   from interop import InteropTileMetrics  
   tilemetrics = InteropTileMetrics('/path/to/TileMetrics.bin',
-                         read_config=[{'read_num': 1, 'cycles': 151, 'is_index': 0},
-                                      {'read_num': 2, 'cycles': 6, 'is_index': 1},
-                                      {'read_num': 3, 'cycles': 151, 'is_index':0}],
+                         read_config = [{'read_num': 1, 'cycles': 151, 'is_index': 0},
+                                        {'read_num': 2, 'cycles': 6, 'is_index': 1},
+                                        {'read_num': 3, 'cycles': 151, 'is_index':0}],
                          flowcell_layout = { 'lanecount': 1, 'surfacecount': 2,
                                              'swathcount': 1, 'tilecount': 14 } )
 
 More Sample Data
 ----------------
 
-More sample data from MiSeq and HiSeq machines can be found in the 
+More sample data from MiSeq and HiSeq machines will be found in the 
 `Downloads <https://bitbucket.org/nthmost/illuminate/downloads>`_
 section of this bitbucket repository.
+
+If you'd like to contribute sample data, contact the maintainer of 
+this repository (naomi.most@invitae.com) along with a brief description.
 
 Support and Maintenance
 -----------------------
@@ -274,7 +277,7 @@ This library was developed in-house at InVitae, a CLIA-certified genetic diagnos
 company that offers customizable, clinically-relevant sequencing panels, as a response to 
 the need to emulate Illumina SAV's output in a program-accessible way.
 
-InVitae currently uses these parsers in conjunction with site-specific reporting scripts to 
+`Invitae <https://invitae.com>`_ currently uses these parsers in conjunction with site-specific reporting scripts to 
 produce automated sequencing run metrics as a check on the health of the run and the machines 
 themselves.
 
