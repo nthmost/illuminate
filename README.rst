@@ -247,7 +247,7 @@ Illuminate has been seeded with some typical defaults for MiSeq, but if you are 
 or you know you have a different configuration, supply read_config and flowcell_layout as named 
 arguments to these parsers, like so:
 
-.. code-block:: Python
+.. code-block:: python
 
   from interop import InteropTileMetrics  
   tilemetrics = InteropTileMetrics('/path/to/TileMetrics.bin',
