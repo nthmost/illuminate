@@ -154,15 +154,18 @@ You can also output to a file by using the --dump=filename option:
 
 And you can suppress command-line output by using the --quiet option.
 
---help will get you a list of all of the options you can use (and some you can't, yet).
+Finally, a fun way to explore the data is to use the --interactive option to load
+the dataset object directly into iPython. (This suppresses the normal printouts.)
 
-At the moment no work is planned to increase user friendliness at the command line level.
-Please let the maintainer (Naomi.Most@Invitae.com) know how the command line interaction
-could be more useful to you.
+.. code-block:: bash
 
+  (ve) $ python illuminate -i /path/to/dataset
 
-Basic Usage as a Module
------------------------
+Within iPython, you'll have the myDataset object at your disposal, which leads naturally
+into the next section about using Illuminate in code.
+
+Using Illuminate as a Python Module
+-----------------------------------
 
 Illuminate was made to be integrated in code to make it easy to report on sequencing runs.
 
