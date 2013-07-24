@@ -2,14 +2,15 @@ from docopt import docopt
 
 from illuminate import InteropDataset, print_sample_dataset
 
-USAGE = """Usage: illuminate.py <datapath>...
+__doc__="""Usage: illuminate.py [options] <datapath>...
 
   -h --help             Show this screen.
   --version             Show version.
   -v, --verbose         Increase verbosity              [default:False]
   -q, --quiet           Suppress all console output     [default:False]
-  -d, --dump=<outfile>  Output parser results to file.  [default: False] 
+  -d, --dump=<outfile>  Output parser results to file.  [default:False] 
 
+  --meta            Parse metadata                      [default:True]
   --quality         Parse quality metrics               [default:True]
   --tile            Parse tile metrics                  [default:True]
   --index           Parse index metrics                 [default:True]
@@ -27,12 +28,12 @@ DEBUG = False
 OUTFILE = None
 
 def dmesg(msg, lvl=1):
-    #msg = "[%f] " % time.time() + msg
-    if DEBUG: msg = "[DEBUG] " + msg
+    #msg = '[%f] ' % time.time() + msg
+    if DEBUG: msg = '[DEBUG] ' + msg
     if VERBOSITY >= lvl:
         print msg
     if OUTFILE:
-        OUTFILE.write(msg)
+        OUTFILE.write(msg+'\n')
         OUTFILE.flush()
 
 def calculate_verbosity(verbose, quiet):
@@ -48,26 +49,26 @@ def arrange_writing_to_file(filename):
     global OUTFILE
     if filename:
         try:
-            OUTFILE = open(filename, w)
+            OUTFILE = open(filename, 'w')
         except Exception, e:
             dmesg('%s' % e, 1)
 
 def run_metrics_object(InteropObject, title):
     dmesg(title, 1)
     dmesg('-' * len(title), 1)
-    dmesg(InteropObject, 1)
+    dmesg('%s' % InteropObject, 1)
     dmesg('\n', 1)
 
 
 if __name__=='__main__':
 
-    args = docopt(USAGE,version='0.1')
+    args = docopt(__doc__,version='0.1')
 
     calculate_verbosity(args['--verbose'], args['--quiet'])
-    arrange_writing_to_file(args['<outfile>'])
+    arrange_writing_to_file(args['--dump'])
 
     for datapath in args['<datapath>']:
-        ID = InteropDataset(args['<datapath>'])
+        ID = InteropDataset(datapath)
         if args['--meta']:
             run_metrics_object(ID.meta)
         if args['--tile']:
@@ -84,4 +85,7 @@ if __name__=='__main__':
             run_metrics_object(ID.ExtractionMetrics(), "EXTRACTION")
         if args['--control']:
             run_metrics_object(ID.ControlMetrics(), "CONTROL")
+
+    if OUTFILE:
+        OUTFILE.close()
 

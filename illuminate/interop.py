@@ -300,7 +300,6 @@ class InteropMetadata(object):
         Swaths: %(swathcount)i""" % self.flowcell_layout
         return out
 
-
     def __str__(self):
         "Print the most important metadata (flowcell layout and read config)"
         out = self.prettyprint_read_config() + "\n" + self.prettyprint_flowcell_layout()
