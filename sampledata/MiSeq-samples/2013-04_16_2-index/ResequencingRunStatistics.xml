@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<StatisticsResequencing xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="2">
+  <StartTime>2013-04-18T13:42:56.0704121-08:00</StartTime>
+  <CompletionTime>2013-04-18T13:53:28.7212978-08:00</CompletionTime>
+  <RunStats>
+    <AnalysisSoftwareVersion>2.0.26.0</AnalysisSoftwareVersion>
+    <YieldInBasesPF>0</YieldInBasesPF>
+    <YieldInBasesRaw>0</YieldInBasesRaw>
+    <NumberOfClustersPF>11870888</NumberOfClustersPF>
+    <NumberOfClustersRaw>13198264</NumberOfClustersRaw>
+    <NumberOfUnindexedClustersPF>412947</NumberOfUnindexedClustersPF>
+    <NumberOfUnindexedClusters>959697</NumberOfUnindexedClusters>
+    <NumberOfUnalignedClustersPF>11457941</NumberOfUnalignedClustersPF>
+    <NumberOfUnalignedClusters>12238567</NumberOfUnalignedClusters>
+    <NumberOfDuplicateClusters>0</NumberOfDuplicateClusters>
+    <ErrorRate />
+    <NoCalls />
+    <MeanSampleCoverage />
+    <OverallErrorPlotPath>Plots\Run_OverallMismatchRate.png</OverallErrorPlotPath>
+    <OverallNoCallPlotPath>Plots\Run_OverallNoCallRate.png</OverallNoCallPlotPath>
+  </RunStats>
+  <Samples />
+  <OverallSamples>
+    <SummarizedSampleStatisics>
+      <SampleName>XL1580-XE2584-LS1664-SQ35-RE1051-C1</SampleName>
+      <SampleID>XL1580-XE2584-LS1664-SQ35-RE1051-C1</SampleID>
+      <SampleNumber>1</SampleNumber>
+      <NumberOfClustersPF>5027188</NumberOfClustersPF>
+      <NumberOfClustersRaw>5379529</NumberOfClustersRaw>
+      <ClustersAlignedR1>0</ClustersAlignedR1>
+      <ClustersAlignedR2>0</ClustersAlignedR2>
+      <FragmentLengthMedian>-1</FragmentLengthMedian>
+      <FragmentLengthMin>-1</FragmentLengthMin>
+      <FragmentLengthMax>-1</FragmentLengthMax>
+      <ErrorRateR1>0</ErrorRateR1>
+      <ErrorRateR2>0</ErrorRateR2>
+      <NoCallRateR1>0</NoCallRateR1>
+      <NoCallRateR2>0</NoCallRateR2>
+      <WeightedCoverage>NaN</WeightedCoverage>
+      <NumberHomozygousSNPs>0</NumberHomozygousSNPs>
+      <NumberHeterozygousSNPs>0</NumberHeterozygousSNPs>
+      <NumberOfInsertions>0</NumberOfInsertions>
+      <NumberOfDeletions>0</NumberOfDeletions>
+    </SummarizedSampleStatisics>
+    <SummarizedSampleStatisics>
+      <SampleName>XL1580-XE2586-LS1665-SQ36-RE1051-D1</SampleName>
+      <SampleID>XL1580-XE2586-LS1665-SQ36-RE1051-D1</SampleID>
+      <SampleNumber>2</SampleNumber>
+      <NumberOfClustersPF>6430753</NumberOfClustersPF>
+      <NumberOfClustersRaw>6859038</NumberOfClustersRaw>
+      <ClustersAlignedR1>0</ClustersAlignedR1>
+      <ClustersAlignedR2>0</ClustersAlignedR2>
+      <FragmentLengthMedian>-1</FragmentLengthMedian>
+      <FragmentLengthMin>-1</FragmentLengthMin>
+      <FragmentLengthMax>-1</FragmentLengthMax>
+      <ErrorRateR1>0</ErrorRateR1>
+      <ErrorRateR2>0</ErrorRateR2>
+      <NoCallRateR1>0</NoCallRateR1>
+      <NoCallRateR2>0</NoCallRateR2>
+      <WeightedCoverage>NaN</WeightedCoverage>
+      <NumberHomozygousSNPs>0</NumberHomozygousSNPs>
+      <NumberHeterozygousSNPs>0</NumberHeterozygousSNPs>
+      <NumberOfInsertions>0</NumberOfInsertions>
+      <NumberOfDeletions>0</NumberOfDeletions>
+    </SummarizedSampleStatisics>
+  </OverallSamples>
+  <PairedEndByGenome />
+</StatisticsResequencing>

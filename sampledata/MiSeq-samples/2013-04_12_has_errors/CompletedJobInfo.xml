@@ -1,0 +1,67 @@
+<?xml version="1.0"?>
+<AnalysisJobInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="0">
+  <RunFolder>D:\Illumina\MiSeqAnalysis\130424_M00715_0029_000000000-A2C2T</RunFolder>
+  <AlignmentFolder>D:\Illumina\MiSeqAnalysis\130424_M00715_0029_000000000-A2C2T\Data\Intensities\BaseCalls\Alignment</AlignmentFolder>
+  <StartTime>2013-04-25T12:31:05.1503268-08:00</StartTime>
+  <CompletionTime>2013-04-25T12:42:29.2012845-08:00</CompletionTime>
+  <Workflow>
+    <WorkflowSettings>
+      <SkipFASTQGeneration>false</SkipFASTQGeneration>
+      <VariantCaller>None</VariantCaller>
+      <ReadTrimQualityScoreLevel>0</ReadTrimQualityScoreLevel>
+      <VariantCallingFilterSettings>
+        <FilterOutSingleStrandVariants>true</FilterOutSingleStrandVariants>
+        <FilterOutSingleProbePoolVariants>false</FilterOutSingleProbePoolVariants>
+        <StrandBiasFilterCutoff>0.5</StrandBiasFilterCutoff>
+        <VariantFilterQualityCutoff>20</VariantFilterQualityCutoff>
+        <IndelRepeatFilterCutoff>8</IndelRepeatFilterCutoff>
+        <VariantFrequencyFilterCutoff>0.2</VariantFrequencyFilterCutoff>
+        <VariantFrequencyEmitCutoff>0.1</VariantFrequencyEmitCutoff>
+        <MinimumCoverageDepth>10</MinimumCoverageDepth>
+        <OnlyCallInROI>false</OnlyCallInROI>
+        <MinQScore>0</MinQScore>
+      </VariantCallingFilterSettings>
+    </WorkflowSettings>
+    <Analysis>GenerateFASTQ</Analysis>
+  </Workflow>
+  <Sheet>
+    <WorkflowType>GenerateFASTQ</WorkflowType>
+    <Type>MiSeq</Type>
+    <Header>
+      <InvestigatorName>Locus:::KimmyGibbler - 715 -MiSeq</InvestigatorName>
+      <ProjectName>EX1259 run 2</ProjectName>
+      <ExperimentName>RU1547:::/locus/data/run_data//1337/1547</ExperimentName>
+      <Date>2013 04/24/13 21:02:17</Date>
+      <Chemistry>Default</Chemistry>
+    </Header>
+  </Sheet>
+  <RTARunInfo Version="2">
+    <Run Id="130424_M00715_0029_000000000-A2C2T">
+      <Flowcell>000000000-A2C2T</Flowcell>
+      <Instrument>M00715</Instrument>
+      <Date>130424</Date>
+      <Reads>
+        <Read NumCycles="151" IsIndexedRead="N" />
+        <Read NumCycles="6" IsIndexedRead="Y" />
+        <Read NumCycles="151" IsIndexedRead="N" />
+      </Reads>
+      <FlowcellLayout LaneCount="1" SurfaceCount="2" SwathCount="1" TileCount="14" />
+      <AlignToPhiX />
+    </Run>
+  </RTARunInfo>
+  <RunStats>
+    <AnalysisSoftwareVersion>2.0.26.0</AnalysisSoftwareVersion>
+    <YieldInBasesPF>0</YieldInBasesPF>
+    <YieldInBasesRaw>0</YieldInBasesRaw>
+    <NumberOfClustersPF>0</NumberOfClustersPF>
+    <NumberOfClustersRaw>0</NumberOfClustersRaw>
+    <NumberOfUnindexedClustersPF>0</NumberOfUnindexedClustersPF>
+    <NumberOfUnindexedClusters>0</NumberOfUnindexedClusters>
+    <NumberOfUnalignedClustersPF>0</NumberOfUnalignedClustersPF>
+    <NumberOfUnalignedClusters>0</NumberOfUnalignedClusters>
+    <NumberOfDuplicateClusters>0</NumberOfDuplicateClusters>
+  </RunStats>
+  <RTAOutputFolder>\\SEQNAS\sequencing\output\130424_M00715_0029_000000000-A2C2T</RTAOutputFolder>
+  <AnalysisSoftwareVersion>2.0.26</AnalysisSoftwareVersion>
+  <CopyQueueFolder>D:\Illumina\MiSeqAnalysis\130424_M00715_0029_000000000-A2C2T\Queued</CopyQueueFolder>
+</AnalysisJobInfo>
