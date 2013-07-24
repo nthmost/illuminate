@@ -42,33 +42,17 @@ BINFILE_DIR_NAME = "InterOp"
 # "codenames" (rather than filenames) are used internally in InteropDataset to refer to files.
 # (The files themselves contain no explicit indication of what's inside them.)
 #
-# The FILEMAP variables contain mappings of codename to filename.
-#
-
-#BIN_FILEMAP = { 'extraction': "ExtractionMetricsOut.bin",
-#                 'quality': "QMetricsOut.bin",
-#                 'error': "ErrorMetricsOut.bin",
-#                 'tile': "TileMetricsOut.bin",
-#                 'corint': "CorrectedIntensityMetricsOut.bin",
-#                 'control': "ControlMetricsOut.bin",
-#                 'image': "ImageMetricsOut.bin",
-#                 'index': "IndexMetricsOut.bin" }
-#
-#XML_FILEMAP = { 'runinfo': 'RunInfo.xml',
-#                'runparams': 'runParameters.xml',
-#                'reseqstats': 'ResequencingRunStatistics.xml',
-#                'completed': 'CompletedJobInfo.xml' }
-
-##
-# use ALIASES to select file (since there are several different filenames out there).
+# The FILEMAP variables contain mappings of codename to filename, using aliases.
+# to select file, since there are several different filenames out there.
 # 
-# the first filename to be retrievable will be the one that gets parsed.
+# The first filename to be retrievable will be the one that gets parsed, so view the list as
+# a set of decreasing priorities.
 
 BIN_FILEMAP = { 'extraction': ["ExtractionMetricsOut.bin", "ExtractionMetrics.bin"],
                 'quality': ["QMetricsOut.bin", "QualityMetricsOut.bin", "QualityMetrics.bin"],
                 'error': ["ErrorMetricsOut.bin", "ErrorMetrics.bin"],
                 'tile': ["TileMetricsOut.bin", "TileMetrics.bin"],
-                'corint': ["CorrectedIntMetricsOut.bin", "CorrectedIntensityMetricsOut.bin", "CorrectedIntensity.bin"],
+                'corint': ["CorrectedIntMetricsOut.bin", "CorrectedIntensityMetricsOut.bin", "CorrectedIntMetrics.bin"],
                 'control': ["ControlMetricsOut.bin", "ControlMetrics.bin"],
                 'image': ["ImageMetricsOut.bin", "ImageMetrics.bin"], 
                 'index': ["IndexMetricsOut.bin", "IndexMetrics.bin"] }
@@ -452,7 +436,7 @@ def print_sample_dataset(ID):
     tm = ID.TileMetrics()
     print "SUMMARY"
     print "-------"
-    print "(tile metrics)"
+    print "(tile metrics)\n"
     print tm
     print ""
     
@@ -460,13 +444,13 @@ def print_sample_dataset(ID):
     print "QUALITY"
     print "-------"
     qm = ID.QualityMetrics()
-    print "(% >= Q30 per read):"
+    print "(% >= Q30 per read)\n"
     print qm
     print ""
 
     im = ID.IndexMetrics()
     print "INDEXING"
-    print "--------"
+    print "--------\n"
     print "Total Reads: %i" % tm.num_clusters
     print "Reads PF: %i" % tm.num_clusters_pf
     print "Percentage Reads Identified (PF): %f" % (float(im.total_ix_reads_pf / tm.num_clusters_pf)*100)
@@ -491,13 +475,14 @@ def print_sample_dataset(ID):
     try:
         cm = ID.CorrectedIntensityMetrics()
         print "(sample of raw data)"
-        print cm.idf.head()
+        if cm is not None:
+            print cm.idf.head()
+        else:
+            print "CorrectedIntensityMetrics parsing failed."
     except TypeError:
         print "No CorrectedIntensityMetrics binary in this dataset."
     finally:
         print ""
-
-
 
 
 if __name__=='__main__':
