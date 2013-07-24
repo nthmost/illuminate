@@ -3,9 +3,10 @@ syntax: glob
 *.pyc
 *.pyo
 .DS_Store
-locus_lib_lims.egg-info
+*.egg-info
 tmp
 ve
 dist
 *.egg-info
 build
+data
