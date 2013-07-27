@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-# interop.py
+# InteropDataset
+# Library encapsulating the XML and bin files from MiSeq and HiSeq output.
 #
-# Library for parsing and manipulating the data in MiSeq and HiSeq output data.
+# InteropMetadata
+# Parser for XML files from MiSeq / HiSeq run data.
 #
-# See USAGE_AND_STYLE.txt for intro and basic examples.
+# See README for intro and basic examples.
 #
 # March 2013
-#
 # by nthmost (naomi.most@invitae.com)
 # with lots of help from ECO (eric.olivares@invitae.com)
 
@@ -68,35 +69,6 @@ class InteropMetadata(object):
     "Parser for sequencer's XML files describing a single run. Supply with directory to instantiate."
     
     __version = 0.1     # version of this parser.
-    
-    xmldir = ""
-    
-    experiment_name = ""        # "RU1453:::/locus/data/run_data//1337/1453"
-    investigator_name = ""      # "Locus:::Uncle_Jesse - 612 - MiSeq"
-    runID = ""          # cf CompletedJobInfo.xml / RTARunInfo / Run param "Id"
-    
-    start_datetime = ""
-    end_datetime = ""
-    
-    rta_run_info = { }
-
-    # read_config: a list of dictionaries, each of which describe a single read from the sequencer.
-    read_config = []
-    
-    # Flow cell layout: necessary to enable parsing of different machine types' binaries.
-    # Defaults to MiSeq typical values.
-
-    flowcell_layout = { 'lanecount': 1,      # cf CompletedJobInfo.xml and RunInfo.xml (redundant) 
-                        'surfacecount': 2,
-                        'swathcount': 1, 
-                        'tilecount': 14 }
-                
-    # Read numbers from ResequencingRunStats.xml 
-    # Example: { 'clusters_raw': 19494893, 'clusters_PF': 17381252, 'unindexed': 508055, 'unindexed_PF': 16873197, 
-    #               'unaligned': 18572490, 'unaligned_PF': 16973197 }   
-    resequencing_stats = {}
-
-    _xml_priorities = ['completed', 'runinfo']
 
     def __init__(self, xmldir):
         """Takes the absolute path of a sequencing run data directory as sole required variable.
@@ -109,6 +81,23 @@ class InteropMetadata(object):
            Be aware that parsing methods are DESTRUCTIVE to existing instance data."""
 
         self.xmldir = xmldir
+        self.experiment_name = ""        # "RU1453:::/locus/data/run_data//1337/1453"
+        self.investigator_name = ""      # "Locus:::Uncle_Jesse - 612 - MiSeq"
+        self.runID = ""          # cf CompletedJobInfo.xml / RTARunInfo / Run param "Id"
+        self.start_datetime = ""
+        self.end_datetime = ""
+        self.rta_run_info = { }
+
+        # read_config: a list of dictionaries, each of which describe a single read from the sequencer.
+        self.read_config = []
+        
+        # Flow cell layout: necessary to enable parsing of different machine types' binaries.
+        self.flowcell_layout = { }
+                
+        # Read numbers from ResequencingRunStats.xml 
+        # Example: { 'clusters_raw': 19494893, 'clusters_PF': 17381252, 'unindexed': 508055, 'unindexed_PF': 16873197, 
+        #               'unaligned': 18572490, 'unaligned_PF': 16973197 }   
+        self.resequencing_stats = {}
         
         # CompletedJobInfo.xml is the most complete XML file in the set for what we need,
         # but in a pinch we can parse RunInfo.xml for the essentials.
@@ -308,10 +297,9 @@ class InteropMetadata(object):
 
 class InteropDataset(object):
     """Encapsulates the physical files related to this sequencing run. 
-       Performs (superficial) checks for dataset completeness.
        Absolves other classes of having to know about files and directories.
-       Raises custom errors: InteropDatasetIncompleteError InteropDatasetError"""
-    
+       Combines parser results to emulate Illumina Sequencing Analysis Viewer."""
+
     directory = ""  # supplied directory name to instantiate class (relative path)
     fullpath = ""   # calculated absolute filesystem path after instantiation
     xmldir = ""     # typically equivalent to fullpath
@@ -320,8 +308,7 @@ class InteropDataset(object):
     meta = None
 
     def __init__(self, targetdir):
-        """Supply a path (directory) that should contain XML files, with an InterOp directory within it.
-        Supply True for second parameter to do a basic dataset integrity/existence check."""
+        "Supply a path (directory) that should contain XML files, with an InterOp directory within it."
 
         self.directory = targetdir
 
@@ -409,13 +396,14 @@ class InteropDataset(object):
                                     read_config=self.meta.read_config )
         return self._corint_metrics
 
-    def ImageMetrics(self, reload=False):
-        "returns bitstream object from the 'image_metrics' binary in this dataset"
-        if self._image_metrics == None or reload == True:
-            self._image_metrics = InteropImageMetrics(self.get_binary_path('image'), 
-                                    flowcell_layout=self.meta.flowcell_layout,
-                                    read_config=self.meta.read_config )
-        return self._image_metrics
+#TODO: ImageMetrics
+#    def ImageMetrics(self, reload=False):
+#        "returns InteropImageMetrics object from the 'image' binary in this dataset"
+#        if self._image_metrics == None or reload == True:
+#            self._image_metrics = InteropImageMetrics(self.get_binary_path('image'), 
+#                                    flowcell_layout=self.meta.flowcell_layout,
+#                                    read_config=self.meta.read_config )
+#        return self._image_metrics
     
         
 ## Command Line helper functions below
@@ -469,6 +457,7 @@ def print_sample_dataset(ID):
     finally:
         print ""
 
+    """
     print "INTENSITY"
     print "---------"
     try:
@@ -482,7 +471,7 @@ def print_sample_dataset(ID):
         print "No CorrectedIntensityMetrics binary in this dataset."
     finally:
         print ""
-
+    """
 
 if __name__=='__main__':
     import sys
