@@ -9,7 +9,7 @@ setup(
     author_email = "developers@invitae.com",
     maintainer = "Naomi Most",
     maintainer_email = "naomi.most@invitae.com",
-    license = "InVitae Internal Only",
+    license = "MIT",
     zip_safe = False,
     packages = find_packages(),
     install_requires = ["bitstring>=3.1.0",
