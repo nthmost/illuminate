@@ -1,1 +1,2 @@
 0.4.1, 7/28/2013 -- First stable release.
+0.4.2, 7/28/2013 -- Added a README.txt for Contributers and Thank-yous.
