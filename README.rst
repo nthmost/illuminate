@@ -74,8 +74,8 @@ Once you have iPython installed, you'll be able to run illuminate or any of the
 standalone parsers on your data and immediately (well, after a few seconds of parsing)
 have a data dictionary and a dataframe at your disposal. See also "Parsing Orphan Binaries".
 
-How To Install Illuminate
--------------------------
+How To Install Illuminate via Pip
+---------------------------------
 
 The latest most stable version of Illuminate can be installed from the Python cheeseshop
 However, some vagaries of python package management make automatic installaion of all of
@@ -85,21 +85,25 @@ You'll need to explicitly install numpy and pandas first:
 
 .. code-block:: bash
 
-  pip install numpy pandas
+  $ sudo pip install numpy pandas
 
 Once this completes, you can try:
 
 .. code-block:: bash
 
-  pip install illuminate
+  $ sudo pip install illuminate
 
 The remaining requirements (bitstring and docopt) should come along for the ride,
-and you'll be good to go.  Jump down to Command-Line usage to immediately start 
-illuminating your own data.
+and you'll be good to go.  Jump down to "Illuminate as a Command Line Tool" 
+to immediately start illuminating your own data.
 
-Sample data can be found in the Mercurial repository.
+If you want some sample data to play with, grab Illuminate from its mercurial
+repository on bitbucket.org (see next section).
 
-`Development` versions of illuminate come from its repository on bitbucket.org
+How To Install Illuminate from BitBucket
+----------------------------------------
+
+The latest evelopment versions of illuminate come from its repository on bitbucket.org
 
 Clone this repository using Mercurial (hg):
 
