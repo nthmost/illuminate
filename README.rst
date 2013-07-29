@@ -77,8 +77,29 @@ have a data dictionary and a dataframe at your disposal. See also "Parsing Orpha
 How To Install Illuminate
 -------------------------
 
-Currently this package is only available through its repository on bitbucket.org (but will
-soon be available through the Python Cheeseshop on pypi.org).
+The latest most stable version of Illuminate can be installed from the Python cheeseshop
+However, some vagaries of python package management make automatic installaion of all of
+the dependencies a bit problematic.
+
+You'll need to explicitly install numpy and pandas first:
+
+.. code-block:: bash
+
+  pip install numpy pandas
+
+Once this completes, you can try:
+
+.. code-block:: bash
+
+  pip install illuminate
+
+The remaining requirements (bitstring and docopt) should come along for the ride,
+and you'll be good to go.  Jump down to Command-Line usage to immediately start 
+illuminating your own data.
+
+Sample data can be found in the Mercurial repository.
+
+`Development` versions of illuminate come from its repository on bitbucket.org
 
 Clone this repository using Mercurial (hg):
 
