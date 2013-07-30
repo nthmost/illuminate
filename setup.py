@@ -14,7 +14,7 @@ setup(
     packages = find_packages(),
     install_requires = ["bitstring>=3.1.0",
                         "docopt",
-                        "numpy>=1.7",
+                        "numpy>=1.6.2",
                         "pandas>=0.11",
                         ],
     )
