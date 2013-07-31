@@ -109,7 +109,7 @@ Clone this repository using Mercurial (hg):
 
 .. code-block:: bash
 
-  $ hg clone https://hg@bitbucket.org/nthmost/illuminate
+  $ hg clone https://hg@bitbucket.org/invitae/illuminate
 
 For integrated use in other code as well as for running the command-line utilities, it is 
 recommended (though not required) to use virtualenv to create a virtual Python environment 
@@ -286,7 +286,7 @@ More Sample Data
 ----------------
 
 More sample data from MiSeq and HiSeq machines will be found in the 
-`Downloads <https://bitbucket.org/nthmost/illuminate/downloads>`_
+`Downloads <https://bitbucket.org/invitae/illuminate/downloads>`_
 section of this bitbucket repository.
 
 If you'd like to contribute sample data, contact the maintainer of 
