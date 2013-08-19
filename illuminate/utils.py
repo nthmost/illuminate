@@ -19,3 +19,17 @@ def dmesg(msg, lvl=1):
     if VERBOSITY >= lvl:
         print msg
     
+def set_column_sequence(dataframe, seq):
+    '''
+    Returns pandas DataFrame with the columns named in seq as first columns.
+    
+    :param dataframe: pandas DataFrame to be resorted according to seq.
+    :param seq: array of column names.
+    '''
+    # http://stackoverflow.com/questions/12329853/how-to-rearrange-pandas-column-sequence
+    cols = seq[:] # copy so we don't mutate seq
+    for x in dataframe.columns:
+        if x not in cols:
+            cols.append(x)
+    return dataframe[cols]
+    
