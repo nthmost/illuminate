@@ -166,9 +166,9 @@ class InteropQualityMetrics(InteropBinParser):
                                     "(Index)" if read['is_index'] else "")
         return out
 
-    #def to_dict(self):
-    #TODO: Make a dict that reports on Q30 and Q20 scores of each read.
-    #    return self.read_qscore_results
+#    def to_dict(self):
+#        #not sure what's really useful to return here; seems safer to remove for now.
+#        return self.read_qscore_results
 
 
 if __name__=='__main__':
