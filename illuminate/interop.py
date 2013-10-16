@@ -332,7 +332,11 @@ class InteropDataset(object):
 
     def get_binary_path(self, codename):
         "returns absolute path to binary file represented by data 'codename'"
-        return select_file_from_aliases(codename, BIN_FILEMAP, self.bindir)
+        path = select_file_from_aliases(codename, BIN_FILEMAP, self.bindir)
+        if path is None:
+            throw Exception
+        else:
+            return path
     
     def Metadata(self, reload=False):
         "returns InteropMetadata class generated from this dataset's XML files"
