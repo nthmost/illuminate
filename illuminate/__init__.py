@@ -1,4 +1,4 @@
-from interop import InteropDataset, print_sample_dataset
+from interop import InteropDataset, print_sample_dataset, InteropFileNotFoundError
 from base_parser_class import InteropBinParser
 from tile_metrics import InteropTileMetrics
 from quality_metrics import InteropQualityMetrics
