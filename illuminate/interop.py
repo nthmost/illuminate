@@ -408,9 +408,9 @@ class InteropDataset(object):
   
 ## Custom Exceptions for InteropDataset
 
-class InteropFileNotFoundError(Exception):
+class InteropFileNotFoundError(BaseException):
     def __init__(self, message):
-        Exception.__init__(self, message)
+        BaseException.__init__(self, message)
 
         
 ## Command Line helper functions below
