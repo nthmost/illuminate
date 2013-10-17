@@ -277,8 +277,7 @@ class InteropMetadata(object):
         out = "Read Config:"
         for read in self.read_config:
             out += "    Read %i: %i cycles %s" % (read['read_num'], read['cycles'], 
-                                    "(Index)" if read['is_index'] else "")                        
-        
+                                    "(Index)" if read['is_index'] else "")
         return out
 
     def prettyprint_flowcell_layout(self):
@@ -315,6 +314,7 @@ class InteropDataset(object):
         self.xmldir = self.directory
         self.bindir = os.path.join(self.directory, BINFILE_DIR_NAME)
         
+        # aggregate results of parsing one or more XML files        
         self.meta = self.Metadata()
     
         # holders for the parser objects. Reference via *Metrics() classes.
@@ -325,14 +325,14 @@ class InteropDataset(object):
         self._corint_metrics = None
         self._extraction_metrics = None
         self._control_metrics = None
-        
-        # aggregate results of parsing one or more XML files
-        meta = None
-    
 
     def get_binary_path(self, codename):
         "returns absolute path to binary file represented by data 'codename'"
-        return select_file_from_aliases(codename, BIN_FILEMAP, self.bindir)
+        path = select_file_from_aliases(codename, BIN_FILEMAP, self.bindir)
+        if path is None:
+            raise InteropFileNotFoundError("No suitable binary found for {} in directory {}".format(codename, self.bindir))
+        else:
+            return path
     
     def Metadata(self, reload=False):
         "returns InteropMetadata class generated from this dataset's XML files"
@@ -405,6 +405,13 @@ class InteropDataset(object):
 #                                    read_config=self.meta.read_config )
 #        return self._image_metrics
     
+  
+## Custom Exceptions for InteropDataset
+
+class InteropFileNotFoundError(BaseException):
+    def __init__(self, message):
+        BaseException.__init__(self, message)
+
         
 ## Command Line helper functions below
 def print_sample_dataset(ID):

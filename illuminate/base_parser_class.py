@@ -23,7 +23,7 @@ READ_CONFIG_DEFAULTS = [{'read_num': 1, 'cycles': 151, 'is_index': 0},
 class InteropBinParser(object):
     "Generic binary parser for ILMN files typically found in InterOp directory. Subclass (do not use directly)."
 
-    __version = 0.4      # version of this base class
+    __version = 0.5      # version of this base class
     
     num_tiles = 0
     num_reads = 0
@@ -38,14 +38,19 @@ class InteropBinParser(object):
         try:
             bitstring_or_filename.all(1)    # attempts to perform the "are these bits all 1s" method
             self.bs = bitstring_or_filename
-        except AttributeError:              # assume it's a string, then.
+        except AttributeError:              # assume it's a filename, then.
             self.bs = BitString(bytes=open(bitstring_or_filename, 'rb').read())
             
         self.num_tiles = reduce(lambda x, y: x*y, self.flowcell_layout.values())
         self.num_reads = len(self.read_config)
 
         self._init_variables()
-        self.parse_binary() 
+
+        if self.bs is None:
+            dmesg("[%s] Fatal: BitString could not be created (file empty or not found)." % 
+                    (self.__class__.__name__), 1)
+        else:
+            self.parse_binary() 
 
     def parse_binary(self):
         "Stub class for binary parsing."

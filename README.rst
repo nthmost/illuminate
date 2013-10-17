@@ -13,8 +13,9 @@ This package was built with versatility in mind. There is a section in this READ
   Using illuminate as a python module
   Parsing orphan binaries (e.g. just ErrorMetrics.bin)
 
-But first you'll need to get set up. Jump to "Requirements" below.
+Also, as of version 0.5, Illuminate supports the reading of active (in-progress) sequencing runs.
 
+But first you'll need to get set up. Jump to "Requirements" below.
 
 Supported machines and files
 ----------------------------
