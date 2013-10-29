@@ -81,6 +81,8 @@ if __name__=='__main__':
         calculate_verbosity(args['--verbose'], args['--quiet'])
         arrange_writing_to_file(args['--dump'])
 
+        #TODO: print nicer error messages when binary file is missing
+
         for datapath in args['<datapath>']:
             ID = InteropDataset(datapath)
             if args['--all'] or args['--meta']:
