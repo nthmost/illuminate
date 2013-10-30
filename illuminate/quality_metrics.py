@@ -112,7 +112,10 @@ class InteropQualityMetrics(InteropBinParser):
             q_total_sum = self.idf[i_start:i_end].values.sum()  
         
         # Return a percentage (like in Illumina SAV)
-        return 100 * float(q_upper_sum) / float(q_total_sum)
+        if q_total_sum:
+            return 100 * float(q_upper_sum) / float(q_total_sum)
+        else:
+            return 0
 
     def parse_binary(self):
         """ Do the work.  Important: set read_config appropriately, which is
