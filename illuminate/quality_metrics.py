@@ -112,7 +112,10 @@ class InteropQualityMetrics(InteropBinParser):
             q_total_sum = self.idf[i_start:i_end].values.sum()  
         
         # Return a percentage (like in Illumina SAV)
-        return 100 * float(q_upper_sum) / float(q_total_sum)
+        if q_total_sum:
+            return 100 * float(q_upper_sum) / float(q_total_sum)
+        else:
+            return 0
 
     def parse_binary(self):
         """ Do the work.  Important: set read_config appropriately, which is
@@ -166,9 +169,11 @@ class InteropQualityMetrics(InteropBinParser):
                                     "(Index)" if read['is_index'] else "")
         return out
 
-#    def to_dict(self):
-#        #not sure what's really useful to return here; seems safer to remove for now.
-#        return self.read_qscore_results
+    def to_dict(self, target_qscore=30):
+        out = {}
+        for read in self.read_config:
+            out[read['read_num']] = self.get_qscore_percentage(target_qscore, read['read_num']-1)
+        return out
 
 
 if __name__=='__main__':

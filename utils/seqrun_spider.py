@@ -1,22 +1,12 @@
 #!/usr/bin/env python
 #
-# interopspider.py
-#
-# March 1, 2013
-# by nthmost (naomi.most@invitae.com)
-#
 # This script grabs InterOp output binaries and puts them into subdirectories
 # of the current working directory.
 #
 # MINIMUM VIABLE DATASET for viewing in Illumina SAV:
-# - all XML files in level2 subdir (see below for definition)
-# - the entire InterOp directory
-#
-# USAGE: ./interop-spider.py monthname
-# 
-# * run without arguments to see all subdirectories available in the archive.
-# * configure the output directory by setting DEST_DIR_ROOT below.
-# *  
+# - XML files runInfo.xml and/or runParameters.xml
+# - the InterOp directory and its contents
+
 
 import os
 import sys

@@ -44,7 +44,10 @@ class InteropTileMetrics(InteropBinParser):
             self.codemap[300 + read['read_num']-1] = "percent aligned for read %i" % read['read_num']
 
     def _get_mean_of_last_cycle(self, df):
-        return df[len(df)-self.num_tiles:].mean()['value']
+        if df.empty:
+            return 0
+        else:
+            return df[len(df)-self.num_tiles:].mean()['value']
 
     def parse_binary(self):
         "parses contents of TileMetrics.bin / TileMetricsOut.bin, file version 2."
@@ -53,7 +56,8 @@ class InteropTileMetrics(InteropBinParser):
         # Format:
         #   byte 0: file version number (2)
         #   byte 1: length of each record
-        #   bytes (N * 10 + 2) - (N *10 + 11): record:      #       2 bytes: lane number (uint16)
+        #   bytes (N * 10 + 2) - (N *10 + 11): record:      
+        #       2 bytes: lane number (uint16)
         #       2 bytes: tile number (uint16)
         #       2 bytes: metric code (uint16)
         #       4 bytes: metric value (float)
@@ -85,18 +89,35 @@ class InteropTileMetrics(InteropBinParser):
 
         #make it fuzzy and mean.
         self.df = pandas.DataFrame(self.data)
+
+        # INTERPRETATION: MOVE TO SEPARATE FUNCTION(S)
             
         pivot_sum = self.df.pivot_table('value', rows='code', aggfunc='sum')
         pivot_mean = self.df.pivot_table('value', rows='code', aggfunc='mean')
         
-        self.total_cluster_density = pivot_sum[100]
-        self.total_cluster_density_pf = pivot_sum[101]
+        try:
+            self.total_cluster_density = pivot_sum[100]
+        except:
+            self.total_cluster_density = 0    
     
-        self.num_clusters = pivot_sum[102]          # SAV: "Total Reads"  
-                                                    # ResequencingRunStatistics.xml: NumberOfClustersRaw
-        self.num_clusters_pf = pivot_sum[103]       # SAV: "PF Reads"  
-                                                    # ResequencingRunStatistics.xml: NumberOfClustersRaw
+        try:
+            self.total_cluster_density_pf = pivot_sum[101]
+        except:
+            self.total_cluster_density_pf = 0    
 
+        # SAV: "Total Reads"  
+        # ResequencingRunStatistics.xml: NumberOfClustersRaw
+        try:
+            self.num_clusters = pivot_sum[102]      
+        except:
+            self.num_clusters = 0
+
+        # SAV: "PF Reads"  
+        try:                                        
+            self.num_clusters_pf = pivot_sum[103]
+        except:
+            self.num_clusters_pf = 0             
+                                              
         # Illumina SAV displays metrics only based on the latest-created cluster density (100)
         # and cluster density passing filter (101) metrics output per tile. (The number of collections
         # of tile metrics per sequencing run seems to be variable.)  So we select out the highest-index
@@ -105,15 +126,21 @@ class InteropTileMetrics(InteropBinParser):
         self.mean_cluster_density = self._get_mean_of_last_cycle(self.df[self.df['code']==100])        
         self.mean_cluster_density_pf = self._get_mean_of_last_cycle(self.df[self.df['code']==101])
 
-        self.percent_pf_clusters = 100 * float(self.num_clusters_pf / self.num_clusters)
+        if self.num_clusters and self.num_clusters_pf:
+            self.percent_pf_clusters = 100 * float(self.num_clusters_pf / self.num_clusters)
+        else:
+            self.percent_pf_clusters = 0
     
         # Phasing and Prephasing averages per read
         for read in self.read_config:
             # There are only ever (lanes * tiles) entries per phasing and pre-phasing code, so 
             # we don't need to do the "last cycle" trick as above.
-            
-            self.mean_phasing.append(pivot_mean[200 + (read['read_num']-1) * 2])
-            self.mean_prephasing.append(pivot_mean[201 + (read['read_num']-1) * 2])
+            try:    
+                self.mean_phasing.append(pivot_mean[200 + (read['read_num']-1) * 2])
+                self.mean_prephasing.append(pivot_mean[201 + (read['read_num']-1) * 2])
+            except:
+                self.mean_phasing.append(0)
+                self.mean_prephasing.append(0)
 
     def __str__(self):
         out = '  Mean Cluster Density: %i' % self.mean_cluster_density
