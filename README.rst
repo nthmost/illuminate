@@ -13,7 +13,7 @@ This package was built with versatility in mind. There is a section in this READ
   Using illuminate as a python module
   Parsing orphan binaries (e.g. just ErrorMetrics.bin)
 
-Also, as of version 0.5, Illuminate supports the reading of active (in-progress) sequencing runs.
+Also, as of version 0.5, Illuminate supports the reading of active (in-progress) sequencing runs for Tile, Index, and Quality metrics.
 
 But first you'll need to get set up. Jump to "Requirements" below.
 
@@ -223,13 +223,13 @@ missing if no errors were recorded / reported by the sequencer.
 In the vast majority of cases, variables and data structures closely resemble the names 
 and structures in the XML and BIN files that they came from.  All XML information comes 
 through the InteropMetadata class, which can be accessed through the meta attribute of 
-IlluminaDataset:
+InteropDataset:
 
 .. code-block:: python
 
   metadata = myDataset.meta
   
-IlluminaDataset caches parsing data after the first run. To get a fresh re-parse of any 
+InteropDataset caches parsing data after the first run. To get a fresh re-parse of any 
 file, supply "True" as the sole parameter to any parser method:
 
 .. code-block:: python
