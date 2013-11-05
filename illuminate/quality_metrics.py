@@ -169,10 +169,10 @@ class InteropQualityMetrics(InteropBinParser):
                                     "(Index)" if read['is_index'] else "")
         return out
 
-    def to_dict(self, q_threshold=30):
+    def to_dict(self, target_qscore=30):
         out = {}
         for read in self.read_config:
-            out[read['read_num']] = self.get_qscore_percentage(q_threshold, read['read_num']-1)
+            out[read['read_num']] = self.get_qscore_percentage(target_qscore, read['read_num']-1)
         return out
 
 
