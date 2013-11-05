@@ -105,6 +105,8 @@ class InteropMetadata(object):
         # (runParameters.xml can be available but not really usable for several reasons.)
         
         # Getting read_config and flowcell_layout are top priority since they inform the binary parsers.
+        #
+        # TODO: xml_flex (proposed improvement allowing a config file to set which tokens are required / not required.)
 
         try:  
             self.parse_CompletedJobInfo(self.get_xml_path('completed'))
@@ -198,6 +200,7 @@ class InteropMetadata(object):
             self.runtype = ""
                 
         # Sheet / Header / *
+        # TODO: xml_flex
         try:
             self.investigator_name = header_ET.find("InvestigatorName").text
             self.project_name = header_ET.find("ProjectName").text
@@ -206,26 +209,9 @@ class InteropMetadata(object):
             pass
 
         # RTARunInfo / Run / *          
-        self.runID = run_ET.attrib["Id"]                        # 130208_M00612_0046_000000000-A316T
+        self.runID = run_ET.attrib["Id"] 
 
         self.parse_Run_ET(run_ET)
-
-        # excerpt from CompletedJobInfo.xml / RTARunInfo Version 2
-        """<RTARunInfo Version="2">
-        <Run Id="130208_M00612_0046_000000000-A316T">
-          <Flowcell>000000000-A316T</Flowcell>
-          <Instrument>M00612</Instrument>
-          <Date>130208</Date>
-          <Reads>
-            <Read NumCycles="151" IsIndexedRead="N" />
-            <Read NumCycles="6" IsIndexedRead="Y" />
-            <Read NumCycles="151" IsIndexedRead="N" />
-          </Reads>
-          <FlowcellLayout LaneCount="1" SurfaceCount="2" SwathCount="1" TileCount="14" />
-          <AlignToPhiX />
-        </Run>
-        </RTARunInfo>"""
-
 
     def parse_RunParameters(self, filepath):
         "partially implemented / not used.  (No FlowcellLayout in this file.)"
@@ -245,7 +231,7 @@ class InteropMetadata(object):
 
 
     def parse_RunInfo(self, filepath):
-        "parses Reads, Date, Flowcell, Instrument out of runInfo.xml -- FlowcellLayout seems to be unreliable (!?)"
+        "parses Reads, Date, Flowcell, Instrument out of runInfo.xml"
         tree = ET.parse(filepath)
         run_ET = tree.getroot().find("Run")     #nothing of use in this file except <Run> subelement. 
         
@@ -255,23 +241,6 @@ class InteropMetadata(object):
         #self.runNumber = run_ET.attrib['Number']    
         
         self.rta_run_info = self.parse_Run_ET(run_ET)
-        
-        # Notice how FlowcellLayout in RunInfo.xml doesn't match that of CompletedJobInfo.xml (latter is correct).
-        
-        """<?xml version="1.0"?>
-        <RunInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="2">
-          <Run Id="120322_M00169_0027_AMS0005813-00300" Number="26">
-            <Flowcell>000000000-A0GA6</Flowcell>
-            <Instrument>M00169</Instrument>
-            <Date>120322</Date>
-            <Reads>
-                <Read NumCycles="151" Number="1" IsIndexedRead="N" />
-                <Read NumCycles="6" Number="2" IsIndexedRead="Y" />
-                <Read NumCycles="151" Number="3" IsIndexedRead="N" />
-            </Reads>
-            <FlowcellLayout LaneCount="1" SurfaceCount="1" SwathCount="1" TileCount="12" />
-          </Run>
-        </RunInfo>"""
         
     def prettyprint_read_config(self):
         out = "Read Config:"
