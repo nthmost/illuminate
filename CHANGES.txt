@@ -6,3 +6,4 @@
 0.4.3.2, 7/30/2013 -- Fixed wrong URLs in documentation.
 0.5.0, 11/5/2013 -- active_runs branch merged, handles incomplete data for TileMetrics, IndexMetrics, and QualityMetrics.
 0.5.1, 11/5/2013 -- relaxed requirements for numpy (1.6 rather than 1.7)
+0.5.2, 11/5/2013 -- fix to __init__.py (how did that change get lost?)
