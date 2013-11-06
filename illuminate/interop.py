@@ -118,7 +118,13 @@ class InteropMetadata(object):
             self.parse_ResequencingRunStats(self.get_xml_path('reseqstats'))
         except Exception, e:
             dmesg("[InteropMetadata] Exception: %s" % e, 2)
-            dmesg("[InteropMetadata] ResequencingRunStatistics will not be available.", 2)
+            dmesg("[InteropMetadata] resequencing_stats will not be available.", 2)
+
+        try:
+            self.parse_RunParameters(self.get_xml_path('runparameters'))
+        except Exception, e:
+            dmesg("[InteropMetadata] Exception: %s" % e, 2)
+            dmesg("[InteropMetadata] runParamters.xml couldn't be parsed; some vars may not be available.", 2)
                 
     def get_xml_path(self, codename):
         "returns absolute path to XML file represented by data 'codename'"
@@ -214,26 +220,29 @@ class InteropMetadata(object):
         self.parse_Run_ET(run_ET)
 
     def parse_RunParameters(self, filepath):
-        "partially implemented / not used.  (No FlowcellLayout in this file.)"
+        "partially implemented, not essential. (No FlowcellLayout in this file.)"
         tree = ET.parse(filepath)
         root = tree.getroot()
 
-        self.runID = root.find("RunID").text
+        # TODO: xml_flex - designate source priority for tokens found in multiple sources. 
+        #self.runID = root.find("RunID").text
         
         # TODO: normalize this variable
-        self.start_datetime = root.find("RunStartDate").text    # format: 130208 YYMMDD
+        #self.start_datetime = root.find('RunStartDate').text    # format: 130208 YYMMDD
+
+        self.experiment_name = root.find('ExperimentName').text
         
-        for item in root.find("Reads"):
+        for item in root.find('Reads'):
             #Different format from that in CompletedJobInfo.xml (contains read Number)
             self.read_config.append( {'read_num': int(item.attrib['Number']),
                                       'cycles': int(item.attrib['NumCycles']), 
-                                      'is_index': True if item.attrib["IsIndexedRead"]=="Y" else False } )
+                                      'is_index': True if item.attrib['IsIndexedRead']=='Y' else False } )
 
 
     def parse_RunInfo(self, filepath):
         "parses Reads, Date, Flowcell, Instrument out of runInfo.xml"
         tree = ET.parse(filepath)
-        run_ET = tree.getroot().find("Run")     #nothing of use in this file except <Run> subelement. 
+        run_ET = tree.getroot().find('Run')     #nothing of use in this file except <Run> subelement. 
         
         self.runID = run_ET.attrib['Id']
         
