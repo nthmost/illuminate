@@ -22,7 +22,8 @@ class InteropExtractionMetrics(InteropBinParser):
                     'intensity_C': [], 
                     'intensity_G': [], 
                     'intensity_T': [],
-                    'datetime': [] 
+                    'datetime': [],
+                    'timestamp': []
                     }
         
     def parse_binary(self):
@@ -39,7 +40,7 @@ class InteropExtractionMetrics(InteropBinParser):
         #     2 bytes: cycle number (uint16)
         #     4 x 4 bytes: fwhm scores (float) for channel [A, C, G, T] respectively 
         #     2 x 4 bytes: intensities (uint16) for channel [A, C, G, T] respectively 
-        #     8 bytes: date/time of CIF creation
+        #     8 bytes: date/time of CIF creation --> 2 x 4 bytes for date and timestamp 
         #   ...Where N is the record index
 
         self.apparent_file_version = bs.read('uintle:8')
@@ -65,8 +66,9 @@ class InteropExtractionMetrics(InteropBinParser):
             self.data['intensity_T'].append(bs.read('uintle:16'))
     
             # 8 bytes: date/time of CIF creation
-            self.data['datetime'].append(bs.read('uintle:16'))
-    
+            self.data['datetime'].append(bs.read('uintle:32'))
+            self.data['timestamp'].append(bs.read('uintle:32'))
+
         self.df = pandas.DataFrame(self.data)
 
         #self.idf = self.make_coordinate_plane(self.df)
