@@ -7,7 +7,6 @@
 # - XML files runInfo.xml and/or runParameters.xml
 # - the InterOp directory and its contents
 
-
 import os
 import sys
 import time
@@ -16,6 +15,7 @@ from docopt import docopt
 
 DEFAULTS = {'destdir': "."} 
 
+__author__='nthmost'
 __doc__="""Seqrun Spider
 
 This script acquires the minimum viable datasets necessary to extract metrics from
