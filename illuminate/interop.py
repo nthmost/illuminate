@@ -124,7 +124,7 @@ class InteropMetadata(object):
             self.parse_RunParameters(self.get_xml_path('runparameters'))
         except Exception, e:
             dmesg("[InteropMetadata] Exception: %s" % e, 2)
-            dmesg("[InteropMetadata] runParamters.xml couldn't be parsed; some vars may not be available.", 2)
+            dmesg("[InteropMetadata] runParameters.xml couldn't be parsed; some vars may not be available.", 2)
                 
     def get_xml_path(self, codename):
         "returns absolute path to XML file represented by data 'codename'"
