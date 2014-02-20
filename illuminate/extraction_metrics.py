@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 
+from datetime import datetime, timedelta
 import pandas
 
 from base_parser_class import InteropBinParser
+
+anno_domini = datetime(1, 1, 1)
 
 class InteropExtractionMetrics(InteropBinParser):
 
@@ -23,7 +26,6 @@ class InteropExtractionMetrics(InteropBinParser):
                     'intensity_G': [], 
                     'intensity_T': [],
                     'datetime': [],
-                    'timestamp': []
                     }
         
     def parse_binary(self):
@@ -40,7 +42,7 @@ class InteropExtractionMetrics(InteropBinParser):
         #     2 bytes: cycle number (uint16)
         #     4 x 4 bytes: fwhm scores (float) for channel [A, C, G, T] respectively 
         #     2 x 4 bytes: intensities (uint16) for channel [A, C, G, T] respectively 
-        #     8 bytes: date/time of CIF creation --> 2 x 4 bytes for date and timestamp 
+        #     8 bytes: date/time of CIF creation --> serialized C# datetime object 
         #   ...Where N is the record index
 
         self.apparent_file_version = bs.read('uintle:8')
@@ -66,8 +68,13 @@ class InteropExtractionMetrics(InteropBinParser):
             self.data['intensity_T'].append(bs.read('uintle:16'))
     
             # 8 bytes: date/time of CIF creation
-            self.data['datetime'].append(bs.read('uintle:32'))
-            self.data['timestamp'].append(bs.read('uintle:32'))
+            datetime_bits = bs.read(64)
+            # first 2 bits of last byte represent "kind" of date
+            # we don't care about "kind", so let's zero those bits
+            datetime_bits.set(0, (56, 57))
+            # the rest is a 62bit integer giving 100ns since midnight Jan 1, 0001
+            microseconds = timedelta(microseconds=datetime_bits.uintle / 10)
+            self.data['datetime'].append(anno_domini + microseconds)
 
         self.df = pandas.DataFrame(self.data)
 
