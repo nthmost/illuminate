@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "illuminate",
-    version = "0.5.3",
+    version = "0.5.4",
     description = "Analytics toolkit for Illumina sequencer metrics.",
     url="https://bitbucket.org/invitae/illuminate",
     author = "InVitae Inc.",
