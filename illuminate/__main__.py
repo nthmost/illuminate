@@ -1,11 +1,17 @@
 from __future__ import print_function
 
+import sys
+
 from docopt import docopt
-from .interop import InteropDataset
+from .interop import InteropDataset, InteropFileNotFoundError
 
 __doc__="""ILLUMINATE
 
 Usage: illuminate [options] <datapath>...
+
+NEW!!  Use --csv to dump data to CSV, headers included.
+
+If multiple metrics selected for output, two newlines will be printed between outputs.
 
   -h --help             Show this screen.
   --version             Show version.
@@ -26,7 +32,7 @@ Usage: illuminate [options] <datapath>...
   --control         Parse control metrics
   --image           Parse image metrics (not yet supported)
 
-  --csv=<csv_filename> Output results as CSV (not yet supported)
+  --csv             Output results as CSV 
 """
 
 #TODO: SAV_emu
@@ -66,45 +72,53 @@ def arrange_writing_to_file(filename):
         except Exception as e:
             dmesg('%s' % e, 1)
 
-def run_metrics_object(InteropObject, title):
+def run_metrics_object(InteropObject, title, to_csv=False):
     dmesg(title, 1)
     dmesg('-' * len(title), 1)
-    dmesg('%s' % InteropObject, 1)
 
+    try:
+        if to_csv:
+            dmesg('%s\n' % InteropObject().to_csv(), 1)
+        else:
+            dmesg('%s' % InteropObject(), 1)
+    except InteropFileNotFoundError:
+        dmesg('File not found\n', 1)
 
 def main():
-    args = docopt(__doc__,version='0.4')
+    args = docopt(__doc__, version='0.5.6')
 
     if args['--interactive']:
         from IPython import embed
         myDataset = InteropDataset(args['<datapath>'][0]) 
         embed()
+        sys.exit()
     else:
         calculate_verbosity(args['--verbose'], args['--quiet'])
         arrange_writing_to_file(args['--dump'])
 
-        #TODO: print nicer error messages when binary file is missing
+        #TODO prettify: print nicer error messages when files are missing
+        #
+        #TODO active_runs: forgive lack of metadata (allow read_config & flowcell_layout to be provided on CLI?)
 
         for datapath in args['<datapath>']:
             ID = InteropDataset(datapath)
             if args['--all'] or args['--meta']:
-                run_metrics_object(ID.meta, "METADATA")
+                run_metrics_object(ID.Metadata, "METADATA", args['--csv'])
             if args['--all'] or args['--tile']:
-                run_metrics_object(ID.TileMetrics(), "SUMMARY")
+                run_metrics_object(ID.TileMetrics, "SUMMARY", args['--csv'])
             if args['--all'] or args['--quality']:
-                run_metrics_object(ID.QualityMetrics(), "QUALITY")
+                run_metrics_object(ID.QualityMetrics, "QUALITY", args['--csv'])
             if args['--all'] or args['--index']:
-                run_metrics_object(ID.IndexMetrics(), "INDEXING")
+                run_metrics_object(ID.IndexMetrics, "INDEXING", args['--csv'])
             if args['--all'] or args['--error']:
-                run_metrics_object(ID.ErrorMetrics(), "ERRORS")
+                run_metrics_object(ID.ErrorMetrics, "ERRORS", args['--csv'])
             if args['--all'] or args['--corint']:
-                run_metrics_object(ID.CorrectedIntensityMetrics(), "INTENSITY")
+                run_metrics_object(ID.CorrectedIntensityMetrics, "CORRECTED INTENSITY", args['--csv'])
             if args['--all'] or args['--extraction']:
-                run_metrics_object(ID.ExtractionMetrics(), "EXTRACTION")
+                run_metrics_object(ID.ExtractionMetrics, "EXTRACTION", args['--csv'])
             if args['--all'] or args['--control']:
-                run_metrics_object(ID.ControlMetrics(), "CONTROL")
+                run_metrics_object(ID.ControlMetrics, "CONTROL", args['--csv'])
 
-        #TODO: SAV_emu
     if OUTFILE:
         OUTFILE.close()
 

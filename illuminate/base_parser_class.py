@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+import cStringIO
 from bitstring import BitString
 
 from utils import dmesg
@@ -93,3 +94,10 @@ class InteropBinParser(object):
     def to_dict(self):
         "Parser subclasses should override this, make it more specifically relevant."
         return self.data
+
+    def to_csv(self):
+        "Transforms object's DataFrame into comma-separated / newline delineated data. First line contains row headers." 
+        output = cStringIO.StringIO()
+        self.df.to_csv(output)
+        return output.getvalue()
+
