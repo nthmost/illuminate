@@ -81,7 +81,7 @@ class InteropExtractionMetrics(InteropBinParser):
         #self.idf = self.make_coordinate_plane(self.df)
 
     def __str__(self): 
-        #TODO: better printout
+        #TODO: to_str (improve output)
         out = "%s\n" % self.df.head()
         return out
 

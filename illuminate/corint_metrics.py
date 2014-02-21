@@ -94,6 +94,7 @@ class InteropCorrectedIntensityMetrics(InteropBinParser):
         self.idf = self.make_coordinate_plane(self.df)
 
     def __str__(self):
+        #TODO: to_str (improve output)
         out = "%i entries in CorrectedIntensityMetrics binary" % len(self.data['cycle'])
         out = "\nSample from lane/cycle/tile start:"
         out += "%s\n" % self.idf.head()

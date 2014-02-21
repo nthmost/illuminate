@@ -60,10 +60,10 @@ class InteropErrorMetrics( InteropBinParser ):
         self.df = pandas.DataFrame(self.data)
     
     def __str__(self):
-        #TODO: Improve output
-        out = '(sum of all types of errors across all reads)\n'
+        #TODO: to_str (improve output)
+        out = "(sum of all types of errors across all reads)\n"
         idf = self.make_coordinate_plane(self.df)
-        out += '%s' % idf.sum()
+        out += "%s\n" % idf.sum()
         return out
 
     

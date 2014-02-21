@@ -65,7 +65,7 @@ class InteropControlMetrics( InteropBinParser ):
         self.df = pandas.DataFrame(self.data)
 
     def __str__(self):
-        #TODO: better printout
+        #TODO: to_str (improve output)
         out = "%s\n" % self.df.head()
         return out
 

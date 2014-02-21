@@ -268,7 +268,8 @@ class InteropMetadata(object):
 
     def __str__(self):
         "Print the most important metadata (flowcell layout and read config)"
-        out = self.prettyprint_read_config() + "\n" + self.prettyprint_flowcell_layout()
+        out = self.prettyprint_read_config() + "\n"
+        out += self.prettyprint_flowcell_layout() + "\n"
         return out
 
 
@@ -367,8 +368,8 @@ class InteropDataset(object):
         return self._extraction_metrics
 
     def CorrectedIntensityMetrics(self, reload=False):
-        "Returns InteropCorrectedIntensityMetrics object from the 'extraction' binary in this dataset."
-        if self._error_metrics == None or reload == True:
+        "Returns InteropCorrectedIntensityMetrics object from the 'corint' binary in this dataset."
+        if self._corint_metrics == None or reload == True:
             self._corint_metrics = InteropCorrectedIntensityMetrics(self.get_binary_path('corint'), 
                                     flowcell_layout=self.meta.flowcell_layout,
                                     read_config=self.meta.read_config )
