@@ -149,8 +149,14 @@ With numpy and pandas installed, now type:
 
 When these commands complete, you should be ready to roll.
 
+You'll also have a set of sample MiSeq metrics XML and binaries you can use to test the tool.
+Look in /path/to/illuminate-repo/sampledata
+
 Illuminate as a Command Line Tool
 ---------------------------------
+
+As of version 0.5.5, illuminate has been packaged for use as a command line tool. Installing system-wide via pip
+(i.e. without setting up the virtualenv) will allow you to use `illuminate` anywhere. 
 
 Illuminate contains a simple command-line utility that prints out the most 
 commonly desired statistics from Illumina SAV.
@@ -158,7 +164,7 @@ commonly desired statistics from Illumina SAV.
 This package includes some MiSeq and HiSeq data (metrics and metadata only) from live 
 sequencing runs so you can see how things work.
 
-Activate your virtualenv (if you haven't already):
+Activate your virtualenv (if you're going that route):
 
 .. code-block:: bash
 
@@ -168,22 +174,24 @@ Now enter the following to run the integrated parser against one of the test dat
 
 .. code-block:: bash
 
-  (ve) $ python illuminate --tile --quality --index sampledata/MiSeq-samples/2013-04_01_high_PF/
+  (ve) $ illuminate --tile --quality --index sampledata/MiSeq-samples/2013-04_01_high_PF/
 
 You can also output to a file by using the --dump=filename option:
 
 .. code-block:: bash
 
-  (ve) $ python illuminate --dump=RU1234.txt /path/to/dataset
+  (ve) $ illuminate --dump=RU1234.txt /path/to/dataset
 
 And you can suppress command-line output by using the --quiet option.
+
+(One improvement in the works is dump-to-json and dump-to-csv. Coming soon!)
 
 Finally, a fun way to explore the data is to use the --interactive option to load
 the dataset object directly into iPython. (This suppresses the normal printouts.)
 
 .. code-block:: bash
 
-  (ve) $ python illuminate -i /path/to/dataset
+  (ve) $ illuminate -i /path/to/dataset
 
 Within iPython, you'll have the myDataset object at your disposal. This leads us naturally
 to a discussion of how to use illuminate in code.
@@ -315,4 +323,5 @@ Contributions, extensions, bug reports, suggestions, and swear words all happily
 in that order.
 
 naomi.most@invitae.com 
-Spring 2013
+2013-present
+
