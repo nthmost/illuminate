@@ -11,3 +11,4 @@
 0.5.4, 2/19/2014 -- critical bugfix for ExtractionMetrics (pull req by @outerjw on bitbucket), now correctly parses datetimes.
 0.5.4.1, 2/20/2014 -- minor bugfix to running interop.py on command line (lack of 'error' binary no longer causes process to end).
 0.5.5, 2/21/2014 -- Made `illuminate` a real command-line script. Critical bugfix to InteropDataset preventing .CorrectedIntensityMetrics() from working.
+0.5.5.1, 2/21/2014 -- documentation edits to reflect most recent changes. Added optimistic line about dump-to-json and dump-to-csv "coming soon".
