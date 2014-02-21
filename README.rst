@@ -9,9 +9,9 @@ Intended to emulate the output of Illumina SAV, illuminate allows you to print s
 
 This package was built with versatility in mind. There is a section in this README for each of the following typical use cases::
 
-  Running illuminate on the command line
-  Using illuminate as a python module
-  Parsing orphan binaries (e.g. just ErrorMetrics.bin)
+  [Running illuminate on the command line](#cli)
+  [Using illuminate as a python module](#module)
+  [Parsing orphan binaries, e.g. just ErrorMetrics.bin](#orphan)
 
 Also, as of version 0.5, Illuminate supports the reading of active (in-progress) sequencing runs for Tile, Index, and Quality metrics.
 
@@ -73,7 +73,7 @@ More installation options and instructions are available on `the iPython install
 
 Once you have iPython installed, you'll be able to run illuminate or any of the
 standalone parsers on your data and immediately (well, after a few seconds of parsing)
-have a data dictionary and a dataframe at your disposal. See also "Parsing Orphan Binaries".
+have a data dictionary and a dataframe at your disposal. See also ["Parsing Orphan Binaries"](#orphan).
 
 How To Install Illuminate via Pip
 ---------------------------------
@@ -149,7 +149,7 @@ With numpy and pandas installed, now type:
 
 When these commands complete, you should be ready to roll.
 
-Illuminate as a Command Line Tool
+Illuminate as a Command Line Tool<a name="cli"></a>
 ---------------------------------
 
 Illuminate contains a simple command-line utility that prints out the most 
@@ -188,7 +188,7 @@ the dataset object directly into iPython. (This suppresses the normal printouts.
 Within iPython, you'll have the myDataset object at your disposal. This leads us naturally
 to a discussion of how to use illuminate in code.
 
-Using Illuminate as a Python Module
+Using Illuminate as a Python Module<a name="module"></a>
 -----------------------------------
 
 Illuminate was made to be integrated in code to make it easy to report on sequencing runs.
@@ -255,7 +255,7 @@ For example::
 This dictionary is used to set up a `pandas <http://pandas.pydata.org/>`_ DataFrame, a tutorial for which is outside the
 scope of this document, but here's `an introduction to data structures in Pandas <http://pandas.pydata.org/pandas-docs/dev/dsintro.html>`_ to get you going.
 
-Parsing Orphan Binaries
+Parsing Orphan Binaries<a name="orphan"></a>
 -----------------------
 
 If you just have a single binary file, you can run the matching parser from the command line:
