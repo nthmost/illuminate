@@ -82,7 +82,7 @@ class InteropExtractionMetrics(InteropBinParser):
 
     def __str__(self): 
         #TODO: better printout
-        out = '%s' % self.df.head()
+        out = "%s\n" % self.df.head()
         return out
 
 if __name__=='__main__':

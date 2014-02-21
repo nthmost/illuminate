@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "illuminate",
-    version = "0.5.4",
+    version = "0.5.5",
     description = "Analytics toolkit for Illumina sequencer metrics.",
     url="https://bitbucket.org/invitae/illuminate",
     author = "InVitae Inc.",
@@ -12,6 +12,8 @@ setup(
     license = "MIT",
     zip_safe = False,
     packages = find_packages(),
+    entry_points = { 'console_scripts': [
+        'illuminate = illuminate.__main__:main',] }, 
     install_requires = ["bitstring>=3.1.0",
                         "docopt",
                         "numpy>=1.6.2",

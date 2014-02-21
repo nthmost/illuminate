@@ -1,5 +1,7 @@
+from __future__ import print_function
+
 from docopt import docopt
-from interop import InteropDataset
+from .interop import InteropDataset
 
 __doc__="""ILLUMINATE
 
@@ -42,7 +44,7 @@ def dmesg(msg, lvl=1):
     #msg = '[%f] ' % time.time() + msg
     if DEBUG: msg = '[DEBUG] ' + msg
     if VERBOSITY >= lvl:
-        print msg
+        print(msg)
     if OUTFILE:
         OUTFILE.write(msg+'\n')
         OUTFILE.flush()
@@ -61,7 +63,7 @@ def arrange_writing_to_file(filename):
     if filename:
         try:
             OUTFILE = open(filename, 'w')
-        except Exception, e:
+        except Exception as e:
             dmesg('%s' % e, 1)
 
 def run_metrics_object(InteropObject, title):
@@ -69,8 +71,8 @@ def run_metrics_object(InteropObject, title):
     dmesg('-' * len(title), 1)
     dmesg('%s' % InteropObject, 1)
 
-if __name__=='__main__':
 
+def main():
     args = docopt(__doc__,version='0.4')
 
     if args['--interactive']:
@@ -106,3 +108,5 @@ if __name__=='__main__':
     if OUTFILE:
         OUTFILE.close()
 
+if __name__=='__main__':
+    main()

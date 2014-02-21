@@ -112,7 +112,7 @@ class InteropIndexMetrics(InteropBinParser):
         return self.results
 
     def __str__(self):    
-        out = '\n%s\n' % self.pivot
+        out = '%s\n' % self.pivot
         return out 
 
 if __name__=='__main__':

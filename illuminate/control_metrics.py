@@ -66,7 +66,7 @@ class InteropControlMetrics( InteropBinParser ):
 
     def __str__(self):
         #TODO: better printout
-        out = '%s' % self.df.head()
+        out = "%s\n" % self.df.head()
         return out
 
 

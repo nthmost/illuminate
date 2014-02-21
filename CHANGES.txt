@@ -9,3 +9,5 @@
 0.5.2, 11/5/2013 -- fix to __init__.py (how did that change get lost?)
 0.5.3, 11/13/2013 -- critical bugfix for ExtractionMetrics parser (patch by Brent Calder). runParameters.xml now also parsed by default.
 0.5.4, 2/19/2014 -- critical bugfix for ExtractionMetrics (pull req by @outerjw on bitbucket), now correctly parses datetimes.
+0.5.4.1, 2/20/2014 -- minor bugfix to running interop.py on command line (lack of 'error' binary no longer causes process to end).
+0.5.5, 2/21/2014 -- Made `illuminate` a real command-line script. (Work still needed to enable run against incomplete datasets.)

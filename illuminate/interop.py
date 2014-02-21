@@ -437,7 +437,7 @@ def print_sample_dataset(ID):
         print "(sum of all types of errors across all reads)"
         idf = em.make_coordinate_plane(em.df)
         print idf.sum()
-    except TypeError:
+    except InteropFileNotFoundError:
         print "None. (no error metrics binary in this dataset.)"
     finally:
         print ""

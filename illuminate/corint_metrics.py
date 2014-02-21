@@ -96,7 +96,7 @@ class InteropCorrectedIntensityMetrics(InteropBinParser):
     def __str__(self):
         out = "%i entries in CorrectedIntensityMetrics binary" % len(self.data['cycle'])
         out = "\nSample from lane/cycle/tile start:"
-        out += "%s" % self.idf.head()
+        out += "%s\n" % self.idf.head()
         return out
  
 
@@ -108,7 +108,7 @@ if __name__=='__main__':
     try:
         filename = sys.argv[1]
     except:
-        print 'supply path to CorrectedIntensityMetrics.bin'
+        print "supply path to CorrectedIntensityMetrics.bin"
         sys.exit()
 
     CIM = InteropCorrectedIntensityMetrics(filename)
