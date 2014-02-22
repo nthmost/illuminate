@@ -98,6 +98,6 @@ class InteropBinParser(object):
     def to_csv(self):
         "Transforms object's DataFrame into comma-separated / newline delineated data. First line contains row headers." 
         output = cStringIO.StringIO()
-        self.df.to_csv(output)
+        self.df.to_csv(output, index_label='line')
         return output.getvalue()
 

@@ -158,8 +158,8 @@ Illuminate as a Command Line Tool
 As of version 0.5.5, illuminate has been packaged for use as a command line tool. Installing system-wide via pip
 (i.e. without setting up the virtualenv) will allow you to use `illuminate` anywhere. 
 
-Illuminate contains a simple command-line utility that prints out the most 
-commonly desired statistics from Illumina SAV.
+Important note: always check the --help option after installing a new version of Illuminate. 
+Please consider the command-line tool Very Beta until version 1.0.
  
 This package includes some MiSeq and HiSeq data (metrics and metadata only) from live 
 sequencing runs so you can see how things work.
@@ -176,15 +176,20 @@ Now enter the following to run the integrated parser against one of the test dat
 
   (ve) $ illuminate --tile --quality --index sampledata/MiSeq-samples/2013-04_01_high_PF/
 
-You can also output to a file by using the --dump=filename option:
+You can also output to a file by using the --outfile=filename option:
 
 .. code-block:: bash
 
-  (ve) $ illuminate --dump=RU1234.txt /path/to/dataset
+  (ve) $ illuminate --tile --outfile=RU1234.txt /path/to/dataset
 
-And you can suppress command-line output by using the --quiet option.
+The above command would output the results of TileMetrics to a file and disables console output
+(no need to supply --quiet option anymore, although supplying it won't hurt).
 
-(One improvement in the works is dump-to-json and dump-to-csv. Coming soon!)
+NEW IN 0.5.6: Output raw data to CSV. You'll probably want to use --outfile as well, for example:
+
+.. code-block:: bash
+
+   (ve) $ illuminate --tile --outfile=summary.csv /path/to/dataset
 
 Finally, a fun way to explore the data is to use the --interactive option to load
 the dataset object directly into iPython. (This suppresses the normal printouts.)

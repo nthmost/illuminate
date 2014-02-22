@@ -130,7 +130,7 @@ class InteropMetadata(object):
         "returns absolute path to XML file represented by data 'codename'"
         result = select_file_from_aliases(codename, XML_FILEMAP, self.xmldir)
         if result == None:
-            raise Exception, "File for codename %s not available" % codename
+            raise InteropFileNotFoundError, "File for codename %s not available" % codename
         else:
             return result
     
