@@ -26,7 +26,7 @@ For example,
 
   illuminate dump --csv --tile --quality --extraction -o metrics.csv /path/to/dataset 
 
-...produces the files metrics.csv.tile, metrics.csv.quality, metrics.csv.extraction.
+produces: metrics.csv.tile, metrics.csv.quality, metrics.csv.extraction
 
 This utility is undergoing rapid development; please treat as Very Beta. --NM 2/21/2014
 
@@ -99,6 +99,13 @@ def run_metrics_object(InteropObject, title, args):
         dmesg('File not found\n', 1)
     except AttributeError:
         dmesg('Metadata has no CSV output.\n', 1)
+
+    dmesg('%s: finished' % title, 2)
+
+
+def dump(InteropObject, args):
+    #TODO: this.
+    dmesg('%s: running' % title, 2)
 
     dmesg('%s: finished' % title, 2)
 
