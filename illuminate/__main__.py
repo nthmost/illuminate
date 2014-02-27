@@ -14,8 +14,6 @@ Usage: illuminate [options] <datapath>...
 By default, illuminate prints a summary of most commonly desired characteristics rather
 than raw data (e.g. cluster density from --tile, Q30 percentage scores from --quality.)
 
-NEW in 0.5.6: The `dump` command.
-
 Raw data can be output to --csv (and soon --json), either to STDOUT or to file(s). If no
 --outfile specified, data will be sent to STDOUT with two newlines separating each metric 
 section.
