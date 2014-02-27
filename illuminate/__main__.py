@@ -130,19 +130,19 @@ def main():
             if args['--all'] or args['--meta']:
                 run_metrics_object(ID.Metadata, "METADATA", args)
             if args['--all'] or args['--tile']:
-                run_metrics_object(ID.TileMetrics, "TILE", args)
+                run_metrics_object(ID.TileMetrics, "TILE METRICS", args)
             if args['--all'] or args['--quality']:
-                run_metrics_object(ID.QualityMetrics, "QUALITY", args)
+                run_metrics_object(ID.QualityMetrics, "QUALITY METRICS", args)
             if args['--all'] or args['--index']:
-                run_metrics_object(ID.IndexMetrics, "INDEXING", args)
+                run_metrics_object(ID.IndexMetrics, "INDEXING METRICS", args)
             if args['--all'] or args['--error']:
-                run_metrics_object(ID.ErrorMetrics, "ERRORS", args)
+                run_metrics_object(ID.ErrorMetrics, "ERROR METRICS", args)
             if args['--all'] or args['--corint']:
                 run_metrics_object(ID.CorrectedIntensityMetrics, "CORRECTED INTENSITY", args)
             if args['--all'] or args['--extraction']:
-                run_metrics_object(ID.ExtractionMetrics, "EXTRACTION", args)
+                run_metrics_object(ID.ExtractionMetrics, "EXTRACTION METRICS", args)
             if args['--all'] or args['--control']:
-                run_metrics_object(ID.ControlMetrics, "CONTROL", args)
+                run_metrics_object(ID.ControlMetrics, "CONTROL METRICS", args)
 
 if __name__=='__main__':
     main()
