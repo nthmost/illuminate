@@ -41,7 +41,7 @@ This utility is undergoing rapid development; please treat as Very Beta. --NM 2/
 
   --all             Parse and print everything
 
-  --meta            Print metadata
+  --meta            Print flowcell_layout and read_config
   --quality         Parse quality metrics
   --tile            Parse tile metrics
   --index           Parse index metrics
@@ -113,6 +113,8 @@ def dump(InteropObject, args):
 
 def main():
     args = docopt(__doc__, version='0.5.6')
+
+    print(args)
 
     if args['--interactive']:
         from IPython import embed

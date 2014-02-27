@@ -67,19 +67,18 @@ class InteropMetadata(object):
         # Getting read_config and flowcell_layout are top priority since they inform the binary parsers.
         #
         # TODO: xml_flex (proposed improvement allowing a config file to set which tokens are required / not required.)
+        #       Also we might want to specify priority of provenance (e.g. get start_datetime from 'runparams' first).
+        #       If you (yes YOU) have any opinions about this, please email me: naomi.most@invitae.com
 
         self._xml_map = OrderedDict({ 'completed': [None, self.parse_CompletedJobInfo], 
                                       'runinfo':   [None, self.parse_RunInfo],
                                       'runparams': [None, self.parse_RunParameters] })
         self._set_xml_map()
         
-        # cycle through XML files, ordered by ranking of information reliability.
-        # Stop parsing when we have flowcell_layout and read_config filled.
+        # cycle through XML files, filling from what's available.
         for codename in self._xml_map:
-            self._xml_map[codename][1](self._xml_map[codename][0])
-            if self.flowcell_layout and self.read_config:
-                break
-
+            if self._xml_map[codename][0] is not None:
+                self._xml_map[codename][1](self._xml_map[codename][0])
 
     def _set_xml_map(self):
         "finds all available XML files and assigns them to an ordered dictionary mapping of codename:[filepath,parse_function]"
@@ -118,13 +117,7 @@ class InteropMetadata(object):
                                       'is_index': True if item.attrib["IsIndexedRead"]=="Y" else False } )      
     
     def parse_ResequencingRunStats(self, filepath):
-        """Parses ResequencingRunStatistics.xml (or viable alias) to fill instance variables.
-
-        Quietly fails (immediate return) when filepath==None.
-        """
-
-        if filepath is None:
-            return
+        """Parses ResequencingRunStatistics.xml (or viable alias) to fill instance variables."""
         
         tree = ET.parse(filepath)
         root = tree.getroot()   # should be "StatisticsResequencing"
@@ -139,12 +132,7 @@ class InteropMetadata(object):
                                     'duplicate': int(runstats_ET.find("NumberOfDuplicateClusters").text) }
 
     def parse_CompletedJobInfo(self, filepath):
-        """parses CompletedJobInfo.xml (or viable alias) to fill instance variables.
-
-        Quietly fails (immediate return) when filepath==None.
-        """
-        if filepath is None:
-            return
+        """parses CompletedJobInfo.xml (or viable alias) to fill instance variables."""
 
         # comments show example data from a real MiSeq run (2013/02)
         
@@ -188,12 +176,7 @@ class InteropMetadata(object):
         self.parse_Run_ET(run_ET)
 
     def parse_RunParameters(self, filepath):
-        """partially implemented, not essential. Can fill read_config but not flowcell_layout.
-
-        Quietly fails (immediate return) when filepath==None.
-        """
-        if filepath is None:
-            return
+        """partially implemented, not essential. Can fill read_config but not flowcell_layout."""
 
         tree = ET.parse(filepath)
         root = tree.getroot()
