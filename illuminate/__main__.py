@@ -3,7 +3,8 @@ from __future__ import print_function
 import sys
 
 from docopt import docopt
-from .interop import InteropDataset, InteropFileNotFoundError
+from .interop import InteropDataset 
+from .exceptions import InteropFileNotFoundError
 
 __doc__="""ILLUMINATE
 

@@ -14,6 +14,7 @@
 # with lots of help from ECO (eric.olivares@invitae.com)
 
 import time, os
+from collections import OrderedDict
 from xml.etree import ElementTree as ET
 
 from exceptions import InteropFileNotFoundError
@@ -21,9 +22,15 @@ from utils import dmesg, select_file_from_aliases
 from filemaps import XML_FILEMAP
 
 class InteropMetadata(object):
-    "Parser for sequencer's XML files describing a single run. Supply with directory to instantiate."
+    """Parser for sequencer's XML files describing a single run. Supply with directory to instantiate.
+
+    CHANGES:
+        
+        0.2     cleaner logical process for using the various XML files. No longer throws exceptions.
+        0.1     first released version.
+    """
     
-    __version = 0.1     # version of this parser.
+    __version = 0.2     # version of this parser.
 
     def __init__(self, xmldir):
         """Takes the absolute path of a sequencing run data directory as sole required variable.
@@ -38,8 +45,8 @@ class InteropMetadata(object):
         self.experiment_name = ""        # "RU1453:::/locus/data/run_data//1337/1453"
         self.investigator_name = ""      # "Locus:::Uncle_Jesse - 612 - MiSeq"
         self.runID = ""                  # cf CompletedJobInfo.xml / RTARunInfo / Run param "Id"
-        self.start_datetime = ""
-        self.end_datetime = ""
+        self.start_datetime = None
+        self.end_datetime = None
         self.rta_run_info = { }
 
         # read_config: a list of dictionaries, each of which describe a single read from the sequencer.
@@ -49,42 +56,41 @@ class InteropMetadata(object):
         self.flowcell_layout = { }
                 
         # Read numbers from ResequencingRunStats.xml 
-        # Example: { 'clusters_raw': 19494893, 'clusters_PF': 17381252, 'unindexed': 508055, 'unindexed_PF': 16873197, 
-        #               'unaligned': 18572490, 'unaligned_PF': 16973197 }   
+        # Example: { 'clusters_raw': 19494893, 'clusters_PF': 17381252, 
+        #            'unindexed': 508055, 'unindexed_PF': 16873197, 
+        #            'unaligned': 18572490, 'unaligned_PF': 16973197 }   
         self.resequencing_stats = {}
+        self.parse_ResequencingRunStats(self.get_xml_path('reseqstats'))
         
         # CompletedJobInfo.xml is the most complete XML file in the set for what we need,
-        # but in a pinch we can parse RunInfo.xml for the essentials.
-        #
-        # (runParameters.xml can be available but not really usable for several reasons.)
-        
+        # However, only RunInfo.xml and/or RunParameters.xml will be available during an active run.
         # Getting read_config and flowcell_layout are top priority since they inform the binary parsers.
         #
         # TODO: xml_flex (proposed improvement allowing a config file to set which tokens are required / not required.)
 
-        try:  
-            self.parse_CompletedJobInfo(self.get_xml_path('completed'))
-        except InteropFileNotFoundError:
-            self.parse_RunInfo(self.get_xml_path('runinfo'))
+        self._xml_map = OrderedDict({ 'completed': [None, self.parse_CompletedJobInfo], 
+                                      'runinfo':   [None, self.parse_RunInfo],
+                                      'runparams': [None, self.parse_RunParameters] })
+        self._set_xml_map()
+        
+        # cycle through XML files, ordered by ranking of information reliability.
+        # Stop parsing when we have flowcell_layout and read_config filled.
+        for codename in self._xml_map:
+            self._xml_map[codename][1](self._xml_map[codename][0])
+            if self.flowcell_layout and self.read_config:
+                break
 
-        try:
-            self.parse_ResequencingRunStats(self.get_xml_path('reseqstats'))
-        except InteropFileNotFoundError:
-            dmesg("[InteropMetadata] resequencing_stats will not be available.", 2)
 
-        try:
-            self.parse_RunParameters(self.get_xml_path('runparameters'))
-        except InteropFileNotFoundError:
-            dmesg("[InteropMetadata] runParameters.xml couldn't be parsed; some vars may not be available.", 2)
+    def _set_xml_map(self):
+        "finds all available XML files and assigns them to an ordered dictionary mapping of codename:[filepath,parse_function]"
+        for codename in self._xml_map:
+            self._xml_map[codename][0] = self.get_xml_path(codename)
                 
     def get_xml_path(self, codename):
-        "returns absolute path to XML file represented by data 'codename'"
+        "returns absolute path to XML file represented by data 'codename' or None if not available."
         result = select_file_from_aliases(codename, XML_FILEMAP, self.xmldir)
-        if result == None:
-            raise InteropFileNotFoundError, "File for codename %s not available" % codename
-        else:
-            return result
-    
+        return result
+
     def parse_Run_ET(self, run_ET):
         "parses chunk of XML associated with the RTA Run Info blocks in (at least) 2 xml files."
 
@@ -112,7 +118,13 @@ class InteropMetadata(object):
                                       'is_index': True if item.attrib["IsIndexedRead"]=="Y" else False } )      
     
     def parse_ResequencingRunStats(self, filepath):
-        "parses ResequencingRunStatistics.xml (or viable alias) to fill instance variables."
+        """Parses ResequencingRunStatistics.xml (or viable alias) to fill instance variables.
+
+        Quietly fails (immediate return) when filepath==None.
+        """
+
+        if filepath is None:
+            return
         
         tree = ET.parse(filepath)
         root = tree.getroot()   # should be "StatisticsResequencing"
@@ -127,7 +139,13 @@ class InteropMetadata(object):
                                     'duplicate': int(runstats_ET.find("NumberOfDuplicateClusters").text) }
 
     def parse_CompletedJobInfo(self, filepath):
-        "parses CompletedJobInfo.xml (or viable alias) to fill instance variables."
+        """parses CompletedJobInfo.xml (or viable alias) to fill instance variables.
+
+        Quietly fails (immediate return) when filepath==None.
+        """
+        if filepath is None:
+            return
+
         # comments show example data from a real MiSeq run (2013/02)
         
         tree = ET.parse(filepath)
@@ -167,11 +185,16 @@ class InteropMetadata(object):
 
         # RTARunInfo / Run / *          
         self.runID = run_ET.attrib["Id"] 
-
         self.parse_Run_ET(run_ET)
 
     def parse_RunParameters(self, filepath):
-        "partially implemented, not essential. (No FlowcellLayout in this file.)"
+        """partially implemented, not essential. Can fill read_config but not flowcell_layout.
+
+        Quietly fails (immediate return) when filepath==None.
+        """
+        if filepath is None:
+            return
+
         tree = ET.parse(filepath)
         root = tree.getroot()
 
@@ -182,7 +205,8 @@ class InteropMetadata(object):
         #self.start_datetime = root.find('RunStartDate').text    # format: 130208 YYMMDD
 
         self.experiment_name = root.find('ExperimentName').text
-        
+
+        self.read_config = []
         for item in root.find('Reads'):
             #Different format from that in CompletedJobInfo.xml (contains read Number)
             self.read_config.append( {'read_num': int(item.attrib['Number']),
@@ -193,7 +217,7 @@ class InteropMetadata(object):
     def parse_RunInfo(self, filepath):
         "parses Reads, Date, Flowcell, Instrument out of runInfo.xml"
         tree = ET.parse(filepath)
-        run_ET = tree.getroot().find('Run')     #nothing of use in this file except <Run> subelement. 
+        run_ET = tree.getroot().find('Run')     #little of use in this file except <Run> subelement. 
         
         self.runID = run_ET.attrib['Id']
         
