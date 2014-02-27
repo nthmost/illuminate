@@ -9,8 +9,7 @@ from .exceptions import InteropFileNotFoundError
 __doc__="""ILLUMINATE
 
 Usage: illuminate [options] <datapath>...
-
-       illuminate [options] dump [--csv | --json] <datapath>...
+       illuminate [options] [--csv | --json] <datapath>...
 
 By default, illuminate prints a summary of most commonly desired characteristics rather
 than raw data (e.g. cluster density from --tile, Q30 percentage scores from --quality.)
@@ -113,8 +112,6 @@ def dump(InteropObject, args):
 
 def main():
     args = docopt(__doc__, version='0.5.6')
-
-    print(args)
 
     if args['--interactive']:
         from IPython import embed

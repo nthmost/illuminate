@@ -60,7 +60,9 @@ class InteropMetadata(object):
         #            'unindexed': 508055, 'unindexed_PF': 16873197, 
         #            'unaligned': 18572490, 'unaligned_PF': 16973197 }   
         self.resequencing_stats = {}
-        self.parse_ResequencingRunStats(self.get_xml_path('reseqstats'))
+
+        if self.get_xml_path('reseqstats') is not None:
+            self.parse_ResequencingRunStats(self.get_xml_path('reseqstats'))
         
         # CompletedJobInfo.xml is the most complete XML file in the set for what we need,
         # However, only RunInfo.xml and/or RunParameters.xml will be available during an active run.
@@ -79,6 +81,8 @@ class InteropMetadata(object):
         for codename in self._xml_map:
             if self._xml_map[codename][0] is not None:
                 self._xml_map[codename][1](self._xml_map[codename][0])
+                if codename == 'completed':
+                    break
 
     def _set_xml_map(self):
         "finds all available XML files and assigns them to an ordered dictionary mapping of codename:[filepath,parse_function]"
