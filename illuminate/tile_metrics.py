@@ -145,7 +145,7 @@ class InteropTileMetrics(InteropBinParser):
 
     def __str__(self):
         out = '  Mean Cluster Density: %i' % self.mean_cluster_density
-        out += '\n  Mean PF Clusters Density: %i' % self.mean_cluster_density_pf
+        out += '\n  Mean PF Cluster Density: %i' % self.mean_cluster_density_pf
         out += '\n  Total Clusters: %i' % self.num_clusters
         out += '\n  Total PF Clusters: %i' % self.num_clusters_pf 
         out += '\n  Percentage of Clusters PF: %f' % self.percent_pf_clusters
