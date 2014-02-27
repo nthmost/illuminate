@@ -22,7 +22,7 @@ If multiple metrics selected, multiple files will be created using "outfile" as 
 
 For example, 
 
-  illuminate dump --csv --tile --quality --extraction -o metrics.csv /path/to/dataset 
+  illuminate --csv --tile --quality --extraction -o metrics.csv /path/to/dataset 
 
 produces: metrics.csv.tile, metrics.csv.quality, metrics.csv.extraction
 
@@ -67,14 +67,16 @@ def dmesg(msg, lvl=1):
     if VERBOSITY >= lvl:
         print(msg)
 
-def write_data(output, args):
-    filename = args['--outfile']
-    datafile = open(filename, 'wb')
-    try:
-        datafile.write(item+'\n')
-    except Exception as e:
-        dmesg('Error writing to file: %r' % e, 0)
-    datafile.close()
+def write_data(output, codename, args):
+    if args['--outfile']:
+        datafile = open('%s.%s' % (args['--outfile'], codename), 'wb')
+        try:
+            datafile.write(output+'\n')
+        except Exception as e:
+            dmesg('Error writing to file: %r' % e, 0)
+        datafile.close()
+    else:
+        print(output)
 
 def calculate_verbosity(args):
     global VERBOSITY
@@ -88,24 +90,28 @@ def calculate_verbosity(args):
 def run_metrics_object(InteropObject, title, args):
     dmesg('%s: running' % title, 2)
     try:
-        if args['--csv']:
-            write_data('%s\n' % InteropObject().to_csv(), args)
-        dmesg(title, 1)
-        dmesg('-' * len(title), 1)
-        dmesg('%s' % InteropObject(), 1)
+        if args['--csv'] or args['--json']:
+            dump(InteropObject, args)
+        else:
+            dmesg(title, 1)
+            dmesg('-' * len(title), 1)
+            dmesg('%s' % InteropObject(), 1)
     except InteropFileNotFoundError:
-        dmesg('File not found\n', 1)
-    except AttributeError:
-        dmesg('Metadata has no CSV output.\n', 1)
+        dmesg('%s: File not found\n' % title, 1)
 
     dmesg('%s: finished' % title, 2)
 
 
 def dump(InteropObject, args):
-    #TODO: this.
-    dmesg('%s: running' % title, 2)
+    try:
+        if args['--csv']:
+            metricobj = InteropObject()
+            write_data(metricobj.to_csv(), metricobj.codename, args)
+        elif args['--json']:
+            dmesg('No JSON support just yet! Coming Real Soon Now (tm).\n', 1)
 
-    dmesg('%s: finished' % title, 2)
+    except AttributeError:
+        dmesg('Metadata has no CSV or JSON output.\n', 2)
 
 
 def main():
@@ -117,18 +123,14 @@ def main():
         embed()
         sys.exit()
     else:
-        calculate_verbosity(args)           #args['--verbose'], args['--quiet'])
-
-        #TODO prettify: print nicer error messages when files are missing
-        #
-        #TODO active_runs: forgive lack of metadata (allow read_config & flowcell_layout to be provided on CLI?)
+        calculate_verbosity(args)
 
         for datapath in args['<datapath>']:
             ID = InteropDataset(datapath)
             if args['--all'] or args['--meta']:
                 run_metrics_object(ID.Metadata, "METADATA", args)
             if args['--all'] or args['--tile']:
-                run_metrics_object(ID.TileMetrics, "SUMMARY", args)
+                run_metrics_object(ID.TileMetrics, "TILE", args)
             if args['--all'] or args['--quality']:
                 run_metrics_object(ID.QualityMetrics, "QUALITY", args)
             if args['--all'] or args['--index']:

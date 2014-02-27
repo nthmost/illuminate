@@ -9,10 +9,11 @@ from bitstring import ReadError
 
 from base_parser_class import InteropBinParser
 
-class InteropControlMetrics( InteropBinParser ):
+class InteropControlMetrics(InteropBinParser):
 
     __version = 0.1
     supported_versions = [1]
+    codename = 'control'
 
     def _init_variables(self):
         self.data = { 'lane': [], 

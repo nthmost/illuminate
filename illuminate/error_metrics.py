@@ -8,6 +8,7 @@ class InteropErrorMetrics( InteropBinParser ):
 
     __version = 0.1
     supported_versions = [3]
+    codename = 'error'
 
     def _init_variables(self):
         self.data = { 'lane': [], 

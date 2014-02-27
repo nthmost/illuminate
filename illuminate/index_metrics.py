@@ -10,6 +10,7 @@ class InteropIndexMetrics(InteropBinParser):
     
     __version = 0.1             # version of this parser class.
     supported_versions = [1]    # version(s) of file that this parser supports
+    codename = 'index'
     
     # this class doesn't require read_config and flowcell_layout, but 
     # some of the sanity checks it can run on the data do use them.

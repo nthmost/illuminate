@@ -11,6 +11,7 @@ class InteropExtractionMetrics(InteropBinParser):
 
     __version = 0.1
     supported_versions = [2]
+    codename = 'extraction'
 
     def _init_variables(self):
         self.data = { 

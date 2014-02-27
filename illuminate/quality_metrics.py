@@ -10,6 +10,7 @@ class InteropQualityMetrics(InteropBinParser):
 
     __version = 0.2     # version of this parser class.
     supported_versions = [4]        # version(s) of file that this parser supports
+    codename = 'quality'
 
     # a scalar representing the number of quality scores per record in QualityMetrics*.bin
     num_quality_scores = 50

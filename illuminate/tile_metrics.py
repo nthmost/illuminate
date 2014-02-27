@@ -11,6 +11,7 @@ class InteropTileMetrics(InteropBinParser):
 
     __version = 0.4                 # version of this parser class.
     supported_versions = [2]        # version(s) of binary file that this parser handles
+    codename = 'tile'
 
     # given by __init__ (from InteropBinParser):  read_config {}, flowcell_layout {}
 
