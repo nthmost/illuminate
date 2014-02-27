@@ -18,13 +18,13 @@ Raw data can be output to --csv (and soon --json), either to STDOUT or to file(s
 --outfile specified, data will be sent to STDOUT with two newlines separating each metric 
 section.
 
-If multiple metrics selected, multiple files will be created using "outfile" as the basis.
+--outfile / -o is used to form the basis of the filename and may include a directory path.
 
 For example, 
 
-  illuminate --csv --tile --quality --extraction -o metrics.csv /path/to/dataset 
+  illuminate --csv --quality --extraction -o /data/dump/metrics.csv /path/to/dataset 
 
-produces: metrics.csv.tile, metrics.csv.quality, metrics.csv.extraction
+produces:  /data/dump/quality.metrics.csv, /data/dump/extraction.metrics.csv
 
 This utility is undergoing rapid development; please treat as Very Beta. --NM 2/21/2014
 
