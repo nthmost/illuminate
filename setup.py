@@ -17,6 +17,6 @@ setup(
     install_requires = ["bitstring>=3.1.0",
                         "docopt",
                         "numpy>=1.6.2",
-                        "pandas>=0.11",
+                        "pandas>=0.12",
                         ],
     )
