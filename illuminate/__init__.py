@@ -1,5 +1,5 @@
 from interop import InteropDataset, print_sample_dataset 
-from exceptions InteropFileNotFoundError
+from exceptions import InteropFileNotFoundError
 from metadata import InteropMetadata
 from base_parser_class import InteropBinParser
 from tile_metrics import InteropTileMetrics
