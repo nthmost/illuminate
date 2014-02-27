@@ -13,3 +13,4 @@
 0.5.5, 2/21/2014 -- Made `illuminate` a real command-line script. Critical bugfix to InteropDataset preventing .CorrectedIntensityMetrics() from working.
 0.5.5.1, 2/21/2014 -- documentation edits to reflect most recent changes. Added optimistic line about dump-to-json and dump-to-csv "coming soon".
 0.5.6, 2/26/2014 -- Implemented to_csv method on InteropBinParser, added --csv and --debug options to CLI. Improvements to Metadata logic. Better code organization.
+0.5.7, 2/27/2014 -- Implemented to_json method on InteropBinParser, added --json option to CLI. Upped pandas req to 0.12 based on need for json support.

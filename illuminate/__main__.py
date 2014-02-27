@@ -14,9 +14,8 @@ Usage: illuminate [options] <datapath>...
 By default, illuminate prints a summary of most commonly desired characteristics rather
 than raw data (e.g. cluster density from --tile, Q30 percentage scores from --quality.)
 
-Raw data can be output to --csv (and soon --json), either to STDOUT or to file(s). If no
---outfile specified, data will be sent to STDOUT with two newlines separating each metric 
-section.
+Raw data can be output to --csv or --json, either to STDOUT or to file(s). If no --outfile
+specified, data will be sent to STDOUT with two newlines separating each metric section.
 
 --outfile / -o is used to form the basis of the filename and may include a directory path.
 
@@ -104,18 +103,18 @@ def run_metrics_object(InteropObject, title, args):
 
 def dump(InteropObject, args):
     try:
+        metricobj = InteropObject()
         if args['--csv']:
-            metricobj = InteropObject()
             write_data(metricobj.to_csv(), metricobj.codename, args)
         elif args['--json']:
-            dmesg('No JSON support just yet! Coming Real Soon Now (tm).\n', 1)
+            write_data(metricobj.to_json(), metricobj.codename, args)
 
     except AttributeError:
         dmesg('Metadata has no CSV or JSON output.\n', 2)
 
 
 def main():
-    args = docopt(__doc__, version='0.5.6')
+    args = docopt(__doc__, version='0.5.7')
 
     if args['--interactive']:
         from IPython import embed

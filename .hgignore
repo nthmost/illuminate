@@ -11,3 +11,4 @@ dist
 build
 data
 sampledata/incomplete-runs
+dump/
