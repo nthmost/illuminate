@@ -69,7 +69,7 @@ def dmesg(msg, lvl=1):
 
 def write_data(output, codename, args):
     if args['--outfile']:
-        datafile = open('%s.%s' % (args['--outfile'], codename), 'wb')
+        datafile = open('%s.%s' % (codename, args['--outfile']), 'wb')
         try:
             datafile.write(output+'\n')
         except Exception as e:
