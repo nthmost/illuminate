@@ -18,7 +18,7 @@ from collections import OrderedDict
 from xml.etree import ElementTree as ET
 
 from exceptions import InteropFileNotFoundError
-from utils import dmesg, select_file_from_aliases
+from utils import select_file_from_aliases
 from filemaps import XML_FILEMAP
 
 class InteropMetadata(object):

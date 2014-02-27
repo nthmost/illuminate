@@ -3,7 +3,7 @@
 import pandas
 
 from base_parser_class import InteropBinParser
-from utils import dmesg, set_column_sequence
+from utils import set_column_sequence
 
 class InteropQualityMetrics(InteropBinParser):
     "ILMN Quality metrics parser (child class of InteropBinParser)."
@@ -16,8 +16,6 @@ class InteropQualityMetrics(InteropBinParser):
     num_quality_scores = 50
 
     def _init_variables(self):
-        dmesg("QM Read Config:", 2)
-        dmesg(self.read_config, 2)
         self._setup_read_tiers()
         
         # create .qcol_sequence to retain correct order of qx columns
@@ -58,8 +56,6 @@ class InteropQualityMetrics(InteropBinParser):
             new_tier = last_tier + self.read_config[x]['cycles'] 
             self.read_tiers.append(new_tier)
             last_tier = new_tier
-
-        dmesg(self.read_tiers, 3)
         
     def get_df_col_sequence(self):
         "returns array of column names in correct order for DataFrame (.df)"
