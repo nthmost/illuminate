@@ -76,6 +76,7 @@ class InteropBinParser(object):
            lane-tile-cycle as a combined index -- sort of a coordinate plane."""
            
         if flatten:
+            df = df.copy()
             # recast the coordinate system as a descriptive index composed like so:
             # cycle * 1000000 + lane * 10000 + tile
             
