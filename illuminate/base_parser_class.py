@@ -102,3 +102,8 @@ class InteropBinParser(object):
         self.df.to_csv(output, index_label='line')
         return output.getvalue()
 
+    def to_json(self):
+        "Transforms object's DataFrame into a json document."
+        return self.df.to_json()
+
+

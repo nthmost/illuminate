@@ -4,8 +4,6 @@ import pandas
 
 from base_parser_class import InteropBinParser
 
-from utils import dmesg
-
 class InteropTileMetrics(InteropBinParser):
     "ILMN Tile Metrics parser (child class of InteropBinParser)."
 

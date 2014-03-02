@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = "illuminate",
-    version = "0.5.6",
+    version = "0.5.7",
     description = "Analytics toolkit for Illumina sequencer metrics.",
     url="https://bitbucket.org/invitae/illuminate",
     author = "InVitae Inc.",
@@ -17,6 +17,6 @@ setup(
     install_requires = ["bitstring>=3.1.0",
                         "docopt",
                         "numpy>=1.6.2",
-                        "pandas>=0.11",
+                        "pandas>=0.12",
                         ],
     )

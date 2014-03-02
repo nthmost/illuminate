@@ -26,7 +26,7 @@ from corint_metrics import InteropCorrectedIntensityMetrics
 from control_metrics import InteropControlMetrics
 from extraction_metrics import InteropExtractionMetrics
 
-from utils import dmesg, select_file_from_aliases
+from utils import select_file_from_aliases
 from exceptions import InteropFileNotFoundError
 from filemaps import BINFILE_DIR_NAME, XML_FILEMAP, BIN_FILEMAP
 
