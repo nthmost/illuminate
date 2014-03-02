@@ -182,7 +182,7 @@ def main():
             print_meta(ID.meta, args)
             
         if args['--timestamp']:
-            args['--timestamp'] = time.time()
+            args['--timestamp'] = timestamp()
 
         if args['--all'] or args['--tile']:
             run_metrics_object(ID.TileMetrics, "TILE METRICS", args)
