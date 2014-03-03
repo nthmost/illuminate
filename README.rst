@@ -176,36 +176,38 @@ Now enter the following to run the integrated parser against one of the test dat
 
   (ve) $ illuminate --tile --quality --index sampledata/MiSeq-samples/2013-04_01_high_PF/
 
-NEW IN 0.5.6: Output raw data to CSV. You'll probably want to use --outfile / -o as well. 
+NEW IN 0.5.6: Output raw data to CSV. You'll probably want to use `--outpath` / `-o` as well. 
+
+The string in --outpath should be a relative or absolute directory path that already 
+exists and is writeable by the illuminate user.
+
 For example:
 
 .. code-block:: bash
 
-   (ve) $ illuminate --tile --outfile=seqrun.csv /path/to/dataset
+  (ve) $ illuminate --extraction --outpath /data/dump /path/to/dataset
 
-The string in --outfile will actually become the basis of a longer filename starting with 
-the "codename" of the metrics selected. So in the above example, you'll get files
-called `tile.seqrun.csv` and `quality.seqrun.csv`
+...which produces the file: `/data/dump/runID/extraction.csv`
 
-This is done so that if you select multiple metrics at once, you'll get individual files
-instead one big complicated one, without having to specify a filename for each.
-
-You're also welcome to specify a relative or absolute path as the outfile parameter:
+"runID" comes from the metadata parsing of the XML.  You can set this name yourself, instead:
 
 .. code-block:: bash
 
-  (ve) $ illuminate --extraction -o /data/dump/RU1234.csv /path/to/dataset
+  (ve) $ illuminate --extraction -o /data/dump --name RUN_1234 /path/to/dataset
 
-...which produces the file: `/data/dump/extraction.RU1234.csv`
+Another option for filename output is --timestamp / -t which stamps each file with a 
+datetime.now() seconds-since-Unix-epoch.  This timestamp will be the same for each
+parsed file per illuminate run (in other words, you'll get matching timestamps for each
+metrics file produced).
 
 You have the ability to get higher verbosity status messages during the parsing process
-by specifying --verbose / -v.  
+by specifying `--verbose` / `-v`.  
 
-The --debug / -d does nothing (right now) other than produce timestamps and raise the
+The `--debug` / `-d` does nothing (right now) other than produce timestamps and raise the
 verbosity of the output (same as -v). These messages are placed such that you can use
 the timestamps to evaluate the processing time of parsing.
 
-Finally, a fun way to explore the data is to use the --interactive option to load
+Finally, a fun way to explore the data is to use the `--interactive` / `-i` option to load
 the dataset object directly into iPython. (This suppresses the normal printouts.)
 
 .. code-block:: bash
