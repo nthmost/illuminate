@@ -190,8 +190,10 @@ class InteropMetadata(object):
         
         # TODO: normalize this variable
         #self.start_datetime = root.find('RunStartDate').text    # format: 130208 YYMMDD
-
-        self.experiment_name = root.find('ExperimentName').text
+        try:
+            self.experiment_name = root.find('ExperimentName').text
+        except AttributeError:
+            pass
 
         self.read_config = []
         for item in root.find('Reads'):
