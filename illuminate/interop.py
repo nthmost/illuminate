@@ -48,6 +48,11 @@ class InteropDataset(object):
 
         self.directory = targetdir
 
+        # Without this initial check, we get a silent failure (and an empty dataset),
+        # since the whole apparatus is built to be very forgiving of missing files. 
+        if not os.path.isdir(targetdir):
+            raise IOError('%s does not exist or is not a directory.' % targetdir)
+
         self.xmldir = self.directory
         self.bindir = os.path.join(self.directory, BINFILE_DIR_NAME)
         

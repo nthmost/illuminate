@@ -180,7 +180,8 @@ class InteropMetadata(object):
         self.parse_Run_ET(run_ET)
 
     def parse_RunParameters(self, filepath):
-        """partially implemented, not essential. Can fill read_config but not flowcell_layout."""
+        """partially implemented; essential when CompletedJobInfo.xml missing. 
+        Can fill read_config but not flowcell_layout."""
 
         tree = ET.parse(filepath)
         root = tree.getroot()

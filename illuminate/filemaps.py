@@ -1,7 +1,5 @@
 #### CONFIGURABLE THINGS
 #
-# THIS STUFF WILL BE MOVED INTO A MORE PYTHONIC CONFIG INI TYPE THING.
-#
 # Configuration of filenames, paths, and types/amounts of output logging.
 # (Most people will not need to edit this stuff.)
 
@@ -32,6 +30,4 @@ XML_FILEMAP = { 'runinfo': ["RunInfo.xml"],
                'runparams': ["runParameters.xml"],
                'reseqstats': ["ResequencingRunStatistics.xml"],
                'completed': ["CompletedJobInfo.xml"] }
-
-#### END OF CONFIGURABLE THINGS ####
 
