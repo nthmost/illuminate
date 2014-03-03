@@ -173,7 +173,11 @@ def main():
     else:
         calculate_verbosity(args)
 
-        ID = InteropDataset(args['<datapath>'])
+        try:
+            ID = InteropDataset(args['<datapath>'])
+        except IOError, e:
+            dmesg(e, 1)
+            sys.exit()
 
         if args['--name']=='meta.runID':
             args['--name'] = ID.meta.runID

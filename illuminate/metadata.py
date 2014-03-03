@@ -47,7 +47,7 @@ class InteropMetadata(object):
         self.runID = ""                  # cf CompletedJobInfo.xml / RTARunInfo / Run param "Id"
         self.start_datetime = None
         self.end_datetime = None
-        self.rta_run_info = { }
+        self.rta_run_info = { 'flowcell': '', 'instrument': '', 'date': '' }
 
         # read_config: a list of dictionaries, each of which describe a single read from the sequencer.
         self.read_config = []
@@ -64,9 +64,13 @@ class InteropMetadata(object):
         if self.get_xml_path('reseqstats') is not None:
             self.parse_ResequencingRunStats(self.get_xml_path('reseqstats'))
         
-        # CompletedJobInfo.xml is the most complete XML file in the set for what we need,
-        # However, only RunInfo.xml and/or RunParameters.xml will be available during an active run.
-        # Getting read_config and flowcell_layout are top priority since they inform the binary parsers.
+        # The main goal of parsing the XML is to find out read_config and flowcell_layout.
+        # A lot of other data is available, but only these two basics are necessary.
+        #
+        # CompletedJobInfo.xml has the most complete data from MiSeq machines, but only exists
+        # at the end of a run, and HiSeq machines don't even generate one.
+        #
+        # RunInfo.xml (containing just the basics) is always available during an active run.
         #
         # TODO: xml_flex (proposed improvement allowing a config file to set which tokens are required / not required.)
         #       Also we might want to specify priority of provenance (e.g. get start_datetime from 'runparams' first).
@@ -135,11 +139,69 @@ class InteropMetadata(object):
                                     'unaligned_pf': int(runstats_ET.find("NumberOfUnalignedClustersPF").text),
                                     'duplicate': int(runstats_ET.find("NumberOfDuplicateClusters").text) }
 
+    def parse_RunInfo(self, filepath):
+        "parses Reads, Date, Flowcell, Instrument out of runInfo.xml"
+        tree = ET.parse(filepath)
+        run_ET = tree.getroot().find('Run')     #little of use in this file except <Run> subelement. 
+        
+        self.runID = run_ET.attrib['Id']
+        
+        #? is this useful information? if so, what for?  (It's not in CompletedJobInfo.xml)
+        #self.runNumber = run_ET.attrib['Number'] 
+        self.rta_run_info = self.parse_Run_ET(run_ET)
+
+
+    def parse_RunParameters(self, filepath, machine='miseq'):
+        """parses runParameters.xml (or viable alias) to fill instance variables.
+
+        Need to implement further since HiSeq output has no CompletedJobInfo.xml
+        """
+        # TODO: xml_versions -- detect different versions of XML.
+
+        tree = ET.parse(filepath)
+        root = tree.getroot()
+
+        # A dirty hack to get us out of a bind.
+        # (MiSeq XML puts everything under Root, while HiSeq XML puts everything under Setup. Joy.)
+        if machine=='hiseq':
+            root = root.find('Setup')
+
+        # And now, an ugly set of try-except blocks to protect against unexpected/missing data.
+        try:
+            rawdate = root.find('RunStartDate').text    # format: 130208 YYMMDD
+            self.start_datetime = datetime.strptime(rawdate, '%y%m%d')
+        except:
+            pass
+
+        try:
+            self.runID = root.find("RunID").text
+        except AttributeError:
+            pass
+
+        try:
+            self.experiment_name = root.find('ExperimentName').text
+        except AttributeError:
+            pass
+
+        self.read_config = []
+        
+        try:       
+            for item in root.find('Reads'):
+                #Different format from that in CompletedJobInfo.xml (contains read Number)
+                self.read_config.append( {'read_num': int(item.attrib['Number']),
+                                          'cycles': int(item.attrib['NumCycles']), 
+                                          'is_index': True if item.attrib['IsIndexedRead']=='Y' else False } )
+        except AttributeError:
+            pass
+
+
     def parse_CompletedJobInfo(self, filepath):
-        """parses CompletedJobInfo.xml (or viable alias) to fill instance variables."""
+        """parses CompletedJobInfo.xml (or viable alias) to fill instance variables.
+        
+        Not all machines generate this file, so we avoid relying on it.
+        """
 
         # comments show example data from a real MiSeq run (2013/02)
-        
         tree = ET.parse(filepath)
         root = tree.getroot()       #should be "AnalysisJobInfo"
     
@@ -178,43 +240,6 @@ class InteropMetadata(object):
         # RTARunInfo / Run / *          
         self.runID = run_ET.attrib["Id"] 
         self.parse_Run_ET(run_ET)
-
-    def parse_RunParameters(self, filepath):
-        """partially implemented; essential when CompletedJobInfo.xml missing. 
-        Can fill read_config but not flowcell_layout."""
-
-        tree = ET.parse(filepath)
-        root = tree.getroot()
-
-        # TODO: xml_flex - designate source priority for tokens found in multiple sources. 
-        #self.runID = root.find("RunID").text
-        
-        # TODO: normalize this variable
-        #self.start_datetime = root.find('RunStartDate').text    # format: 130208 YYMMDD
-        try:
-            self.experiment_name = root.find('ExperimentName').text
-        except AttributeError:
-            pass
-
-        self.read_config = []
-        for item in root.find('Reads'):
-            #Different format from that in CompletedJobInfo.xml (contains read Number)
-            self.read_config.append( {'read_num': int(item.attrib['Number']),
-                                      'cycles': int(item.attrib['NumCycles']), 
-                                      'is_index': True if item.attrib['IsIndexedRead']=='Y' else False } )
-
-
-    def parse_RunInfo(self, filepath):
-        "parses Reads, Date, Flowcell, Instrument out of runInfo.xml"
-        tree = ET.parse(filepath)
-        run_ET = tree.getroot().find('Run')     #little of use in this file except <Run> subelement. 
-        
-        self.runID = run_ET.attrib['Id']
-        
-        #? is this useful information? if so, what for?  (It's not in CompletedJobInfo.xml)
-        #self.runNumber = run_ET.attrib['Number']    
-        
-        self.rta_run_info = self.parse_Run_ET(run_ET)
         
     def prettyprint_read_config(self):
         out = "Read Config:"
