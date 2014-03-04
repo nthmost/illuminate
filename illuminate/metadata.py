@@ -37,7 +37,7 @@ class InteropMetadata(object):
         0.1     First released version.
     """
     
-    __version = 0.2.2    # version of this parser.
+    __version = 0.2     # version of this parser.
 
     def __init__(self, xmldir):
         """Takes the absolute path of a sequencing run data directory as sole required variable.
@@ -174,12 +174,19 @@ class InteropMetadata(object):
 
 
     def _parse_runparams(self, xml_dict):
-        for item in xml_dict.get('Reads'):
-            #Different format from that in CompletedJobInfo.xml (contains read Number)
+        # Different format from that in CompletedJobInfo.xml (contains read Number).
+        # And there are two possible keys to indicate the same datastructure. So fun.
+        try:
+            Reads = xml_dict.get('Reads')['Read']
+        except KeyError:
+            Reads = xml_dict.get('Reads')['RunInfoRead']
+
+        for read in Reads:
             self.read_config.append( 
-                    {'read_num': int(item.attrib['Number']),
-                     'cycles': int(item.attrib['NumCycles']), 
-                     'is_index': True if item.attrib['IsIndexedRead']=='Y' else False } )
+                    {'read_num': int(read['@Number']),
+                     'cycles': int(read['@NumCycles']),
+                     'is_index': True if read['@IsIndexedRead']=='Y' else False 
+                    } )
 
         self.rta_version = xml_dict.get('RTAVersion', '')
         
@@ -196,8 +203,6 @@ class InteropMetadata(object):
 
         Need to implement further since HiSeq output has no CompletedJobInfo.xml
         """
-        # TODO: xml_versions -- detect different versions of XML.
-
         buf = open(filepath).read()
         root = xmltodict.parse(buf)['RunParameters']
 
@@ -277,5 +282,4 @@ class InteropMetadata(object):
         out = self.prettyprint_read_config() + "\n"
         out += self.prettyprint_flowcell_layout() + "\n"
         return out
-
 
