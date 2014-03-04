@@ -15,8 +15,11 @@
 
 import time, os
 from collections import OrderedDict
-from xml.etree import ElementTree as ET
 from datetime import datetime
+
+import xml.etree.ElementTree as ET
+
+import xmltodict
 
 from exceptions import InteropFileNotFoundError
 from utils import select_file_from_aliases
@@ -27,10 +30,11 @@ class InteropMetadata(object):
 
     CHANGES:
         
+        0.3 (in progress) Switching to xmltodict from ElementTree.
         0.2.2   runParameters supports both MiSeq and HiSeq formats.
-        0.2.1   no longer prioritizing CompletedJobInfo.xml (not reliably present).
-        0.2     cleaner logical process for using the various XML files. No longer throws exceptions.
-        0.1     first released version.
+        0.2.1   No longer prioritizing CompletedJobInfo.xml (not reliably present).
+        0.2     Cleaner logical process for using the various XML files. No longer throws exceptions.
+        0.1     First released version.
     """
     
     __version = 0.2.2    # version of this parser.
@@ -48,13 +52,16 @@ class InteropMetadata(object):
         self.experiment_name = ""        # "RU1453:::/locus/data/run_data//1337/1453"
         self.investigator_name = ""      # "Locus:::Uncle_Jesse - 612 - MiSeq"
         self.runID = ""                  # cf CompletedJobInfo.xml / RTARunInfo / Run param "Id"
-        self.start_datetime = None
         
+        # TODO: xml_datetimes
+        # We can learn end_datetime this from the RTAComplete.txt file. 
+        #    sample:  2/11/2014,17:25:13.217,Illumina RTA 1.18.42 
+        #
+        #...but it would be nicer if we didn't have to (more files to track, no fun).
         
-        # TODO: We can learn end_datetime this from the RTAComplete file. 
-        # e.g.  2/11/2014,17:25:13.217,Illumina RTA 1.18.42 
-        
+        self.start_datetime = None        
         self.end_datetime = None
+        
         self.rta_run_info = { 'flowcell': '', 'instrument': '', 'date': '' }
 
         # read_config: a list of dictionaries, each of which describe a single read from the sequencer.
@@ -97,7 +104,8 @@ class InteropMetadata(object):
                     break
 
     def _set_xml_map(self):
-        "finds all available XML files and assigns them to an ordered dictionary mapping of codename:[filepath,parse_function]"
+        """finds all available XML files, assigns them to an ordered dictionary 
+        mapping of codename:[filepath,parse_function] """
         for codename in self._xml_map:
             self._xml_map[codename][0] = self.get_xml_path(codename)
                 
@@ -132,9 +140,11 @@ class InteropMetadata(object):
                                       'cycles': int(item.attrib['NumCycles']), 
                                       'is_index': True if item.attrib["IsIndexedRead"]=="Y" else False } )      
     
-    def parse_ResequencingRunStats(self, filepath):
+    def parse_ResequencingRunStats(self, filepath):    
         """Parses ResequencingRunStatistics.xml (or viable alias) to fill instance variables."""
         
+        # TODO: xmltodict conversion 
+
         tree = ET.parse(filepath)
         root = tree.getroot()   # should be "StatisticsResequencing"
         runstats_ET = root.find("RunStats")
@@ -149,6 +159,10 @@ class InteropMetadata(object):
 
     def parse_RunInfo(self, filepath):
         "parses Reads, Date, Flowcell, Instrument out of runInfo.xml"
+        
+        #buf = open(filepath).read()
+        #root = xmltodict.parse(buf)['RunInfo']
+        
         tree = ET.parse(filepath)
         run_ET = tree.getroot().find('Run')     #little of use in this file except <Run> subelement. 
         
@@ -159,55 +173,49 @@ class InteropMetadata(object):
         self.rta_run_info = self.parse_Run_ET(run_ET)
 
 
-    def parse_RunParameters(self, filepath, machine='miseq'):
+    def _parse_runparams(self, xml_dict):
+        for item in xml_dict.get('Reads'):
+            #Different format from that in CompletedJobInfo.xml (contains read Number)
+            self.read_config.append( 
+                    {'read_num': int(item.attrib['Number']),
+                     'cycles': int(item.attrib['NumCycles']), 
+                     'is_index': True if item.attrib['IsIndexedRead']=='Y' else False } )
+
+        self.rta_version = xml_dict.get('RTAVersion', '')
+        
+        rawdate = xml_dict.get('RunStartDate', '')    # format: 130208 YYMMDD
+        if rawdate: 
+            self.start_datetime = datetime.strptime(rawdate, '%y%m%d')
+            
+        self.runID = xml_dict.get('RunID', '')
+        self.experiment_name = xml_dict.get('ExperimentName', '')        
+        
+
+    def parse_RunParameters(self, filepath):
         """parses runParameters.xml (or viable alias) to fill instance variables.
 
         Need to implement further since HiSeq output has no CompletedJobInfo.xml
         """
         # TODO: xml_versions -- detect different versions of XML.
 
-        tree = ET.parse(filepath)
-        root = tree.getroot()
-
-        # A dirty hack to get us out of a bind.
-        # (MiSeq XML puts everything under Root, while HiSeq XML puts everything under Setup. Joy.)
-        if machine=='hiseq':
-            root = root.find('Setup')
-
-        # And now, an ugly set of try-except blocks to protect against unexpected/missing data.
-        try:
-            rawdate = root.find('RunStartDate').text    # format: 130208 YYMMDD
-            self.start_datetime = datetime.strptime(rawdate, '%y%m%d')
-        except:
-            pass
-
-        try:
-            self.runID = root.find("RunID").text
-        except AttributeError:
-            pass
-
-        try:
-            self.experiment_name = root.find('ExperimentName').text
-        except AttributeError:
-            pass
+        buf = open(filepath).read()
+        root = xmltodict.parse(buf)['RunParameters']
 
         self.read_config = []
         
-        try:       
-            for item in root.find('Reads'):
-                #Different format from that in CompletedJobInfo.xml (contains read Number)
-                self.read_config.append( {'read_num': int(item.attrib['Number']),
-                                          'cycles': int(item.attrib['NumCycles']), 
-                                          'is_index': True if item.attrib['IsIndexedRead']=='Y' else False } )
-        except AttributeError:
-            pass
-
-
+        # a dirty hack to figure out which version of this file we're reading.
+        if 'Reads' in list(root['Setup'].keys()):
+            self._parse_runparams(root['Setup'])        # HiSeq
+        else:
+            self._parse_runparams(root)                 # MiSeq
+        
     def parse_CompletedJobInfo(self, filepath):
         """parses CompletedJobInfo.xml (or viable alias) to fill instance variables.
         
         Not all machines generate this file, so we avoid relying on it.
         """
+
+        # TODO: xmltodict conversion 
 
         # comments show example data from a real MiSeq run (2013/02)
         tree = ET.parse(filepath)
@@ -220,7 +228,7 @@ class InteropMetadata(object):
         # original location of data output from the sequencer.
         self.output_folder = root.find("RTAOutputFolder").text 
         
-        # TODO: reformat these dates into something nicer (more useable).
+        # TODO: xml_datetimes
         self.start_datetime = root.find("StartTime").text           # 2013-02-09T15:51:50.0811937-08:00
         self.end_datetime = root.find("CompletionTime").text        # 2013-02-09T16:06:44.0124452-08:00
         
@@ -230,6 +238,7 @@ class InteropMetadata(object):
         run_ET = root.find("RTARunInfo").find("Run")
         
         # Sheet / *
+        # TODO: deprecate this attribute (can't get it from HiSeq XML)
         try:
             self.runtype = sheet_ET.find("Type").text       # MiSeq, HiSeq, etc.
         except AttributeError:
@@ -237,7 +246,6 @@ class InteropMetadata(object):
             self.runtype = ""
                 
         # Sheet / Header / *
-        # TODO: xml_flex
         try:
             self.investigator_name = header_ET.find("InvestigatorName").text
             self.project_name = header_ET.find("ProjectName").text
