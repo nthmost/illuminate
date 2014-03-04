@@ -1,0 +1,86 @@
+<?xml version="1.0"?>
+<AnalysisJobInfo xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="0">
+  <AlignmentFolder>D:\Illumina\MiSeqAnalysis\140211_M00612_0148_000000000-A7M8N\Data\Intensities\BaseCalls\Alignment</AlignmentFolder>
+  <CompletionTime>2014-02-11T17:51:27.4294574-08:00</CompletionTime>
+  <RTARunInfo Version="2">
+    <Run Id="140211_M00612_0148_000000000-A7M8N">
+      <Flowcell>000000000-A7M8N</Flowcell>
+      <Instrument>M00612</Instrument>
+      <Date>140211</Date>
+      <Reads>
+        <Read NumCycles="50" IsIndexedRead="N" />
+        <Read NumCycles="6" IsIndexedRead="Y" />
+      </Reads>
+      <FlowcellLayout LaneCount="1" SurfaceCount="2" SwathCount="1" TileCount="14" />
+      <AlignToPhiX />
+    </Run>
+  </RTARunInfo>
+  <RunFolder>D:\Illumina\MiSeqAnalysis\140211_M00612_0148_000000000-A7M8N</RunFolder>
+  <Sheet>
+    <Type>MiSeq</Type>
+    <WorkflowType>GenerateFASTQ</WorkflowType>
+    <Header>
+      <Chemistry>Default</Chemistry>
+      <Date>2014 02/10/14 16:01:34</Date>
+      <ExperimentName>RU3284:::/locus/data/run_data//3270/3284</ExperimentName>
+      <InvestigatorName>Locus:::Uncle_Jesse - 612 - MiSeq</InvestigatorName>
+    </Header>
+  </Sheet>
+  <StartTime>2014-02-11T17:48:52.7792409-08:00</StartTime>
+  <Workflow>
+    <WorkflowSettings>
+      <AdapterSequences />
+      <AdapterSequences2 />
+      <FastQInput>false</FastQInput>
+      <StitchReads>false</StitchReads>
+      <MaximumThreadCount>0</MaximumThreadCount>
+      <ReadTrimQualityScoreLevel>0</ReadTrimQualityScoreLevel>
+      <ReverseComplement>false</ReverseComplement>
+      <VarCallerSettings>
+        <Filters>
+          <FilterOutSingleProbePoolVariants>false</FilterOutSingleProbePoolVariants>
+          <FilterOutSingleStrandVariants>false</FilterOutSingleStrandVariants>
+          <IndelRepeatFilterCutoff>8</IndelRepeatFilterCutoff>
+          <MinQScore>0</MinQScore>
+          <MinimumCoverageDepthEmitCutoff>-1</MinimumCoverageDepthEmitCutoff>
+          <MinimumDepthCutoff>-1</MinimumDepthCutoff>
+          <MinimumGQCutoff>0</MinimumGQCutoff>
+          <MinimumGQXCutoff>0</MinimumGQXCutoff>
+          <MinimumMQCutoff>-1</MinimumMQCutoff>
+          <MinimumQDCutoff>0</MinimumQDCutoff>
+          <MinimumQualCutoff>-1</MinimumQualCutoff>
+          <MinimumQualityEmitCutoff>-1</MinimumQualityEmitCutoff>
+          <OnlyCallInROI>false</OnlyCallInROI>
+          <OnlyUseProperPairs>false</OnlyUseProperPairs>
+          <CallPhasedSNPs>false</CallPhasedSNPs>
+          <StrandBiasFilterCutoff>0</StrandBiasFilterCutoff>
+          <MaxSizePhasedSNP>100</MaxSizePhasedSNP>
+          <QualityModel>Poisson</QualityModel>
+          <VariantFrequencyEmitCutoff>0.1</VariantFrequencyEmitCutoff>
+          <VariantFrequencyFilterCutoff>0.2</VariantFrequencyFilterCutoff>
+        </Filters>
+        <Annotation>MARS</Annotation>
+        <OutputGenomeVcf>false</OutputGenomeVcf>
+        <GVcfBlockCompression>true</GVcfBlockCompression>
+      </VarCallerSettings>
+      <VariantCaller>None</VariantCaller>
+    </WorkflowSettings>
+    <Analysis>GenerateFASTQ</Analysis>
+    <WorkflowVersion>1.0.0.18</WorkflowVersion>
+  </Workflow>
+  <RunStats>
+    <AnalysisSoftwareVersion>2.3.32</AnalysisSoftwareVersion>
+    <NumberOfClustersPF>0</NumberOfClustersPF>
+    <NumberOfClustersRaw>0</NumberOfClustersRaw>
+    <NumberOfDuplicateClusters>0</NumberOfDuplicateClusters>
+    <NumberOfUnalignedClusters>0</NumberOfUnalignedClusters>
+    <NumberOfUnalignedClustersPF>0</NumberOfUnalignedClustersPF>
+    <NumberOfUnindexedClusters>0</NumberOfUnindexedClusters>
+    <NumberOfUnindexedClustersPF>0</NumberOfUnindexedClustersPF>
+    <OverallCoverage>0</OverallCoverage>
+    <YieldInBasesPF>0</YieldInBasesPF>
+    <YieldInBasesRaw>0</YieldInBasesRaw>
+  </RunStats>
+  <AnalysisSoftwareVersion>2.3.32</AnalysisSoftwareVersion>
+  <RTAOutputFolder>\\2-seqnas\seqdata\output\140211_M00612_0148_000000000-A7M8N</RTAOutputFolder>
+</AnalysisJobInfo>

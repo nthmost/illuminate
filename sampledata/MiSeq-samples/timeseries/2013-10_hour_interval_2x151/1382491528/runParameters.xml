@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<RunParameters xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <EnableCloud>false</EnableCloud>
+  <CopyManifests>true</CopyManifests>
+  <FlowcellRFIDTag>
+    <SerialNumber>000000000-A5Y02</SerialNumber>
+    <PartNumber>15028382</PartNumber>
+    <ExpirationDate>2014-09-06T00:00:00</ExpirationDate>
+  </FlowcellRFIDTag>
+  <PR2BottleRFIDTag>
+    <SerialNumber>MS2212332-00PR2</SerialNumber>
+    <PartNumber>15041807</PartNumber>
+    <ExpirationDate>2014-09-11T00:00:00</ExpirationDate>
+  </PR2BottleRFIDTag>
+  <ReagentKitRFIDTag>
+    <SerialNumber>MS2035078-300V2</SerialNumber>
+    <PartNumber>15033572</PartNumber>
+    <ExpirationDate>2014-07-22T00:00:00</ExpirationDate>
+  </ReagentKitRFIDTag>
+  <Resumable>true</Resumable>
+  <ManifestFiles />
+  <AfterRunWashMethod>Post-Run Wash</AfterRunWashMethod>
+  <Setup>
+    <SupportMultipleSurfacesInUI>true</SupportMultipleSurfacesInUI>
+    <ApplicationVersion>2.0.5</ApplicationVersion>
+    <NumTilesPerSwath>14</NumTilesPerSwath>
+    <NumSwaths>1</NumSwaths>
+    <NumLanes>1</NumLanes>
+    <ApplicationName>MiSeq Control Software</ApplicationName>
+  </Setup>
+  <RunID>131022_M00630_0101_000000000-A5Y02</RunID>
+  <ScannerID>M00630</ScannerID>
+  <RunNumber>100</RunNumber>
+  <FPGAVersion>9.5.12</FPGAVersion>
+  <CPLD>Not Specified</CPLD>
+  <CameraModel>Not Specified</CameraModel>
+  <CameraDriverVersion>Not Specified</CameraDriverVersion>
+  <CameraFirmwareVersion>Not Specified</CameraFirmwareVersion>
+  <MCSVersion>2.0.5</MCSVersion>
+  <RTAVersion>1.16.18</RTAVersion>
+  <Barcode>000000000-A5Y02</Barcode>
+  <PR2BottleBarcode>MS2212332-00PR2</PR2BottleBarcode>
+  <ReagentKitPartNumberEntered />
+  <ReagentKitVersion>Version2</ReagentKitVersion>
+  <ReagentKitBarcode>MS2035078-300V2</ReagentKitBarcode>
+  <PreviousPR2BottleBarcode />
+  <PreviousReagentKitBarcode />
+  <ExperimentName>RU2587:::/locus/data/run_data//2580/2587</ExperimentName>
+  <Chemistry>Default</Chemistry>
+  <Username>sbsuser</Username>
+  <Workflow>
+    <Analysis>GenerateFASTQ</Analysis>
+  </Workflow>
+  <EnableAnalysis>false</EnableAnalysis>
+  <Reads>
+    <RunInfoRead Number="1" NumCycles="151" IsIndexedRead="N" />
+    <RunInfoRead Number="2" NumCycles="6" IsIndexedRead="Y" />
+    <RunInfoRead Number="3" NumCycles="151" IsIndexedRead="N" />
+  </Reads>
+  <TempFolder>D:\Illumina\MiSeqTemp\131022_M00630_0101_000000000-A5Y02</TempFolder>
+  <AnalysisFolder>D:\Illumina\MiSeqAnalysis\131022_M00630_0101_000000000-A5Y02</AnalysisFolder>
+  <RunStartDate>131022</RunStartDate>
+  <MostRecentWashType>Maintenance</MostRecentWashType>
+  <RecipeFolder>D:\Illumina\MiSeq Control Software\CustomRecipe</RecipeFolder>
+  <ILMNOnlyRecipeFolder>C:\Illumina\MiSeq Control Software\Recipe</ILMNOnlyRecipeFolder>
+  <SampleSheetName>MS2035078-300V2</SampleSheetName>
+  <SampleSheetFolder>\\2-SEQNAS\seqdata\samplesheet</SampleSheetFolder>
+  <ManifestFolder>\\2-SEQNAS\seqdata\manifest</ManifestFolder>
+  <OutputFolder>\\2-SEQNAS\seqdata\output\131022_M00630_0101_000000000-A5Y02</OutputFolder>
+  <FocusMethod>AutoFocus</FocusMethod>
+  <SurfaceToScan>Both</SurfaceToScan>
+  <SaveFocusImages>true</SaveFocusImages>
+  <SaveScanImages>true</SaveScanImages>
+  <CloudUsername />
+  <CloudRunId>3975000</CloudRunId>
+  <SendInstrumentHealthToILMN>true</SendInstrumentHealthToILMN>
+  <AmpliconWorkflowType />
+</RunParameters>

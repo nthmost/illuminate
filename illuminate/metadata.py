@@ -117,11 +117,11 @@ class InteropMetadata(object):
     def parse_Run_ET(self, run_ET):
         "parses chunk of XML associated with the RTA Run Info blocks in (at least) 2 xml files."
 
-        self.rta_run_info = { 'instrument': run_ET.find("Instrument").text,     # M00612
-                              'flowcell': run_ET.find("Flowcell").text,         # 000000000-A316T
-                              'date': run_ET.find("Date").text }                # 130208
+        self.rta_run_info = { 'instrument': run_ET.find('Instrument').text,     # M00612
+                              'flowcell': run_ET.find('Flowcell').text,         # 000000000-A316T
+                              'date': run_ET.find('Date').text }                # 130208
     
-        flowcell_ET = run_ET.find("FlowcellLayout")
+        flowcell_ET = run_ET.find('FlowcellLayout')
         self.flowcell_layout = { 'lanecount': int(flowcell_ET.attrib['LaneCount']),
                         'surfacecount': int(flowcell_ET.attrib['SurfaceCount']),
                         'swathcount': int(flowcell_ET.attrib['SwathCount']),
@@ -138,7 +138,7 @@ class InteropMetadata(object):
             read_num += 1       # redundant safety assignment to read_num
             self.read_config.append( {'read_num': read_num,
                                       'cycles': int(item.attrib['NumCycles']), 
-                                      'is_index': True if item.attrib["IsIndexedRead"]=="Y" else False } )      
+                                      'is_index': True if item.attrib['IsIndexedRead']=='Y' else False } )      
     
     def parse_ResequencingRunStats(self, filepath):    
         """Parses ResequencingRunStatistics.xml (or viable alias) to fill instance variables."""
@@ -149,13 +149,13 @@ class InteropMetadata(object):
         root = tree.getroot()   # should be "StatisticsResequencing"
         runstats_ET = root.find("RunStats")
         
-        self.resequencing_stats = { 'clusters_raw': int(runstats_ET.find("NumberOfClustersRaw").text),
-                                    'clusters_pf': int(runstats_ET.find("NumberOfClustersPF").text),
-                                    'unindexed': int(runstats_ET.find("NumberOfUnindexedClusters").text),
-                                    'unindexed_pf': int(runstats_ET.find("NumberOfUnindexedClustersPF").text),
-                                    'unaligned': int(runstats_ET.find("NumberOfUnalignedClusters").text),
-                                    'unaligned_pf': int(runstats_ET.find("NumberOfUnalignedClustersPF").text),
-                                    'duplicate': int(runstats_ET.find("NumberOfDuplicateClusters").text) }
+        self.resequencing_stats = { 'clusters_raw': int(runstats_ET.find('NumberOfClustersRaw').text),
+                                    'clusters_pf': int(runstats_ET.find('NumberOfClustersPF').text),
+                                    'unindexed': int(runstats_ET.find('NumberOfUnindexedClusters').text),
+                                    'unindexed_pf': int(runstats_ET.find('NumberOfUnindexedClustersPF').text),
+                                    'unaligned': int(runstats_ET.find('NumberOfUnalignedClusters').text),
+                                    'unaligned_pf': int(runstats_ET.find('NumberOfUnalignedClustersPF').text),
+                                    'duplicate': int(runstats_ET.find('NumberOfDuplicateClusters').text) }
 
     def parse_RunInfo(self, filepath):
         "parses Reads, Date, Flowcell, Instrument out of runInfo.xml"
