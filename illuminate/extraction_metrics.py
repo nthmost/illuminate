@@ -9,7 +9,7 @@ anno_domini = datetime(1, 1, 1)
 
 class InteropExtractionMetrics(InteropBinParser):
 
-    __version = 0.1
+    __version = 0.2
     supported_versions = [2]
     codename = 'extraction'
 

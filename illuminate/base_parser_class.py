@@ -25,9 +25,6 @@ class InteropBinParser(object):
     "Generic binary parser for ILMN files typically found in InterOp directory. Subclass (do not use directly)."
 
     __version = 0.5      # version of this base class
-    
-    num_tiles = 0
-    num_reads = 0
 
     def __init__(self, bitstring_or_filename, **kwargs):
         "Takes either a filename or a BitString object. Optional: flowcell_layout {}, read_config [{},]"
@@ -55,11 +52,11 @@ class InteropBinParser(object):
 
     def parse_binary(self):
         "Stub class for binary parsing."
-        print "InteropBinParser: Generic Binary Parser class"
-        print ""
-        print "Override this method with your own parsing method." 
-        print ""
+        print """InteropBinParser: Generic Binary Parser class
 
+        Override this method with your own parsing method.
+        """
+        
     def _init_variables(self):
         "Place to initialize the instance variables required by specific parsers."
         pass
@@ -97,7 +94,9 @@ class InteropBinParser(object):
         return self.data
 
     def to_csv(self):
-        "Transforms object's DataFrame into comma-separated / newline delineated data. First line contains row headers." 
+        """Transforms object's DataFrame into comma-separated / newline delineated data. 
+        First line contains row headers.
+        """ 
         output = cStringIO.StringIO()
         self.df.to_csv(output, index_label='line')
         return output.getvalue()

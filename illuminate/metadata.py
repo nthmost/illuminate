@@ -16,6 +16,7 @@
 import time, os
 from collections import OrderedDict
 from xml.etree import ElementTree as ET
+from datetime import datetime
 
 from exceptions import InteropFileNotFoundError
 from utils import select_file_from_aliases
@@ -26,11 +27,13 @@ class InteropMetadata(object):
 
     CHANGES:
         
+        0.2.2   runParameters supports both MiSeq and HiSeq formats.
+        0.2.1   no longer prioritizing CompletedJobInfo.xml (not reliably present).
         0.2     cleaner logical process for using the various XML files. No longer throws exceptions.
         0.1     first released version.
     """
     
-    __version = 0.2     # version of this parser.
+    __version = 0.2.2    # version of this parser.
 
     def __init__(self, xmldir):
         """Takes the absolute path of a sequencing run data directory as sole required variable.
@@ -46,6 +49,11 @@ class InteropMetadata(object):
         self.investigator_name = ""      # "Locus:::Uncle_Jesse - 612 - MiSeq"
         self.runID = ""                  # cf CompletedJobInfo.xml / RTARunInfo / Run param "Id"
         self.start_datetime = None
+        
+        
+        # TODO: We can learn end_datetime this from the RTAComplete file. 
+        # e.g.  2/11/2014,17:25:13.217,Illumina RTA 1.18.42 
+        
         self.end_datetime = None
         self.rta_run_info = { 'flowcell': '', 'instrument': '', 'date': '' }
 
