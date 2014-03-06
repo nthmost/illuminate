@@ -10,15 +10,6 @@ def select_file_from_aliases(codename, filemap, basepath):
     # none of the possible files extant
     return None
 
-def dmesg(msg, lvl=1):
-    VERBOSITY = 1
-    DEBUG = True
-    "Simple logger - transitional code."
-    msg = "[%s] " % str(time.time()) + str(msg)
-    if DEBUG: msg = "[DEBUG] " + msg
-    if VERBOSITY >= lvl:
-        print msg
-    
 def set_column_sequence(dataframe, seq):
     '''
     Returns pandas DataFrame with the columns named in seq as first columns.

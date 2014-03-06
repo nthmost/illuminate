@@ -3,8 +3,6 @@
 import cStringIO
 from bitstring import BitString
 
-from utils import dmesg
-
 #### SEQUENCER VAGARIES: flowcell_layout and read_config
 #
 # All binary parsers use these dicts, though each parser can have a different 
@@ -24,7 +22,7 @@ READ_CONFIG_DEFAULTS = [{'read_num': 1, 'cycles': 151, 'is_index': 0},
 class InteropBinParser(object):
     "Generic binary parser for ILMN files typically found in InterOp directory. Subclass (do not use directly)."
 
-    __version = 0.5      # version of this base class
+    __version = 0.6      # version of this base class
 
     def __init__(self, bitstring_or_filename, **kwargs):
         "Takes either a filename or a BitString object. Optional: flowcell_layout {}, read_config [{},]"
@@ -45,13 +43,12 @@ class InteropBinParser(object):
         self._init_variables()
 
         if self.bs is None:
-            dmesg("[%s] Fatal: BitString could not be created (file empty or not found)." % 
-                    (self.__class__.__name__), 1)
+            raise Exception("bitstring empty; cannot parse metrics for %s" % self.__class__.__name__)
         else:
             self.parse_binary() 
 
     def parse_binary(self):
-        "Stub class for binary parsing."
+        "Stub method for binary parsing."
         print """InteropBinParser: Generic Binary Parser class
 
         Override this method with your own parsing method.
@@ -63,10 +60,9 @@ class InteropBinParser(object):
     
     def check_version(self, version_num):
         "Compare parsed binary's version against parser's supported_versions list."
-        
         if version_num not in self.supported_versions:        
-            dmesg("[%s] Warning: apparent file version (%i) may not be supported by this parser" % 
-                (self.__class__.__name__, self.apparent_file_version), 2)
+            print("[%s] Warning: apparent file version (%i) may not be supported by this parser" % 
+            (self.__class__.__name__, self.apparent_file_version))
 
     def make_coordinate_plane(self, df, flatten=False):
         """Rework a dataframe containing lane / tile / cycle columns into a new dataframe using 
