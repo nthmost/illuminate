@@ -64,7 +64,8 @@ class InteropQualityMetrics(InteropBinParser):
         return out
 
     def index_quality(self, target_qscore=30):
-        "Convenience method to return index read's % quality for target_qscore (default 30)"
+        """Convenience method to return index read's % quality for target_qscore 
+          (default % >= Q30)"""
     
         # Assumes only one Index read, which is not a good assumption. 
         # No plans to fix unless specifically requested. (Would probably make more

@@ -102,3 +102,25 @@ class InteropBinParser(object):
         return self.df.to_json()
 
 
+
+def make_test_data(codename, infile, outfile, n=1):
+    '''Takes a "complete" binary source and returns a bitstring suitable
+        for creating a much smaller, parsable binary suitable for testing.
+
+    Currently supported metrics: 'quality'
+
+    :param codename: (required) metrics codename (e.g. 'tile', 'quality')
+    :param infile: (required) path to file to be used as source data.
+    :param outfile: (optional) path to file to be written (default: ./QualityMetricsTest.bin)
+    :param n: (optional) integer describing number of complete records to write.
+    '''
+    record_length = { 'quality': 153730 }
+
+    bs = BitString(bytes=open(infile, 'rb').read())
+
+    buf = bs.read(record_length[codename] * n)
+    outbin = open(outfile, 'wb')
+    buf.tofile(outbin)
+    outbin.close()
+
+    return outfile
