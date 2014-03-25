@@ -168,8 +168,9 @@ class InteropMetadata(object):
         
         self.runID = run_ET.attrib['Id']
         
-        #? is runNumber useful information? if so, what for?  (It's not in CompletedJobInfo.xml)
+        #? is runNumber useful information? if so, what for?
         #self.runNumber = run_ET.attrib['Number'] 
+        
         self.rta_run_info = self.parse_Run_ET(run_ET)
 
 
