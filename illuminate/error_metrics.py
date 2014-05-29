@@ -4,7 +4,7 @@ import pandas
 
 from base_parser_class import InteropBinParser
 
-class InteropErrorMetrics( InteropBinParser ):
+class InteropErrorMetrics(InteropBinParser):
 
     __version = 0.1
     supported_versions = [3]

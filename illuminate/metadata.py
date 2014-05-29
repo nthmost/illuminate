@@ -197,8 +197,7 @@ class InteropMetadata(object):
             
         self.runID = xml_dict.get('RunID', '')
         self.experiment_name = xml_dict.get('ExperimentName', '')        
-        
-
+    
     def parse_RunParameters(self, filepath):
         """parses runParameters.xml (or viable alias) to fill instance variables.
 

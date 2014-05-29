@@ -15,7 +15,7 @@ class InteropIndexMetrics(InteropBinParser):
     # this class doesn't require read_config and flowcell_layout, but 
     # some of the sanity checks it can run on the data do use them.
 
-    def sanity_check( self ):
+    def sanity_check(self):
         "Checks parser output against expectations from parameters of the run."
         #
         # This is the stub of an idea for pan-parser implementation later.
@@ -27,7 +27,7 @@ class InteropIndexMetrics(InteropBinParser):
                   self.flowcell_layout['tilecount'] * self.flowcell_layout['surfacecount'] * \
                   len(self.results.keys()) * self.flowcell_layout['lanecount']
                 
-    def _init_variables( self ):
+    def _init_variables(self):
         self.data = {
             'lane': [], 
             'tile': [], 
@@ -92,7 +92,7 @@ class InteropIndexMetrics(InteropBinParser):
             #that's all, folks
             pass
 
-        self.df = pandas.DataFrame( self.data )
+        self.df = pandas.DataFrame(self.data)
 
         cluster_pivot = self.df.pivot_table('clusters', rows='index_str', aggfunc='sum')
  

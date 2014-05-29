@@ -6,10 +6,10 @@ syntax: glob
 .DS_Store
 *.egg-info
 tmp
-ve
-dist
+ve/
+dist/
 *.egg-info
-build
-data
-sampledata/incomplete-runs
+build/
+data/
+sampledata/incomplete-runs/
 dump/
