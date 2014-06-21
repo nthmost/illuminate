@@ -91,8 +91,8 @@ class InteropTileMetrics(InteropBinParser):
 
         # INTERPRETATION: MOVE TO SEPARATE FUNCTION(S)
             
-        pivot_sum = self.df.pivot_table('value', rows='code', aggfunc='sum')
-        pivot_mean = self.df.pivot_table('value', rows='code', aggfunc='mean')
+        pivot_sum = self.df.pivot_table('value', index='code', aggfunc='sum')
+        pivot_mean = self.df.pivot_table('value', index='code', aggfunc='mean')
         
         try:
             self.total_cluster_density = pivot_sum[100]

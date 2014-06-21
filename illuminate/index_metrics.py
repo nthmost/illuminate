@@ -94,14 +94,14 @@ class InteropIndexMetrics(InteropBinParser):
 
         self.df = pandas.DataFrame(self.data)
 
-        cluster_pivot = self.df.pivot_table('clusters', rows='index_str', aggfunc='sum')
+        cluster_pivot = self.df.pivot_table('clusters', index='index_str', aggfunc='sum')
  
         self.total_ix_reads_pf = cluster_pivot.sum()
     
         for ix in self.df.index_str.unique():
             self.results[ix] = cluster_pivot[ix]
         
-        self.pivot = self.df.pivot_table('clusters', rows=['index_str', 'project_str', 'name_str'], aggfunc='sum')
+        self.pivot = self.df.pivot_table('clusters', index=['index_str', 'project_str', 'name_str'], aggfunc='sum')
         
         # pivot now looks something like this, with any luck:
         """index_str  project_str       name_str                             
