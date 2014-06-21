@@ -47,14 +47,18 @@ Requirements
 ------------
 
 You'll need a UNIX-like environment to use this package. Both OS X and Linux have been confirmed to work.
-Illuminate relies on four open-source packages available through the Python cheeseshop::
+Illuminate relies on five open-source packages available through the Python cheeseshop::
 
   numpy
   pandas
   bitstring
   docopt
+  xmltodict
 
 Please let the maintainer of this package (Naomi.Most@invitae.com) know if any of these requirements make it difficult to use and integrate Illuminate in your software; this is useful feedback.
+
+Note: if you must use a version of pandas prior to 0.14, you should pin
+your version of illuminate to 0.5.7.3.
 
 Optional but Recommended: IPython
 ---------------------------------
