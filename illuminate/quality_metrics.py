@@ -9,7 +9,7 @@ class InteropQualityMetrics(InteropBinParser):
     "ILMN Quality metrics parser (child class of InteropBinParser)."
 
     __version = 0.2     # version of this parser class.
-    supported_versions = [4]        # version(s) of file that this parser supports
+    supported_versions = [4, 5]        # version(s) of file that this parser supports
     codename = 'quality'
 
     # a scalar representing the number of quality scores per record in QualityMetrics*.bin
@@ -135,7 +135,13 @@ class InteropQualityMetrics(InteropBinParser):
         self.check_version(self.apparent_file_version)
 
         recordlen = bs.read('uintle:8')  # length of each record
-
+        
+        if (self.apparent_file_version == 5):
+            self.binning_on = bs.read('uintle:8')
+            if (self.binning_on == 1):
+                print("[%s] Warning: Q-score binning is not supported by this parser" %self.__class__.__name__)
+                
+                        
         #read records bytewise per specs in technote_rta_theory_operations.pdf from ILMN
         for i in range(0,((bs.len) / (recordlen * 8))):  # 206 * 8 = 1648 record length in bits
             lane = bs.read('uintle:16')
