@@ -25,6 +25,14 @@ Currently, the following Illumina machines are supported (any number of indices)
   HiSeq
   MiSeq
 
+IMPORTANT NOTE: illumina v4 software (RTA 2.0) is incompletely supported, as of illuminate 
+version 0.5.10.  The key difference is that RTA 2.0 allows Quality metrics to be "binned"
+
+`(see page 41 of http://support.illumina.com/content/dam/illumina-support/documents/documentation/system_documentation/nextseq/nextseq-500-system-guide-15046563-g.pdf)`
+
+Illuminate can process QualityMetrics *only if binning is turned off*.  Illuminate 0.6
+will fully support the RTA 2.0 binary changes.
+
 The integrated command-line reporter currently serves the following xml files::
 
   RunInfo.xml
