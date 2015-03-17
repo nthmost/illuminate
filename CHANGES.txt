@@ -19,3 +19,4 @@
 0.5.7.3  3/6/2014 -- Added make_test_data to base_parser_class.py (see docstring), only 'quality' supported. Purged dmesg from utils (yay).
 0.5.8, 6/21/2014 -- Adjusted pandas usage to match pandas 0.14 requirements.
 0.5.9, 3/9/2015 -- IndexMetrics.results dict now maps index_str to { project, name, clusters } (nested dict).
+0.5.10, 3/17/2015 -- Support for Illumina v4 QualityMetrics "binning" bit (though not the actually binning, yet). Thanks to Nofar Chen for the contribution.
