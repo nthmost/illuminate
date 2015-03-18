@@ -13,17 +13,16 @@
 # by nthmost (naomi.most@invitae.com)
 # with lots of help from ECO (eric.olivares@invitae.com)
 
-import time, os
+import os
 from collections import OrderedDict
 from datetime import datetime
-
 import xml.etree.ElementTree as ET
 
 import xmltodict
 
-from exceptions import InteropFileNotFoundError
 from utils import select_file_from_aliases
 from filemaps import XML_FILEMAP
+
 
 class InteropMetadata(object):
     """Parser for sequencer's XML files describing a single run. Supply with directory to instantiate.
@@ -95,6 +94,7 @@ class InteropMetadata(object):
                                       'runinfo':   [None, self.parse_RunInfo],
                                       'runparams': [None, self.parse_RunParameters] })
         self._set_xml_map()
+        self.model = ""
         
         # cycle through XML files, filling from what's available.
         for codename in self._xml_map:
@@ -196,8 +196,8 @@ class InteropMetadata(object):
             self.start_datetime = datetime.strptime(rawdate, '%y%m%d')
             
         self.runID = xml_dict.get('RunID', '')
-        self.experiment_name = xml_dict.get('ExperimentName', '')        
-    
+        self.experiment_name = xml_dict.get('ExperimentName', '')
+
     def parse_RunParameters(self, filepath):
         """parses runParameters.xml (or viable alias) to fill instance variables.
 
@@ -211,9 +211,14 @@ class InteropMetadata(object):
         # a dirty hack to figure out which version of this file we're reading.
         if 'Reads' in list(root['Setup'].keys()):
             self._parse_runparams(root['Setup'])        # HiSeq
-        else:
+        elif 'Reads' in list(root.keys()):
             self._parse_runparams(root)                 # MiSeq
-        
+        else:
+            pass  # NextSeq
+
+        self.model = self.get_model()
+
+
     def parse_CompletedJobInfo(self, filepath):
         """parses CompletedJobInfo.xml (or viable alias) to fill instance variables.
         
@@ -261,7 +266,49 @@ class InteropMetadata(object):
         # RTARunInfo / Run / *          
         self.runID = run_ET.attrib["Id"] 
         self.parse_Run_ET(run_ET)
-        
+
+    def get_model(self):
+        """
+        Guesses the sequencer model from the run folder name
+
+        Current Naming schema for Illumina run folders, as far as I know,
+        no documentation found on this, Illumina introduced a field called
+        'InstrumentID' on the NextSeq runParameters.xml. That might be an
+        option for the future
+
+        MiSeq: 150130_M01761_0114_000000000-ACUR0
+        NextSeq: 150202_NS500318_0047_AH3KLMBGXX
+        HiSeq 2000: 130919_SN792_0281_BD2CHRACXX
+        HiSeq 2500: 150203_D00535_0052_AC66RWANXX
+        HiSeq 4000: 150210_K00111_0013_AH2372BBXX
+        HiSeq X: 141121_ST-E00107_0356_AH00C3CCXX
+        """
+        date, machine_id, run_number, fc_string = os.path.basename(self.runID).split("_")
+
+        if machine_id.startswith("NS"):
+            model = "NextSeq 500"
+        elif machine_id.startswith("M"):
+            model = "MiSeq"
+        elif machine_id.startswith("D"):
+            model = "HiSeq 2500"
+        elif machine_id.startswith("SN"):
+            model = "HiSeq 2000"
+        # elif machine_id.startswith("??"):
+        # model = "Hiseq 3000"
+        elif machine_id.startswith("K"):
+            model = "Hiseq 4000"
+        elif machine_id.startswith("ST"):
+            model = "Hiseq X"
+        else:
+            model = "Unidentified"
+        return model
+
+    def prettyprint_general(self):
+        out = "General Config:\n" + \
+              "Model: " + self.model + "\n" + \
+              "Run Folder Name: " + os.path.basename(self.runID)
+        return out
+
     def prettyprint_read_config(self):
         out = "Read Config:"
         for read in self.read_config:
@@ -278,8 +325,10 @@ class InteropMetadata(object):
         return out
 
     def __str__(self):
-        "Print the most important metadata (flowcell layout and read config)"
-        out = self.prettyprint_read_config() + "\n"
+        """
+        Print the most important metadata
+        """
+        out = self.prettyprint_general() + "\n"
+        out += self.prettyprint_read_config() + "\n"
         out += self.prettyprint_flowcell_layout() + "\n"
         return out
-
