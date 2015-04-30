@@ -13,4 +13,5 @@ Dmitris Iliopoulous (dmitris.iliopoulous@invitae.com)
 Tom Landers (tom.landers@invitae.com)
 Wes McKinney (wes@datapad.io)
 Nofar Chen (nofar.chen@weizmann.ac.il)
+Manuel Kohler (manuel.kohler@id.ethz.ch)
 

@@ -171,7 +171,7 @@ class InteropMetadata(object):
         #? is runNumber useful information? if so, what for?
         #self.runNumber = run_ET.attrib['Number'] 
         
-        self.rta_run_info = self.parse_Run_ET(run_ET)
+        self.parse_Run_ET(run_ET)
 
         if not self.read_config:
             buf = open(filepath).read()
