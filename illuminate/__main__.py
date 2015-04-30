@@ -29,8 +29,6 @@ produces:  /data/dump/name/quality.metrics.csv, /data/dump/name/extraction.metri
 ...where `name` is either a user-supplied --name parameter or the RunID given by the 
 sequencer (as recorded in RTA_Run_Info).
 
-This utility is undergoing rapid development; please treat as Very Beta. --NM 2/21/2014
-
   -h --help             Show this screen.
   --version             Show version.
   -v, --verbose         Increase verbosity           
@@ -162,8 +160,11 @@ def print_meta(metaobj, args):
     dmesg('Run ID: %s' % metaobj.runID, 1)
     dmesg('%s\n' % metaobj, 1)
 
-def main():
-    args = docopt(__doc__, version='0.5.7')
+def collect_args():
+    args = docopt(__doc__, version='0.6.0')
+    main(args)
+
+def main(args):
 
     if args['--interactive']:
         from IPython import embed
@@ -204,4 +205,4 @@ def main():
             run_metrics_object(ID.ControlMetrics, "CONTROL METRICS", args)
 
 if __name__=='__main__':
-    main()
+    collect_args()
