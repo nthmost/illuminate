@@ -173,6 +173,21 @@ class InteropMetadata(object):
         
         self.rta_run_info = self.parse_Run_ET(run_ET)
 
+        if not self.read_config:
+            buf = open(filepath).read()
+            root = xmltodict.parse(buf)['RunInfo']
+            try:
+                Reads = root.get('Run')['Reads']['Read']
+            except KeyError:
+                pass
+
+            for read in Reads:
+                self.read_config.append(
+                    {'read_num': int(read['@Number']),
+                     'cycles': int(read['@NumCycles']),
+                     'is_index': True if read['@IsIndexedRead'] == 'Y' else False
+                     })
+
 
     def _parse_runparams(self, xml_dict):
         # Different format from that in CompletedJobInfo.xml (contains read Number).
@@ -182,8 +197,9 @@ class InteropMetadata(object):
         except KeyError:
             Reads = xml_dict.get('Reads')['RunInfoRead']
 
-        for read in Reads:
-            self.read_config.append( 
+        if not self.read_config:
+            for read in Reads:
+                self.read_config.append(
                     {'read_num': int(read['@Number']),
                      'cycles': int(read['@NumCycles']),
                      'is_index': True if read['@IsIndexedRead']=='Y' else False 
@@ -206,8 +222,6 @@ class InteropMetadata(object):
         buf = open(filepath).read()
         root = xmltodict.parse(buf)['RunParameters']
 
-        self.read_config = []
-        
         # a dirty hack to figure out which version of this file we're reading.
         if 'Reads' in list(root['Setup'].keys()):
             self._parse_runparams(root['Setup'])        # HiSeq
@@ -296,9 +310,9 @@ class InteropMetadata(object):
         # elif machine_id.startswith("??"):
         # model = "Hiseq 3000"
         elif machine_id.startswith("K"):
-            model = "Hiseq 4000"
+            model = "HiSeq 4000"
         elif machine_id.startswith("ST"):
-            model = "Hiseq X"
+            model = "HiSeq X"
         else:
             model = "Unidentified"
         return model

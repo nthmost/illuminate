@@ -71,7 +71,7 @@ class InteropTileMetrics(InteropBinParser):
         #   code 400: control lane
 
         bs = self.bs    #convenience assignment
-    
+
         self.apparent_file_version = bs.read('uintle:8')
     
         self.check_version(self.apparent_file_version)
@@ -93,7 +93,9 @@ class InteropTileMetrics(InteropBinParser):
             
         pivot_sum = self.df.pivot_table('value', index='code', aggfunc='sum')
         pivot_mean = self.df.pivot_table('value', index='code', aggfunc='mean')
-        
+
+        self.aligned = pivot_mean[300]
+
         try:
             self.total_cluster_density = pivot_sum[100]
         except:
@@ -147,6 +149,7 @@ class InteropTileMetrics(InteropBinParser):
         out += '\n  Total Clusters: %i' % self.num_clusters
         out += '\n  Total PF Clusters: %i' % self.num_clusters_pf 
         out += '\n  Percentage of Clusters PF: %f' % self.percent_pf_clusters
+        out += '\n  Aligned to PhiX: %f' % self.aligned
         out += '\n  Read - PHASING / PRE-PHASING:'
         for read_num in range(self.num_reads):
             out += '\n    %i - %f / %f' % (read_num+1, self.mean_phasing[read_num], self.mean_prephasing[read_num])
@@ -159,8 +162,8 @@ class InteropTileMetrics(InteropBinParser):
                  'num_clusters_pf': self.num_clusters_pf,
                  'num_clusters': self.num_clusters,
                  'mean_phasing': self.mean_phasing,
+                 'aligned': self.aligned,
                  'mean_prephasing': self.mean_prephasing }
-
 
 if __name__=='__main__':
     
@@ -169,15 +172,14 @@ if __name__=='__main__':
     try:
         filename = sys.argv[1]
     except:
-        print 'supply path to TileMetrics.bin (or TileMetricsOut.bin)'
+        print('supply path to TileMetrics.bin (or TileMetricsOut.bin)')
         sys.exit()
     
     TM = InteropTileMetrics(filename)
-    
-    print 'Length of data: %i' % len(TM.data['code'])
+
+    print('Length of data: %i' % len(TM.data['code']))
     #print TM.df.head()
     
     #print TM.to_dict()
-    
-    print TM
-    
+
+    print(TM)

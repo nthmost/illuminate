@@ -27,6 +27,15 @@ class InteropQualityMetrics(InteropBinParser):
         # Q30 / Q20 scores per read, calculated at end of parsing.
         self.read_qscore_results = {'readnum': [], 'q30': [], 'q20': [] }
 
+        # lower boundary of Q-score binning
+        self.lower_boundary = []
+
+        # upper boundary of Q-score binning
+        self.upper_boundary = []
+
+        # re-mapped scores of Q-score binning
+        self.remapped_scores = []
+
     def _set_qcol_sequence(self):
         "sets .qcol_sequence array of q score labels in correct order."
         self.qcol_sequence = []
@@ -95,8 +104,8 @@ class InteropQualityMetrics(InteropBinParser):
         else:
             # segment Qscores by read_num. Let IndexError be raised for too-high read_num.
             # read_tiers example: [151,157,308] 
-        
-            cycle_start = 0 if read_num==0 else self.read_tiers[read_num-1] + 1 
+
+            cycle_start = 0 if read_num == 0 else self.read_tiers[read_num - 1] + 1
             cycle_end = self.read_tiers[read_num]
         
             tiles = self.flowcell_layout['tilecount']
@@ -115,13 +124,19 @@ class InteropQualityMetrics(InteropBinParser):
         else:
             return 0
 
+
+    def get_binning_stats(self):
+        return {'upper_boundary': self.upper_boundary,
+                'lower_boundary': self.lower_boundary,
+                'remapped_scores': self.remapped_scores}
+
     def parse_binary(self):
         """ Do the work.  Important: set read_config appropriately, which is
             needed to construct read_tiers to separate Q scores by Read."""
 
-        bs = self.bs   
-    
-        # QualityMetrics format according to ILMN specs:
+        bs = self.bs
+
+        # v4 QualityMetrics format of MiSeq and other HiSeq platforms according to ILMN specs:
         #
         #   byte 0: file version number (4)
         #   byte 1: length of each record
@@ -131,17 +146,40 @@ class InteropQualityMetrics(InteropBinParser):
         #       2 bytes: cycle number (uint16)
         #       4 x 50 bytes: number of clusters assigned score (uint32) Q1 through Q50
 
+        # v5 QualityMetrics format of NextSeq, HiSeq X, and HiSeq instruments running RTA v1.18.64 and newer
+        # according to ILMN specs :
+        # byte 0: file version number (5)
+        #   byte 1: length of each record
+        #   byte 2: quality score binning (byte flag representing if binning was on)
+        #   if (byte 2 == 1) // quality score binning on
+        #       byte 3: number of quality score bins, B
+        #       bytes 4 – (4+B-1): lower boundary of quality score bins
+        #       bytes (4+B) – (4+2*B-1): upper boundary of quality score bins
+        #       bytes (4+2*B) – (4+3*B-1): remapped scores of quality score bins
+        #   bytes (N * 206 + 2) - (N *206 + 207): record:
+        #       2 bytes: lane number (uint16)
+        #       2 bytes: tile number (uint16)
+        #       2 bytes: cycle number (uint16)
+        #       4 x 50 bytes: number of clusters assigned score (uint32) Q1 through Q50
+
         self.apparent_file_version = bs.read('uintle:8')
         self.check_version(self.apparent_file_version)
-
         recordlen = bs.read('uintle:8')  # length of each record
-        
+
         if (self.apparent_file_version == 5):
             self.binning_on = bs.read('uintle:8')
             if (self.binning_on == 1):
-                print("[%s] Warning: Q-score binning is not supported by this parser" %self.__class__.__name__)
-                
-                        
+                number_of_qual_bins = bs.read('uintle:8')
+                # lower boundary of quality score bins
+                for lower in range(0, number_of_qual_bins):
+                    self.lower_boundary.append(bs.read('uintle:8'))
+                for upper in range(0, number_of_qual_bins):
+                    self.upper_boundary.append(bs.read('uintle:8'))
+                for remap in range(0, number_of_qual_bins):
+                    self.remapped_scores.append(bs.read('uintle:8'))
+                print("[%s] Info: Q-score binning was used with %s bins and these remapped scores: %s" \
+                      % (self.__class__.__name__, number_of_qual_bins, self.remapped_scores))
+
         #read records bytewise per specs in technote_rta_theory_operations.pdf from ILMN
         for i in range(0,((bs.len) / (recordlen * 8))):  # 206 * 8 = 1648 record length in bits
             lane = bs.read('uintle:16')
@@ -186,14 +224,12 @@ if __name__=='__main__':
     
     try:
         filename = sys.argv[1]
-    except:
-        print 'supply path to QualityMetrics.bin (or QMetricsOut.bin)'
+    except NameError:
+        print('supply path to QualityMetrics.bin (or QMetricsOut.bin)')
         sys.exit()
     
     QM = InteropQualityMetrics(filename)
-    
-    print 'Length of data: %i' % len(QM.data['cycle'])
 
-    print "Quality Score Histogram (all reads)"
-    print QM.idf.sum()
-    
+    print('Length of data: %i' % len(QM.data['cycle']))
+    print("Quality Score Histogram (all reads)")
+    print(QM.idf.sum())
