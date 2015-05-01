@@ -94,7 +94,12 @@ class InteropTileMetrics(InteropBinParser):
         pivot_sum = self.df.pivot_table('value', index='code', aggfunc='sum')
         pivot_mean = self.df.pivot_table('value', index='code', aggfunc='mean')
 
-        self.aligned = pivot_mean[300]
+        # These try-except blocks allow TileMetrics to be processed even when data
+        # is still incomplete.
+        try:
+            self.aligned = pivot_mean[300]
+        except:
+            self.aligned = 0
 
         try:
             self.total_cluster_density = pivot_sum[100]
