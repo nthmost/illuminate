@@ -23,7 +23,6 @@ import xmltodict
 from utils import select_file_from_aliases
 from filemaps import XML_FILEMAP
 
-
 class InteropMetadata(object):
     """Parser for sequencer's XML files describing a single run. Supply with directory to instantiate.
 
@@ -36,7 +35,7 @@ class InteropMetadata(object):
         0.1     First released version.
     """
     
-    __version = 0.2     # version of this parser.
+    __version = 0.3     # version of this parser.
 
     def __init__(self, xmldir):
         """Takes the absolute path of a sequencing run data directory as sole required variable.
@@ -90,11 +89,12 @@ class InteropMetadata(object):
         #       Also we might want to specify priority of provenance (e.g. get start_datetime from 'runparams' first).
         #       If you (yes YOU) have any opinions about this, please email me: naomi.most@invitae.com
 
+        self.machine_id = ""
+        self.model = ""
         self._xml_map = OrderedDict({ 'completed': [None, self.parse_CompletedJobInfo], 
                                       'runinfo':   [None, self.parse_RunInfo],
                                       'runparams': [None, self.parse_RunParameters] })
         self._set_xml_map()
-        self.model = ""
         
         # cycle through XML files, filling from what's available.
         for codename in self._xml_map:
@@ -213,6 +213,9 @@ class InteropMetadata(object):
             
         self.runID = xml_dict.get('RunID', '')
         self.experiment_name = xml_dict.get('ExperimentName', '')
+        self.flowcell_position = xml_dict.get('FCPosition', '')
+        self.flowcell_barcode = xml_dict.get('Barcode', '')
+        self.machine_id = xml_dict.get('ScannerID', '')
 
     def parse_RunParameters(self, filepath):
         """parses runParameters.xml (or viable alias) to fill instance variables.
@@ -297,21 +300,25 @@ class InteropMetadata(object):
         HiSeq 4000: 150210_K00111_0013_AH2372BBXX
         HiSeq X: 141121_ST-E00107_0356_AH00C3CCXX
         """
-        date, machine_id, run_number, fc_string = os.path.basename(self.runID).split("_")
 
-        if machine_id.startswith("NS"):
+        # retired this line. getting self.machine_id from ScannerID field in _parse_runparams()
+        # date, machine_id, run_number, fc_string = os.path.basename(self.runID).split("_")
+
+         
+
+        if self.machine_id.startswith("NS"):
             model = "NextSeq 500"
-        elif machine_id.startswith("M"):
+        elif self.machine_id.startswith("M"):
             model = "MiSeq"
-        elif machine_id.startswith("D"):
+        elif self.machine_id.startswith("D"):
             model = "HiSeq 2500"
-        elif machine_id.startswith("SN"):
+        elif self.machine_id.startswith("SN"):
             model = "HiSeq 2000"
         # elif machine_id.startswith("??"):
         # model = "Hiseq 3000"
-        elif machine_id.startswith("K"):
+        elif self.machine_id.startswith("K"):
             model = "HiSeq 4000"
-        elif machine_id.startswith("ST"):
+        elif self.machine_id.startswith("ST"):
             model = "HiSeq X"
         else:
             model = "Unidentified"
@@ -346,3 +353,13 @@ class InteropMetadata(object):
         out += self.prettyprint_read_config() + "\n"
         out += self.prettyprint_flowcell_layout() + "\n"
         return out
+
+    def to_dict(self):
+        return {    'runID': self.runID,
+                    'experiment_name': self.experiment_name,
+                    'start_datetime': self.start_datetime,
+                    'end_datetime': self.end_datetime,
+                    'model': self.model,
+                    'flowcell_layout': self.flowcell_layout,
+                    'flowcell_barcode': self.flowcell_barcode,
+                    'flowcell_position': self.flowcell_position, }
