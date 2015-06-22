@@ -14,4 +14,5 @@ Tom Landers (tom.landers@invitae.com)
 Wes McKinney (wes@datapad.io)
 Nofar Chen (nofar.chen@weizmann.ac.il)
 Manuel Kohler (manuel.kohler@id.ethz.ch)
+Connor Hogan (connor.hogan@invitae.com)
 
