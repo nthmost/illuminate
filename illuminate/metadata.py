@@ -233,7 +233,7 @@ class InteropMetadata(object):
         else:
             pass  # NextSeq
 
-        self.model = self.get_model()
+        self.model = self._get_model()
 
 
     def parse_CompletedJobInfo(self, filepath):
@@ -284,7 +284,7 @@ class InteropMetadata(object):
         self.runID = run_ET.attrib["Id"] 
         self.parse_Run_ET(run_ET)
 
-    def get_model(self):
+    def _get_model(self):
         """
         Guesses the sequencer model from the run folder name
 
@@ -303,8 +303,6 @@ class InteropMetadata(object):
 
         # retired this line. getting self.machine_id from ScannerID field in _parse_runparams()
         # date, machine_id, run_number, fc_string = os.path.basename(self.runID).split("_")
-
-         
 
         if self.machine_id.startswith("NS"):
             model = "NextSeq 500"
