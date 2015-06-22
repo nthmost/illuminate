@@ -331,12 +331,9 @@ this repository (naomi.most@invitae.com) along with a brief description.
 Support and Maintenance
 -----------------------
 
-Illumina's metrics data, until recently, could only be parsed and interpreted via Illumina's 
-proprietary "SAV" software which only runs on Windows and can't be sourced programmatically.
-
 This library was developed in-house at InVitae, a CLIA-certified genetic diagnostics 
 company that offers customizable, clinically-relevant sequencing panels, as a response to 
-the need to emulate Illumina SAV's output in a program-accessible way.
+the need to emulate Illumina SAV's output in a programatically accessible way.
 
 `Invitae <https://invitae.com>`_ currently uses these parsers in conjunction with site-specific reporting scripts to 
 produce automated sequencing run metrics as a check on the health of the run and the machines 
