@@ -29,6 +29,10 @@ from .extraction_metrics import InteropExtractionMetrics
 from .utils import select_file_from_aliases
 from .exceptions import InteropFileNotFoundError
 from .filemaps import BINFILE_DIR_NAME, XML_FILEMAP, BIN_FILEMAP
+try:
+    from functools import reduce
+except ImportError:
+    pass
 
 
 class InteropDataset(object):

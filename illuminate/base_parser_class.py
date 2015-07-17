@@ -3,9 +3,12 @@
 from bitstring import BitString
 try:
     from StringIO import StringIO
-except ImportError:
+except(ImportError):
     from io import StringIO
-
+try:
+    from functools import reduce
+except:
+    pass
 #### SEQUENCER VAGARIES: flowcell_layout and read_config
 #
 # All binary parsers use these dicts, though each parser can have a different 
@@ -40,6 +43,7 @@ class InteropBinParser(object):
         except AttributeError:              # assume it's a filename, then.
             self.bs = BitString(bytes=open(bitstring_or_filename, 'rb').read())
             
+
         self.num_tiles = reduce(lambda x, y: x*y, self.flowcell_layout.values())
         self.num_reads = len(self.read_config)
 
