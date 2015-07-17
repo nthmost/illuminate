@@ -227,7 +227,7 @@ if __name__=='__main__':
         
     myDataset = InteropDataset(dirname)
 
-    #print( myDataset.meta.read_config
+    #print( myDataset.meta.read_config )
 
-    print(_sample_dataset(myDataset) )
+    print_sample_dataset(myDataset)
     
