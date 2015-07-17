@@ -115,7 +115,7 @@ def write_data(output, codename, args):
         try:
             datafile.write(output+'\n')
             dmesg('wrote %s' % outpath, 1)
-        except Exception as e:
+        except(Exception) as e:
             dmesg('Error writing to file: %r' % e, 0)
         datafile.close()
     else:
@@ -139,7 +139,7 @@ def run_metrics_object(InteropObject, title, args):
             dmesg(title, 1)
             dmesg('-' * len(title), 1)
             dmesg('%s' % InteropObject(), 1)
-    except InteropFileNotFoundError:
+    except(InteropFileNotFoundError):
         dmesg('%s: File not found\n' % title, 1)
 
     dmesg('%s: finished' % title, 2)
@@ -176,7 +176,7 @@ def main(args):
 
         try:
             ID = InteropDataset(args['<datapath>'])
-        except IOError, e:
+        except(IOError, e):
             dmesg(e, 1)
             sys.exit()
 

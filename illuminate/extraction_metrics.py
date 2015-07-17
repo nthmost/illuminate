@@ -3,7 +3,7 @@
 from datetime import datetime, timedelta
 import pandas
 
-from base_parser_class import InteropBinParser
+from .base_parser_class import InteropBinParser
 
 anno_domini = datetime(1, 1, 1)
 
@@ -92,8 +92,8 @@ if __name__=='__main__':
     try:
         filename = sys.argv[1]
     except:
-        print 'supply path to ExtractionMetrics.bin'
+        print( 'supply path to ExtractionMetrics.bin' )
         sys.exit()
     
     EM = InteropExtractionMetrics(filename)
-    print EM
+    print( EM )

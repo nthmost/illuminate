@@ -1,7 +1,10 @@
 # -*- coding: utf-8 -*-
 
-import cStringIO
 from bitstring import BitString
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 #### SEQUENCER VAGARIES: flowcell_layout and read_config
 #
@@ -49,10 +52,10 @@ class InteropBinParser(object):
 
     def parse_binary(self):
         "Stub method for binary parsing."
-        print """InteropBinParser: Generic Binary Parser class
+        print( """InteropBinParser: Generic Binary Parser class
 
         Override this method with your own parsing method.
-        """
+        """ )
         
     def _init_variables(self):
         "Place to initialize the instance variables required by specific parsers."

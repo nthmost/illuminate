@@ -3,7 +3,7 @@
 import pandas
 from bitstring import BitString
 
-from base_parser_class import InteropBinParser
+from .base_parser_class import InteropBinParser
 
 class InteropCorrectedIntensityMetrics(InteropBinParser):
 
@@ -110,8 +110,8 @@ if __name__=='__main__':
     try:
         filename = sys.argv[1]
     except:
-        print "supply path to CorrectedIntensityMetrics.bin"
+        print( "supply path to CorrectedIntensityMetrics.bin" )
         sys.exit()
 
     CIM = InteropCorrectedIntensityMetrics(filename)
-    print CIM
+    print( CIM )

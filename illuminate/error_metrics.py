@@ -2,7 +2,7 @@
 
 import pandas
 
-from base_parser_class import InteropBinParser
+from .base_parser_class import InteropBinParser
 
 class InteropErrorMetrics(InteropBinParser):
 
@@ -75,11 +75,11 @@ if __name__=='__main__':
     try:
         filename = sys.argv[1]
     except:
-        print 'supply path to ErrorMetrics.bin (or ErrorMetricsOut.bin)'
+        print( 'supply path to ErrorMetrics.bin (or ErrorMetricsOut.bin)' )
         sys.exit()
     
     EM = InteropErrorMetrics(filename)
     
-    print 'Length of data: %i' % len(EM.data['cycle'])
-    print EM
+    print( 'Length of data: %i' % len(EM.data['cycle']) )
+    print( EM )
     

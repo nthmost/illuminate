@@ -7,7 +7,7 @@
 import pandas
 from bitstring import ReadError
 
-from base_parser_class import InteropBinParser
+from .base_parser_class import InteropBinParser
 
 class InteropControlMetrics(InteropBinParser):
 
@@ -77,8 +77,8 @@ if __name__=='__main__':
     try:
         filename = sys.argv[1]
     except:
-        print "supply path to ExtractionMetrics.bin"
+        print( "supply path to ExtractionMetrics.bin" )
         sys.exit()
     
     CM = InteropControlMetrics(filename)
-    print CM
+    print( CM )

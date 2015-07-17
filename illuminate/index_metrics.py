@@ -3,7 +3,7 @@
 import pandas
 from bitstring import ReadError
 
-from base_parser_class import InteropBinParser
+from .base_parser_class import InteropBinParser
 
 class InteropIndexMetrics(InteropBinParser):
     "ILMN Quality metrics parser (child class of InteropBinParser)."
@@ -122,11 +122,11 @@ if __name__=='__main__':
     try:
         filename = sys.argv[1]
     except:
-        print 'supply path to IndexMetrics.bin (or IndexMetricsOut.bin)'
+        print( 'supply path to IndexMetrics.bin (or IndexMetricsOut.bin)' )
         sys.exit()
     
     IM = InteropIndexMetrics(filename)
 
-    print 'Length of data: %i' % len(IM.data['clusters'])
-    print IM
+    print( 'Length of data: %i' % len(IM.data['clusters']) )
+    print( IM )
 

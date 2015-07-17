@@ -2,8 +2,8 @@
 
 import pandas
 
-from base_parser_class import InteropBinParser
-from utils import set_column_sequence
+from .base_parser_class import InteropBinParser
+from .utils import set_column_sequence
 
 class InteropQualityMetrics(InteropBinParser):
     "ILMN Quality metrics parser (child class of InteropBinParser)."

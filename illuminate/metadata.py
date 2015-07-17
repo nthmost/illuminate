@@ -20,8 +20,8 @@ import xml.etree.ElementTree as ET
 
 import xmltodict
 
-from utils import select_file_from_aliases
-from filemaps import XML_FILEMAP
+from .utils import select_file_from_aliases
+from .filemaps import XML_FILEMAP
 
 class InteropMetadata(object):
     """Parser for sequencer's XML files describing a single run. Supply with directory to instantiate.
