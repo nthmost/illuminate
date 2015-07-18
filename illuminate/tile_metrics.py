@@ -80,7 +80,7 @@ class InteropTileMetrics(InteropBinParser):
         bs.pos = 16  # skip the following 16 bytes which are invariant here.
 
         #read records bytewise per specs in technote_rta_theory_operations.pdf from ILMN
-        for i in range(0,((bs.len - 16) / (recordlen * 8))):  # 80 == record length in bits
+        for i in range(0,int((bs.len - 16) / (recordlen * 8))):  # 80 == record length in bits
             self.data['lane'].append(bs.read('uintle:16'))          #lane number
             self.data['tile'].append(bs.read('uintle:16'))          #tile number
             self.data['code'].append(bs.read('uintle:16'))          #metric code

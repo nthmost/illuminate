@@ -51,7 +51,7 @@ class InteropExtractionMetrics(InteropBinParser):
         
         recordlen = bs.read('uintle:8')  # length of each record
 
-        for i in range(0,((bs.len) / (recordlen * 8))):  # record length in bits
+        for i in range(0,int((bs.len) / (recordlen * 8))):  # record length in bits
             self.data['lane'].append(bs.read('uintle:16'))
             self.data['tile'].append(bs.read('uintle:16'))
             self.data['cycle'].append(bs.read('uintle:16'))

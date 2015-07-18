@@ -181,7 +181,7 @@ class InteropQualityMetrics(InteropBinParser):
                       % (self.__class__.__name__, number_of_qual_bins, self.remapped_scores))
 
         #read records bytewise per specs in technote_rta_theory_operations.pdf from ILMN
-        for i in range(0,((bs.len) / (recordlen * 8))):  # 206 * 8 = 1648 record length in bits
+        for i in range(0,int((bs.len) / (recordlen * 8))):  # 206 * 8 = 1648 record length in bits
             lane = bs.read('uintle:16')
             tile = bs.read('uintle:16')
             cycle = bs.read('uintle:16')

@@ -64,7 +64,7 @@ class InteropCorrectedIntensityMetrics(InteropBinParser):
         #	20 bytes: number of base calls (float) for No Call and channel [A, C, G, T] respectively
         #	4 bytes: signal to noise ratio (float)
 
-        for i in range(0,((bs.len) / (recordlen * 8 ))):  # record length in bits
+        for i in range(0,int((bs.len) / (recordlen * 8 ))):  # record length in bits
             self.data['lane'].append(bs.read('uintle:16'))
             self.data['tile'].append(bs.read('uintle:16'))
             self.data['cycle'].append(bs.read('uintle:16'))
