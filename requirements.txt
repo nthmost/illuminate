@@ -1,6 +1,6 @@
 bitstring>=3.1.2
 docopt>=0.6.1
-openpyxl==1.8.6
+openpyxl>=1.8.6
 ipython>=0.13.2
 numpy>=1.7.0
 pandas>=0.14.0
