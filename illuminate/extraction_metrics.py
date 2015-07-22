@@ -78,7 +78,6 @@ class InteropExtractionMetrics(InteropBinParser):
             self.data['datetime'].append(anno_domini + microseconds)
 
         self.df = pandas.DataFrame(self.data)
-
         #self.idf = self.make_coordinate_plane(self.df)
 
     def __str__(self): 
@@ -87,13 +86,14 @@ class InteropExtractionMetrics(InteropBinParser):
         return out
 
 if __name__=='__main__':
+
     import sys
     
     try:
         filename = sys.argv[1]
     except:
-        print( 'supply path to ExtractionMetrics.bin' )
+        print('supply path to ExtractionMetrics.bin')
         sys.exit()
     
     EM = InteropExtractionMetrics(filename)
-    print( EM )
+    print(EM)

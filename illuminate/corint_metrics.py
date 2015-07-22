@@ -64,30 +64,34 @@ class InteropCorrectedIntensityMetrics(InteropBinParser):
         #	20 bytes: number of base calls (float) for No Call and channel [A, C, G, T] respectively
         #	4 bytes: signal to noise ratio (float)
 
-        for i in range(0,int((bs.len) / (recordlen * 8 ))):  # record length in bits
-            self.data['lane'].append(bs.read('uintle:16'))
-            self.data['tile'].append(bs.read('uintle:16'))
-            self.data['cycle'].append(bs.read('uintle:16'))
-            self.data['avg_intensity'].append(bs.read('uintle:16'))
-            self.data['avg_corint_A'].append(bs.read('uintle:16'))
-            self.data['avg_corint_C'].append(bs.read('uintle:16'))
-            self.data['avg_corint_G'].append(bs.read('uintle:16'))
-            self.data['avg_corint_T'].append(bs.read('uintle:16'))
-            self.data['avg_corint_called_A'].append(bs.read('uintle:16'))
-            self.data['avg_corint_called_C'].append(bs.read('uintle:16'))
-            self.data['avg_corint_called_G'].append(bs.read('uintle:16'))
-            self.data['avg_corint_called_T'].append(bs.read('uintle:16'))
-    
-            # 20 bytes / 5 = 4 bytes each following records.
-            self.data['num_nocalls'].append(bs.read('floatle:32'))
-            self.data['num_calls_A'].append(bs.read('floatle:32'))
-            self.data['num_calls_C'].append(bs.read('floatle:32'))
-            self.data['num_calls_G'].append(bs.read('floatle:32'))
-            self.data['num_calls_T'].append(bs.read('floatle:32'))
-    
-            # 4 bytes: sig/noise ratio (float)  
-            self.data['signoise_ratio'].append(bs.read('floatle:32'))
+        try:
+            for i in range(0,int((bs.len) / (recordlen * 8 ))):  # record length in bits
+                self.data['lane'].append(bs.read('uintle:16'))
+                self.data['tile'].append(bs.read('uintle:16'))
+                self.data['cycle'].append(bs.read('uintle:16'))
+                self.data['avg_intensity'].append(bs.read('uintle:16'))
+                self.data['avg_corint_A'].append(bs.read('uintle:16'))
+                self.data['avg_corint_C'].append(bs.read('uintle:16'))
+                self.data['avg_corint_G'].append(bs.read('uintle:16'))
+                self.data['avg_corint_T'].append(bs.read('uintle:16'))
+                self.data['avg_corint_called_A'].append(bs.read('uintle:16'))
+                self.data['avg_corint_called_C'].append(bs.read('uintle:16'))
+                self.data['avg_corint_called_G'].append(bs.read('uintle:16'))
+                self.data['avg_corint_called_T'].append(bs.read('uintle:16'))
+        
+                # 20 bytes / 5 = 4 bytes each following records.
+                self.data['num_nocalls'].append(bs.read('floatle:32'))
+                self.data['num_calls_A'].append(bs.read('floatle:32'))
+                self.data['num_calls_C'].append(bs.read('floatle:32'))
+                self.data['num_calls_G'].append(bs.read('floatle:32'))
+                self.data['num_calls_T'].append(bs.read('floatle:32'))
+        
+                # 4 bytes: sig/noise ratio (float)  
+                self.data['signoise_ratio'].append(bs.read('floatle:32'))
 
+        except ReadError:
+            #that's all, folks
+            pass
 
         self.df = pandas.DataFrame(self.data)
 
@@ -110,8 +114,8 @@ if __name__=='__main__':
     try:
         filename = sys.argv[1]
     except:
-        print( "supply path to CorrectedIntensityMetrics.bin" )
+        print("supply path to CorrectedIntensityMetrics.bin")
         sys.exit()
 
     CIM = InteropCorrectedIntensityMetrics(filename)
-    print( CIM )
+    print(CIM)

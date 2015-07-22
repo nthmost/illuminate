@@ -9,6 +9,7 @@ try:
     from functools import reduce
 except:
     pass
+
 #### SEQUENCER VAGARIES: flowcell_layout and read_config
 #
 # All binary parsers use these dicts, though each parser can have a different 
@@ -56,10 +57,10 @@ class InteropBinParser(object):
 
     def parse_binary(self):
         "Stub method for binary parsing."
-        print( """InteropBinParser: Generic Binary Parser class
+        print("""InteropBinParser: Generic Binary Parser class
 
         Override this method with your own parsing method.
-        """ )
+        """)
         
     def _init_variables(self):
         "Place to initialize the instance variables required by specific parsers."
@@ -107,8 +108,6 @@ class InteropBinParser(object):
     def to_json(self):
         "Transforms object's DataFrame into a json document."
         return self.df.to_json()
-
-
 
 def make_test_data(codename, infile, outfile, n=1):
     '''Takes a "complete" binary source and returns a bitstring suitable

@@ -29,6 +29,8 @@ from .extraction_metrics import InteropExtractionMetrics
 from .utils import select_file_from_aliases
 from .exceptions import InteropFileNotFoundError
 from .filemaps import BINFILE_DIR_NAME, XML_FILEMAP, BIN_FILEMAP
+
+# python 2/3 compatibility
 try:
     from functools import reduce
 except ImportError:
@@ -156,82 +158,83 @@ class InteropDataset(object):
 def print_sample_dataset(ID):
     meta = ID.Metadata()
 
-    print( "" )
-    print( "METADATA" )
-    print( "--------" )
-    print( meta )
-    print( "" )
+    print("")
+    print("METADATA")
+    print("--------")
+    print(meta)
+    print("")
     
-    print( "Resequencing Statistics:"  )
-    print( meta.resequencing_stats )
-    print( "" )
+    print("Resequencing Statistics:")
+    print(meta.resequencing_stats)
+    print("")
     
     tm = ID.TileMetrics()
-    print( "SUMMARY" )
-    print( "-------" )
-    print( "(tile metrics)\n" )
-    print( tm )
-    print( "" )
+    print("SUMMARY")
+    print("-------")
+    print("(tile metrics)\n")
+    print(tm)
+    print("")
     
     # QualityMetrics usually take a while...
-    print( "QUALITY" )
-    print( "-------" )
+    print("QUALITY")
+    print("-------")
     qm = ID.QualityMetrics()
-    print( "(% >= Q30 per read)\n" )
-    print( qm )
-    print( "" )
+    print("(% >= Q30 per read)\n")
+    print(qm)
+    print("")
 
     im = ID.IndexMetrics()
-    print( "INDEXING" )
-    print( "--------\n" )
-    print( "Total Reads: %i" % tm.num_clusters )
-    print( "Reads PF: %i" % tm.num_clusters_pf )
-    print( "Percentage Reads Identified (PF): %f" % (float(im.total_ix_reads_pf / tm.num_clusters_pf)*100) )
-    print( "" )
-    print( im )
-    print( "" )
+    print("INDEXING")
+    print("--------\n")
+    print("Total Reads: %i" % tm.num_clusters)
+    print("Reads PF: %i" % tm.num_clusters_pf)
+    print("Percentage Reads Identified (PF): %f" % (float(im.total_ix_reads_pf / tm.num_clusters_pf)*100))
+    print("")
+    print(im)
+    print("")
 
-    print( "ERRORS" )
-    print( "------" )
+    print("ERRORS")
+    print("------")
     try:
         em = ID.ErrorMetrics()
         print( "(sum of all types of errors across all reads)" )
         idf = em.make_coordinate_plane(em.df)
-        print( idf.sum() )
+        print(idf.sum())
     except InteropFileNotFoundError:
-        print( "None. (no error metrics binary in this dataset.)" )
+        print("None. (no error metrics binary in this dataset.)")
     finally:
-        print( "" )
+        print("")
 
     """
-    print( "INTENSITY" )
-    print( "---------" )
+    print("INTENSITY")
+    print("---------")
     try:
         cm = ID.CorrectedIntensityMetrics()
-        print( "(sample of raw data)" )
+        print("(sample of raw data)")
         if cm is not None:
-            print( cm.idf.head() )
+            print(cm.idf.head())
         else:
-            print( "CorrectedIntensityMetrics parsing failed." )
+            print("CorrectedIntensityMetrics parsing failed.")
     except TypeError:
-        print( "No CorrectedIntensityMetrics binary in this dataset." )
+        print("No CorrectedIntensityMetrics binary in this dataset.")
     finally:
-        print( "" )
+        print("")
     """
 
 if __name__=='__main__':
+
     import sys
 
     try:
         dirname = sys.argv[1] 
     except IndexError:
-        print( "Supply the absolute or relative path to a directory of sequencing rundata." )
-        print( "Example:  python interop.py /home/username/seqruns/2013-02/0" )
+        print("Supply the absolute or relative path to a directory of sequencing rundata.")
+        print("Example:  python interop.py /home/username/seqruns/2013-02/0")
         sys.exit()
         
     myDataset = InteropDataset(dirname)
 
-    #print( myDataset.meta.read_config )
+    #print(myDataset.meta.read_config)
 
     print_sample_dataset(myDataset)
     

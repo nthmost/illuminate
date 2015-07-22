@@ -1,6 +1,7 @@
-from __future__ import print_function
+from __future__ import print_function, absolute_import
 
 import os, sys, time
+from bitstring import ReadError
 
 from docopt import docopt
 from .interop import InteropDataset 
@@ -141,6 +142,8 @@ def run_metrics_object(InteropObject, title, args):
             dmesg('%s' % InteropObject(), 1)
     except(InteropFileNotFoundError):
         dmesg('%s: File not found\n' % title, 1)
+    except(ReadError):
+        dmesg('%s: Data file incomplete or unparseable\n' % title, 1)
 
     dmesg('%s: finished' % title, 2)
 
@@ -161,7 +164,7 @@ def print_meta(metaobj, args):
     dmesg('%s\n' % metaobj, 1)
 
 def collect_args():
-    args = docopt(__doc__, version='0.6.0')
+    args = docopt(__doc__, version='0.6.3')
     main(args)
 
 def main(args):

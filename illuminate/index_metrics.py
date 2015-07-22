@@ -117,6 +117,7 @@ class InteropIndexMetrics(InteropBinParser):
         return out 
 
 if __name__=='__main__':
+
     import sys
     
     try:
@@ -127,6 +128,6 @@ if __name__=='__main__':
     
     IM = InteropIndexMetrics(filename)
 
-    print( 'Length of data: %i' % len(IM.data['clusters']) )
-    print( IM )
+    print('Length of data: %i' % len(IM.data['clusters']))
+    print(IM)
 

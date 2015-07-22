@@ -72,6 +72,7 @@ class InteropControlMetrics(InteropBinParser):
 
 
 if __name__=='__main__':
+
     import sys
     
     try:
@@ -81,4 +82,4 @@ if __name__=='__main__':
         sys.exit()
     
     CM = InteropControlMetrics(filename)
-    print( CM )
+    print(CM)
