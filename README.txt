@@ -2,7 +2,7 @@ README.txt to appease the cheeseshop fascists.
 
 MAJOR CONTRIBUTORS:
 
-Naomi Most (naomi.most@invitae.com)
+Naomi Most (naomi@nthmost.com)
 Eric Olivares (eric.olivares@invitae.com)
 
 THANKS ALSO TO:

@@ -326,7 +326,7 @@ More sample data from MiSeq and HiSeq machines will be found in the
 section of this bitbucket repository.
 
 If you'd like to contribute sample data, contact the maintainer of 
-this repository (naomi.most@invitae.com) along with a brief description.
+this repository (naomi@nthmost.com) along with a brief description.
 
 Support and Maintenance
 -----------------------
@@ -346,6 +346,6 @@ commercial uses; just don't try to sell it as-is.
 Contributions, extensions, bug reports, suggestions, and swear words all happily accepted, 
 in that order.
 
-naomi.most@invitae.com 
+naomi@nthmost.com
 2013-present
 

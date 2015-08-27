@@ -10,5 +10,5 @@ from .control_metrics import InteropControlMetrics
 from .corint_metrics import InteropCorrectedIntensityMetrics
 from .extraction_metrics import InteropExtractionMetrics
 
-__version__='0.6.3'
+__version__='0.6.3.1'
 

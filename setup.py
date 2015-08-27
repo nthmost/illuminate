@@ -2,13 +2,13 @@ from setuptools import setup, find_packages
 
 setup (
        name = "illuminate",
-       version = "0.6.3",
+       version = "0.6.3.1",
        description = "Analytics toolkit for Illumina sequencer metrics.",
        url="https://bitbucket.org/invitae/illuminate",
-       author = "InVitae Inc.",
-       author_email = "developers@invitae.com",
+       author = "Naomi Most",
+       author_email = "naomi@nthmost.com",
        maintainer = "Naomi Most",
-       maintainer_email = "naomi.most@invitae.com",
+       maintainer_email = "naomi@nthmost.com",
        license = "MIT",
        zip_safe = False,
        packages = find_packages(),
