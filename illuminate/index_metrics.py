@@ -5,6 +5,7 @@ from bitstring import ReadError
 
 from .base_parser_class import InteropBinParser
 
+
 class InteropIndexMetrics(InteropBinParser):
     "ILMN Quality metrics parser (child class of InteropBinParser)."
     
@@ -69,24 +70,24 @@ class InteropIndexMetrics(InteropBinParser):
 
         try:
             while True:
-                self.data['lane'].append(bs.read('uintle:16'))  # lane number
-                self.data['tile'].append(bs.read('uintle:16'))  # tile number
-                self.data['read'].append(bs.read('uintle:16'))  # read number
+                lane, tile, read = bs.readlist('3*uintle:16')
+                self.data['lane'].append(lane)  # lane number
+                self.data['tile'].append(tile)  # tile number
+                self.data['read'].append(read)  # read number
 
-                # next 2 bytes: expected index name length in bytes.  
-                nextbytes = bs.read('uintle:16')   
-                self.data['index_str'].append(bs.read('bytes:%i' % nextbytes) ) #index string
+                index_str, clusters, name_str, project_str = bs.readlist('uintle:16, uintle:32, uintle:16, uintle:16')
+
+                # next 2 bytes: expected index name length in bytes.
+                self.data['index_str'].append(bs.read('bytes:%i' % index_str))  # index string
     
                 # next 4 bytes: number of clusters identified as index (uint32)
-                self.data['clusters'].append(bs.read('uintle:32'))
+                self.data['clusters'].append(clusters)
 
                 # next 2 bytes: expected sample name length in bytes.
-                nextbytes = bs.read('uintle:16')
-                self.data['name_str'].append(bs.read('bytes:%i' % nextbytes) )      #sample name
+                self.data['name_str'].append(bs.read('bytes:%i' % name_str))  #sample name
 
                 # next 2 bytes: expected sample project string length in bytes.
-                nextbytes = bs.read('uintle:16')
-                self.data['project_str'].append(bs.read('bytes:%i' % nextbytes))
+                self.data['project_str'].append(bs.read('bytes:%i' % project_str))
         
         except ReadError:
             #that's all, folks

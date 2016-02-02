@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime, timedelta
+
 import pandas
 
 from .base_parser_class import InteropBinParser
@@ -52,21 +53,25 @@ class InteropExtractionMetrics(InteropBinParser):
         recordlen = bs.read('uintle:8')  # length of each record
 
         for i in range(0,int((bs.len) / (recordlen * 8))):  # record length in bits
-            self.data['lane'].append(bs.read('uintle:16'))
-            self.data['tile'].append(bs.read('uintle:16'))
-            self.data['cycle'].append(bs.read('uintle:16'))
-    
-            # 4 x 4 bytes: fwhm scores (float) for channel [A, C, G, T] respectively 
-            self.data['fwhm_A'].append(bs.read('floatle:32'))    
-            self.data['fwhm_C'].append(bs.read('floatle:32'))
-            self.data['fwhm_G'].append(bs.read('floatle:32'))
-            self.data['fwhm_T'].append(bs.read('floatle:32'))
-    
-            # 2 x 4 bytes: intensities (uint16) for channel [A, C, G, T] respectively 
-            self.data['intensity_A'].append(bs.read('uintle:16'))
-            self.data['intensity_C'].append(bs.read('uintle:16'))
-            self.data['intensity_G'].append(bs.read('uintle:16'))
-            self.data['intensity_T'].append(bs.read('uintle:16'))
+
+            lane, tile, cycle, fwhm_A, fwhm_C, fwhm_G, fwhm_T, intensity_A, intensity_C, intensity_G, intensity_T = \
+                bs.readlist('3*uintle:16, 4*floatle:32, 4*uintle:16')
+
+            self.data['lane'].append(lane)
+            self.data['tile'].append(tile)
+            self.data['cycle'].append(cycle)
+
+            # 4 x 4 bytes: fwhm scores (float) for channel [A, C, G, T] respectively
+            self.data['fwhm_A'].append(fwhm_A)
+            self.data['fwhm_C'].append(fwhm_C)
+            self.data['fwhm_G'].append(fwhm_G)
+            self.data['fwhm_T'].append(fwhm_T)
+
+            # 2 x 4 bytes: intensities (uint16) for channel [A, C, G, T] respectively
+            self.data['intensity_A'].append(intensity_A)
+            self.data['intensity_C'].append(intensity_C)
+            self.data['intensity_G'].append(intensity_G)
+            self.data['intensity_T'].append(intensity_T)
     
             # 8 bytes: date/time of CIF creation
             datetime_bits = bs.read(64)

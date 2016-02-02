@@ -14,14 +14,15 @@
 # with lots of help from ECO (eric.olivares@invitae.com)
 
 import os
+import xml.etree.ElementTree as ET
 from collections import OrderedDict
 from datetime import datetime
-import xml.etree.ElementTree as ET
 
 import xmltodict
 
-from .utils import select_file_from_aliases
 from .filemaps import XML_FILEMAP
+from .utils import select_file_from_aliases
+
 
 class InteropMetadata(object):
     """Parser for sequencer's XML files describing a single run. Supply with directory to instantiate.
@@ -192,12 +193,13 @@ class InteropMetadata(object):
     def _parse_runparams(self, xml_dict):
         # Different format from that in CompletedJobInfo.xml (contains read Number).
         # And there are two possible keys to indicate the same datastructure. So fun.
-        try:
-            Reads = xml_dict.get('Reads')['Read']
-        except KeyError:
-            Reads = xml_dict.get('Reads')['RunInfoRead']
 
         if not self.read_config:
+            try:
+                Reads = xml_dict.get('Reads')['Read']
+            except KeyError:
+                Reads = xml_dict.get('Reads')['RunInfoRead']
+
             for read in Reads:
                 self.read_config.append(
                     {'read_num': int(read['@Number']),
@@ -217,6 +219,14 @@ class InteropMetadata(object):
         self.flowcell_barcode = xml_dict.get('Barcode', '')
         self.machine_id = xml_dict.get('ScannerID', '')
 
+        # NextSeq
+        if self.machine_id == '':
+            self.machine_id = xml_dict.get('InstrumentID', '')
+            # Although there is no A/B position we can still read it out from the run folder name
+            self.flowcell_position = self.runID.split('_')[-1][0]
+            self.flowcell_barcode = self.rta_run_info['flowcell']
+
+
     def parse_RunParameters(self, filepath):
         """parses runParameters.xml (or viable alias) to fill instance variables.
 
@@ -231,7 +241,7 @@ class InteropMetadata(object):
         elif 'Reads' in list(root.keys()):
             self._parse_runparams(root)                 # MiSeq
         else:
-            pass  # NextSeq
+            self._parse_runparams(root)                 # NextSeq
 
         self.model = self._get_model()
 
@@ -312,8 +322,8 @@ class InteropMetadata(object):
             model = "HiSeq 2500"
         elif self.machine_id.startswith("SN"):
             model = "HiSeq 2000"
-        # elif machine_id.startswith("??"):
-        # model = "Hiseq 3000"
+        elif self.machine_id.startswith("J"):
+            model = "Hiseq 3000"
         elif self.machine_id.startswith("K"):
             model = "HiSeq 4000"
         elif self.machine_id.startswith("ST"):

@@ -48,15 +48,19 @@ class InteropErrorMetrics(InteropBinParser):
         recordlen = bs.read('uintle:8')  # length of each record
 
         for i in range(0,int((bs.len) / (recordlen * 8))):  # record length in bits
-            self.data['lane'].append(bs.read('uintle:16'))
-            self.data['tile'].append(bs.read('uintle:16'))
-            self.data['cycle'].append(bs.read('uintle:16'))
-            self.data['rate'].append(bs.read('floatle:32'))
-            self.data['perfect'].append(bs.read('uintle:32'))
-            self.data['one_err'].append(bs.read('uintle:32'))
-            self.data['two_err'].append(bs.read('uintle:32'))
-            self.data['three_err'].append(bs.read('uintle:32'))
-            self.data['four_err'].append(bs.read('uintle:32'))
+
+            lane, tile, cycle, rate, perfect, one_err, two_err, three_err, four_err = bs.readlist('3*uintle:16' +
+                                                                                                  'floatle:32, 5*uintle:32')
+
+            self.data['lane'].append(lane)
+            self.data['tile'].append(tile)
+            self.data['cycle'].append(cycle)
+            self.data['rate'].append(rate)
+            self.data['perfect'].append(perfect)
+            self.data['one_err'].append(one_err)
+            self.data['two_err'].append(two_err)
+            self.data['three_err'].append(three_err)
+            self.data['four_err'].append(four_err)
 
         self.df = pandas.DataFrame(self.data)
     

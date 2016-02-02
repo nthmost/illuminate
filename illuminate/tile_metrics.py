@@ -72,19 +72,19 @@ class InteropTileMetrics(InteropBinParser):
 
         bs = self.bs    #convenience assignment
 
-        self.apparent_file_version = bs.read('uintle:8')
-    
+        self.apparent_file_version, recordlen = bs.readlist('2*uintle:8')
         self.check_version(self.apparent_file_version)
 
-        recordlen = bs.read('uintle:8')  # length of each record == 10
         bs.pos = 16  # skip the following 16 bytes which are invariant here.
 
         #read records bytewise per specs in technote_rta_theory_operations.pdf from ILMN
         for i in range(0,int((bs.len - 16) / (recordlen * 8))):  # 80 == record length in bits
-            self.data['lane'].append(bs.read('uintle:16'))          #lane number
-            self.data['tile'].append(bs.read('uintle:16'))          #tile number
-            self.data['code'].append(bs.read('uintle:16'))          #metric code
-            self.data['value'].append(bs.read('floatle:32'))        #metric value
+
+            lane, tile, code, value = bs.readlist('3*uintle:16, floatle:32')
+            self.data['lane'].append(lane)  # lane number
+            self.data['tile'].append(tile)  # tile number
+            self.data['code'].append(code)  # metric code
+            self.data['value'].append(value)  # metric value
 
         #make it fuzzy and mean.
         self.df = pandas.DataFrame(self.data)

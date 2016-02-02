@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 import pandas
-from bitstring import BitString
 
 from .base_parser_class import InteropBinParser
 
@@ -66,28 +65,35 @@ class InteropCorrectedIntensityMetrics(InteropBinParser):
 
         try:
             for i in range(0,int((bs.len) / (recordlen * 8 ))):  # record length in bits
-                self.data['lane'].append(bs.read('uintle:16'))
-                self.data['tile'].append(bs.read('uintle:16'))
-                self.data['cycle'].append(bs.read('uintle:16'))
-                self.data['avg_intensity'].append(bs.read('uintle:16'))
-                self.data['avg_corint_A'].append(bs.read('uintle:16'))
-                self.data['avg_corint_C'].append(bs.read('uintle:16'))
-                self.data['avg_corint_G'].append(bs.read('uintle:16'))
-                self.data['avg_corint_T'].append(bs.read('uintle:16'))
-                self.data['avg_corint_called_A'].append(bs.read('uintle:16'))
-                self.data['avg_corint_called_C'].append(bs.read('uintle:16'))
-                self.data['avg_corint_called_G'].append(bs.read('uintle:16'))
-                self.data['avg_corint_called_T'].append(bs.read('uintle:16'))
+
+                lane, tile, cycle, avg_intensity, avg_corint_A, avg_corint_C, avg_corint_G, avg_corint_T, \
+                avg_corint_called_A, avg_corint_called_C, avg_corint_called_G, avg_corint_called_T = \
+                    bs.readlist('12*uintle:16')
+
+                self.data['lane'].append(lane)
+                self.data['tile'].append(tile)
+                self.data['cycle'].append(cycle)
+                self.data['avg_intensity'].append(avg_intensity)
+                self.data['avg_corint_A'].append(avg_corint_A)
+                self.data['avg_corint_C'].append(avg_corint_C)
+                self.data['avg_corint_G'].append(avg_corint_G)
+                self.data['avg_corint_T'].append(avg_corint_T)
+                self.data['avg_corint_called_A'].append(avg_corint_called_A)
+                self.data['avg_corint_called_C'].append(avg_corint_called_C)
+                self.data['avg_corint_called_G'].append(avg_corint_called_G)
+                self.data['avg_corint_called_T'].append(avg_corint_called_T)
         
                 # 20 bytes / 5 = 4 bytes each following records.
-                self.data['num_nocalls'].append(bs.read('floatle:32'))
-                self.data['num_calls_A'].append(bs.read('floatle:32'))
-                self.data['num_calls_C'].append(bs.read('floatle:32'))
-                self.data['num_calls_G'].append(bs.read('floatle:32'))
-                self.data['num_calls_T'].append(bs.read('floatle:32'))
+                num_nocalls, num_calls_A, num_calls_C, num_calls_G, num_calls_T, signoise_ratio = \
+                    bs.readlist('6*floatle:32')
+                self.data['num_nocalls'].append(num_nocalls)
+                self.data['num_calls_A'].append(num_calls_A)
+                self.data['num_calls_C'].append(num_calls_C)
+                self.data['num_calls_G'].append(num_calls_G)
+                self.data['num_calls_T'].append(num_calls_T)
         
                 # 4 bytes: sig/noise ratio (float)  
-                self.data['signoise_ratio'].append(bs.read('floatle:32'))
+                self.data['signoise_ratio'].append(signoise_ratio)
 
         except ReadError:
             #that's all, folks

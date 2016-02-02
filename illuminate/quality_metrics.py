@@ -162,9 +162,8 @@ class InteropQualityMetrics(InteropBinParser):
         #       2 bytes: cycle number (uint16)
         #       4 x 50 bytes: number of clusters assigned score (uint32) Q1 through Q50
 
-        self.apparent_file_version = bs.read('uintle:8')
+        self.apparent_file_version, recordlen = bs.readlist('2*uintle:8')
         self.check_version(self.apparent_file_version)
-        recordlen = bs.read('uintle:8')  # length of each record
 
         if (self.apparent_file_version == 5):
             self.binning_on = bs.read('uintle:8')
@@ -182,16 +181,15 @@ class InteropQualityMetrics(InteropBinParser):
 
         #read records bytewise per specs in technote_rta_theory_operations.pdf from ILMN
         for i in range(0,int((bs.len) / (recordlen * 8))):  # 206 * 8 = 1648 record length in bits
-            lane = bs.read('uintle:16')
-            tile = bs.read('uintle:16')
-            cycle = bs.read('uintle:16')
-        
+
+            lane, tile, cycle = bs.readlist('3*uintle:16')
             self.data['lane'].append(lane)
             self.data['tile'].append(tile)
             self.data['cycle'].append(cycle)
 
-            for qual in range(1, self.num_quality_scores + 1):  #(50 entries of 4 bytes each)
-                self.data['q'+str(qual)].append(bs.read('uintle:32'))
+            qual_list = bs.readlist(str(self.num_quality_scores) + '*uintle:32')
+            for qual in range(0, self.num_quality_scores):  # (50 entries of 4 bytes each)
+                self.data['q' + str(qual + 1)].append(qual_list[qual])
 
         self.df = set_column_sequence(pandas.DataFrame(self.data), self.qcol_sequence)
     

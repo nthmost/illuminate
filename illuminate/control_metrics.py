@@ -9,6 +9,7 @@ from bitstring import ReadError
 
 from .base_parser_class import InteropBinParser
 
+
 class InteropControlMetrics(InteropBinParser):
 
     __version = 0.1
@@ -46,19 +47,20 @@ class InteropControlMetrics(InteropBinParser):
 
         try:
             while True:
-                self.data['lane'].append(bs.read('uintle:16'))
-                self.data['tile'].append(bs.read('uintle:16'))
-                self.data['read'].append(bs.read('uintle:16'))
-    
+                lane, tile, read = bs.readlist('3*uintle:16')
+                self.data['lane'].append(lane)
+                self.data['tile'].append(tile)
+                self.data['read'].append(read)
+
+                control_str, index_str, clusters = bs.readlist('2*uintle:16, uintle:32')
+
                 # next 2 bytes: expected control name length in bytes.
-                nextbytes = bs.read('uintle:16')
-                self.data['control_str'].append(bs.read('bytes:%i' % (nextbytes)))
+                self.data['control_str'].append(bs.read('bytes:%i' % (control_str)))
 
                 # next 2 bytes: expected index name length in bytes.    
-                nextbytes = bs.read('uintle:16')
-                self.data['index_str'].append(bs.read('bytes:%i' % (nextbytes)))
-            
-                self.data['clusters'].append(bs.read('uintle:32'))
+                self.data['index_str'].append(bs.read('bytes:%i' % (index_str)))
+
+                self.data['clusters'].append(clusters)
                 
         except ReadError:
             pass
