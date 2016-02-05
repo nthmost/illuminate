@@ -49,8 +49,8 @@ class InteropErrorMetrics(InteropBinParser):
 
         for i in range(0,int((bs.len) / (recordlen * 8))):  # record length in bits
 
-            lane, tile, cycle, rate, perfect, one_err, two_err, three_err, four_err = bs.readlist('3*uintle:16' +
-                                                                                                  'floatle:32, 5*uintle:32')
+            lane, tile, cycle, rate, perfect, one_err, two_err, three_err, four_err = \
+                bs.readlist('3*uintle:16, floatle:32, 5*uintle:32')
 
             self.data['lane'].append(lane)
             self.data['tile'].append(tile)
