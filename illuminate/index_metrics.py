@@ -75,20 +75,21 @@ class InteropIndexMetrics(InteropBinParser):
                 self.data['tile'].append(tile)  # tile number
                 self.data['read'].append(read)  # read number
 
-                index_str, clusters, name_str, project_str = bs.readlist('uintle:16, uintle:32, uintle:16, uintle:16')
-
                 # next 2 bytes: expected index name length in bytes.
-                self.data['index_str'].append(bs.read('bytes:%i' % index_str))  # index string
-    
+                nextbytes = bs.read('uintle:16')
+                self.data['index_str'].append(bs.read('bytes:%i' % nextbytes))  # index string
+
                 # next 4 bytes: number of clusters identified as index (uint32)
-                self.data['clusters'].append(clusters)
+                self.data['clusters'].append(bs.read('uintle:32'))
 
                 # next 2 bytes: expected sample name length in bytes.
-                self.data['name_str'].append(bs.read('bytes:%i' % name_str))  #sample name
+                nextbytes = bs.read('uintle:16')
+                self.data['name_str'].append(bs.read('bytes:%i' % nextbytes))  # sample name
 
                 # next 2 bytes: expected sample project string length in bytes.
-                self.data['project_str'].append(bs.read('bytes:%i' % project_str))
-        
+                nextbytes = bs.read('uintle:16')
+                self.data['project_str'].append(bs.read('bytes:%i' % nextbytes))
+
         except ReadError:
             #that's all, folks
             pass

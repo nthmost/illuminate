@@ -52,16 +52,15 @@ class InteropControlMetrics(InteropBinParser):
                 self.data['tile'].append(tile)
                 self.data['read'].append(read)
 
-                control_str, index_str, clusters = bs.readlist('2*uintle:16, uintle:32')
-
                 # next 2 bytes: expected control name length in bytes.
-                self.data['control_str'].append(bs.read('bytes:%i' % (control_str)))
+                nextbytes = bs.read('uintle:16')
+                self.data['control_str'].append(bs.read('bytes:%i' % (nextbytes)))
 
-                # next 2 bytes: expected index name length in bytes.    
-                self.data['index_str'].append(bs.read('bytes:%i' % (index_str)))
+                # next 2 bytes: expected index name length in bytes.
+                nextbytes = bs.read('uintle:16')
+                self.data['index_str'].append(bs.read('bytes:%i' % (nextbytes)))
 
-                self.data['clusters'].append(clusters)
-                
+                self.data['clusters'].append(bs.read('uintle:32'))
         except ReadError:
             pass
     
