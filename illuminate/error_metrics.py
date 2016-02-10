@@ -20,6 +20,9 @@ class InteropErrorMetrics(InteropBinParser):
                       'two_err': [], 
                       'three_err': [], 
                       'four_err': [] }
+
+        self.results = {}
+        self.error_rate_dict = {}
             
     def parse_binary(self):
     
@@ -63,7 +66,7 @@ class InteropErrorMetrics(InteropBinParser):
             self.data['four_err'].append(four_err)
 
         self.df = pandas.DataFrame(self.data)
-    
+
     def __str__(self):
         #TODO: to_str (improve output)
         out = "(sum of all types of errors across all reads)\n"
@@ -71,7 +74,18 @@ class InteropErrorMetrics(InteropBinParser):
         out += "%s\n" % idf.sum()
         return out
 
-    
+    def get_error_rate_dict(self):
+        # Can be used to get a similar output as the SAV, which uses the mean and the standard deviation
+        # Maybe there is a more elgant way to get this out?
+        described_dict = self.df.groupby(['lane']).describe()['rate'].to_dict()
+        for key, value in described_dict.iteritems():
+            if key[0] in self.error_rate_dict:
+                self.error_rate_dict[key[0]].update({key[1]: value})
+            else:
+                self.error_rate_dict[key[0]] = {key[1]: value}
+        return self.error_rate_dict
+
+
 if __name__=='__main__':
     
     import sys
@@ -86,4 +100,3 @@ if __name__=='__main__':
     
     print('Length of data: %i' % len(EM.data['cycle']))
     print(EM)
-    
