@@ -9,21 +9,18 @@ class InteropQualityMetrics(InteropBinParser):
     "ILMN Quality metrics parser (child class of InteropBinParser)."
 
     __version = 0.2     # version of this parser class.
-    supported_versions = [4, 5]        # version(s) of file that this parser supports
+    supported_versions = [4, 5, 6]  # version(s) of file that this parser supports
     codename = 'quality'
 
     # a scalar representing the number of quality scores per record in QualityMetrics*.bin
     num_quality_scores = 50
 
+    # for v6
+    number_of_quality_score_bins = 7
+
     def _init_variables(self):
         self._setup_read_tiers()
         
-        # create .qcol_sequence to retain correct order of qx columns
-        self._set_qcol_sequence()
-        
-        # create data dict for parser, making use of .qcol_sequence
-        self._setup_data()
-
         # Q30 / Q20 scores per read, calculated at end of parsing.
         self.read_qscore_results = {'readnum': [], 'q30': [], 'q20': [] }
 
@@ -36,17 +33,6 @@ class InteropQualityMetrics(InteropBinParser):
         # re-mapped scores of Q-score binning
         self.remapped_scores = []
 
-    def _set_qcol_sequence(self):
-        "sets .qcol_sequence array of q score labels in correct order."
-        self.qcol_sequence = []
-        for qual in range(1,self.num_quality_scores+1):
-            self.qcol_sequence.append('q'+str(qual))
-
-    def _setup_data(self):
-        self.data = { 'lane': [], 'cycle': [], 'tile': [] }
-        
-        for qual in self.qcol_sequence:
-            self.data[qual] = []
 
     def _setup_read_tiers(self):    
         """
@@ -65,7 +51,20 @@ class InteropQualityMetrics(InteropBinParser):
             new_tier = last_tier + self.read_config[x]['cycles'] 
             self.read_tiers.append(new_tier)
             last_tier = new_tier
-        
+
+    def set_qcol_sequence(self):
+        "sets .qcol_sequence array of q score labels in correct order."
+        self.qcol_sequence = []
+        for qual in range(1, self.number_of_quality_score_bins + 1):
+            self.qcol_sequence.append('q' + str(qual))
+
+    def setup_data(self):
+        self.data = {'lane': [], 'cycle': [], 'tile': []}
+
+        for qual in self.qcol_sequence:
+            self.data[qual] = []
+
+
     def get_df_col_sequence(self):
         "returns array of column names in correct order for DataFrame (.df)"
         out = ['cycle', 'lane', 'tile']
@@ -162,10 +161,30 @@ class InteropQualityMetrics(InteropBinParser):
         #       2 bytes: cycle number (uint16)
         #       4 x 50 bytes: number of clusters assigned score (uint32) Q1 through Q50
 
+
+        # v6 Quality Metrics (QMetricsOut.bin) format for Hiseq 3000 for example
+        # byte 0: file version number (6)
+        # byte 1: length of each record
+        # byte 2: quality score binning (byte flag representing if binning was on), if (byte 2 == 1) // quality score binning on
+        # byte 3: number of quality score bins, B
+        # // if byte 2 == 1
+        #   bytes 4 - (4+B-1): lower boundary of quality score bins
+        #   bytes (4+B) - (4+2*B-1): upper boundary of quality score bins
+        #   bytes (4+2*B) - (4+3*B-1): remapped scores of quality score bins
+        # The remaining bytes are for the records, with each record in this format:
+        # 2 bytes: lane number  (uint16)
+        # 2 bytes: tile number  (uint16)
+        # 2 bytes: cycle number (uint16)
+        # 4 x B bytes: number of clusters assigned score (uint32) Q1 through QB
+        # Where N is the record index
+
+
+        number_of_qual_bins = 0
+
         self.apparent_file_version, recordlen = bs.readlist('2*uintle:8')
         self.check_version(self.apparent_file_version)
 
-        if (self.apparent_file_version == 5):
+        if (self.apparent_file_version == 5 or self.apparent_file_version == 6):
             self.binning_on = bs.read('uintle:8')
             if (self.binning_on == 1):
                 number_of_qual_bins = bs.read('uintle:8')
@@ -179,6 +198,14 @@ class InteropQualityMetrics(InteropBinParser):
                 print("[%s] Info: Q-score binning was used with %s bins and these remapped scores: %s" \
                       % (self.__class__.__name__, number_of_qual_bins, self.remapped_scores))
 
+        if self.apparent_file_version == 6:
+            self.number_of_quality_score_bins = number_of_qual_bins
+        elif self.apparent_file_version == 5:
+            self.number_of_quality_score_bins = self.num_quality_scores
+
+        self.set_qcol_sequence()
+        self.setup_data()
+
         #read records bytewise per specs in technote_rta_theory_operations.pdf from ILMN
         for i in range(0,int((bs.len) / (recordlen * 8))):  # 206 * 8 = 1648 record length in bits
 
@@ -187,8 +214,8 @@ class InteropQualityMetrics(InteropBinParser):
             self.data['tile'].append(tile)
             self.data['cycle'].append(cycle)
 
-            qual_list = bs.readlist(str(self.num_quality_scores) + '*uintle:32')
-            for qual in range(0, self.num_quality_scores):  # (50 entries of 4 bytes each)
+            qual_list = bs.readlist(str(self.number_of_quality_score_bins) + '*uintle:32')
+            for qual in range(0, self.number_of_quality_score_bins):  # (50 entries of 4 bytes each)
                 self.data['q' + str(qual + 1)].append(qual_list[qual])
 
         self.df = set_column_sequence(pandas.DataFrame(self.data), self.qcol_sequence)
