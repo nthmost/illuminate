@@ -323,7 +323,7 @@ class InteropMetadata(object):
         elif self.machine_id.startswith("SN"):
             model = "HiSeq 2000"
         elif self.machine_id.startswith("J"):
-            model = "Hiseq 3000"
+            model = "HiSeq 3000"
         elif self.machine_id.startswith("K"):
             model = "HiSeq 4000"
         elif self.machine_id.startswith("ST"):
