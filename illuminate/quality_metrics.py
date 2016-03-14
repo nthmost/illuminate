@@ -183,6 +183,7 @@ class InteropQualityMetrics(InteropBinParser):
 
         self.apparent_file_version, recordlen = bs.readlist('2*uintle:8')
         self.check_version(self.apparent_file_version)
+        print("[%s] Info: Found file version %s" % (self.__class__.__name__, self.apparent_file_version))
 
         if (self.apparent_file_version == 5 or self.apparent_file_version == 6):
             self.binning_on = bs.read('uintle:8')
@@ -198,10 +199,7 @@ class InteropQualityMetrics(InteropBinParser):
                 print("[%s] Info: Q-score binning was used with %s bins and these remapped scores: %s" \
                       % (self.__class__.__name__, number_of_qual_bins, self.remapped_scores))
 
-        if self.apparent_file_version == 6:
-            self.number_of_quality_score_bins = number_of_qual_bins
-        elif self.apparent_file_version == 5:
-            self.number_of_quality_score_bins = self.num_quality_scores
+                self.number_of_quality_score_bins = number_of_qual_bins
 
         self.set_qcol_sequence()
         self.setup_data()
@@ -221,7 +219,6 @@ class InteropQualityMetrics(InteropBinParser):
         self.df = set_column_sequence(pandas.DataFrame(self.data), self.qcol_sequence)
     
         self.idf = self.make_coordinate_plane(self.df, flatten=True)
-        
         for read_num in range(self.num_reads):
             q30 = self.get_qscore_percentage(30, read_num)
             q20 = self.get_qscore_percentage(20, read_num)
