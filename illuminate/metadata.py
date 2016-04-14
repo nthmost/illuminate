@@ -301,7 +301,8 @@ class InteropMetadata(object):
         Current Naming schema for Illumina run folders, as far as I know,
         no documentation found on this, Illumina introduced a field called
         'InstrumentID' on the NextSeq runParameters.xml. That might be an
-        option for the future
+        option for the future, but probably the field '<Chemistry>' seems to
+        be a better candidate
 
         MiSeq: 150130_M01761_0114_000000000-ACUR0
         NextSeq: 150202_NS500318_0047_AH3KLMBGXX
@@ -309,6 +310,7 @@ class InteropMetadata(object):
         HiSeq 2500: 150203_D00535_0052_AC66RWANXX
         HiSeq 4000: 150210_K00111_0013_AH2372BBXX
         HiSeq X: 141121_ST-E00107_0356_AH00C3CCXX
+        MiniSeq: 150924_ML-P2-12_0014_H003FY_PoolW_TSCA
         """
 
         # retired this line. getting self.machine_id from ScannerID field in _parse_runparams()
@@ -316,6 +318,8 @@ class InteropMetadata(object):
 
         if self.machine_id.startswith("NS"):
             model = "NextSeq 500"
+        elif self.machine_id.startswith("ML"):
+            model = "MiniSeq"
         elif self.machine_id.startswith("M"):
             model = "MiSeq"
         elif self.machine_id.startswith("D"):

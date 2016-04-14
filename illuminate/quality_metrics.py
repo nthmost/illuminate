@@ -20,7 +20,7 @@ class InteropQualityMetrics(InteropBinParser):
 
     def _init_variables(self):
         self._setup_read_tiers()
-        
+
         # Q30 / Q20 scores per read, calculated at end of parsing.
         self.read_qscore_results = {'readnum': [], 'q30': [], 'q20': [] }
 
@@ -33,22 +33,21 @@ class InteropQualityMetrics(InteropBinParser):
         # re-mapped scores of Q-score binning
         self.remapped_scores = []
 
-
-    def _setup_read_tiers(self):    
+    def _setup_read_tiers(self):
         """
-        Concocts a 'read tier' array describing the start-number of cycles per 
+        Concocts a 'read tier' array describing the start-number of cycles per
         individual Read.
-        
+
         (E.g. read_config of 151/6/151 becomes read_tiers=[151,157,308]
-        """ 
+        """
 
         self.read_tiers = []     # list of tuples
 
         last_tier = 0
         num_reads = len(self.read_config)
-    
+
         for x in range(0,num_reads):
-            new_tier = last_tier + self.read_config[x]['cycles'] 
+            new_tier = last_tier + self.read_config[x]['cycles']
             self.read_tiers.append(new_tier)
             last_tier = new_tier
 
@@ -72,28 +71,28 @@ class InteropQualityMetrics(InteropBinParser):
         return out
 
     def index_quality(self, target_qscore=30):
-        """Convenience method to return index read's % quality for target_qscore 
+        """Convenience method to return index read's % quality for target_qscore
           (default % >= Q30)"""
-    
-        # Assumes only one Index read, which is not a good assumption. 
+
+        # Assumes only one Index read, which is not a good assumption.
         # No plans to fix unless specifically requested. (Would probably make more
-        # sense just to get rid of this function. -nm) 
-        
+        # sense just to get rid of this function. -nm)
+
         for read in self.read_config:
             if read['is_index']:
                 return self.get_qscore_percentage(target_qscore, read['read_num']-1)
 
     def get_qscore_percentage(self, target_qscore=30, read_num=-1):
-        """Returns PERCENTAGE of quality scores at or above target_qscore. 
-        
-        Supplying read_num=-1 returns qscore percentage across all reads. 
-        
+        """Returns PERCENTAGE of quality scores at or above target_qscore.
+
+        Supplying read_num=-1 returns qscore percentage across all reads.
+
         :param target_qscore: int designates target quality level (default: 30)
         :param read_num: int specifies read number (default: -1)."
         """
-    
+
         q_upper_cols = [x for x in self.data.keys() if x[0]=='q' and int(x[1:]) > target_qscore-1 ]
-        q_upper_df = self.idf[q_upper_cols] 
+        q_upper_df = self.idf[q_upper_cols]
 
         if read_num==-1:
             # return %>=qn for entire data set.
@@ -102,21 +101,21 @@ class InteropQualityMetrics(InteropBinParser):
 
         else:
             # segment Qscores by read_num. Let IndexError be raised for too-high read_num.
-            # read_tiers example: [151,157,308] 
+            # read_tiers example: [151,157,308]
 
             cycle_start = 0 if read_num == 0 else self.read_tiers[read_num - 1] + 1
             cycle_end = self.read_tiers[read_num]
-        
+
             tiles = self.flowcell_layout['tilecount']
             lanes = self.flowcell_layout['lanecount']
             surfaces = self.flowcell_layout['surfacecount']
 
             i_start = 0 if read_num==0 else cycle_start * tiles * lanes * surfaces
             i_end = cycle_end * tiles * lanes * surfaces
-        
+
             q_upper_sum = q_upper_df[i_start:i_end].values.sum()
-            q_total_sum = self.idf[i_start:i_end].values.sum()  
-        
+            q_total_sum = self.idf[i_start:i_end].values.sum()
+
         # Return a percentage (like in Illumina SAV)
         if q_total_sum:
             return 100 * float(q_upper_sum) / float(q_total_sum)
@@ -183,7 +182,6 @@ class InteropQualityMetrics(InteropBinParser):
 
         self.apparent_file_version, recordlen = bs.readlist('2*uintle:8')
         self.check_version(self.apparent_file_version)
-        print("[%s] Info: Found file version %s" % (self.__class__.__name__, self.apparent_file_version))
 
         if (self.apparent_file_version == 5 or self.apparent_file_version == 6):
             self.binning_on = bs.read('uintle:8')
@@ -199,7 +197,10 @@ class InteropQualityMetrics(InteropBinParser):
                 print("[%s] Info: Q-score binning was used with %s bins and these remapped scores: %s" \
                       % (self.__class__.__name__, number_of_qual_bins, self.remapped_scores))
 
-                self.number_of_quality_score_bins = number_of_qual_bins
+        if self.apparent_file_version == 6:
+            self.number_of_quality_score_bins = number_of_qual_bins
+        elif self.apparent_file_version == 5:
+            self.number_of_quality_score_bins = self.num_quality_scores
 
         self.set_qcol_sequence()
         self.setup_data()
@@ -217,8 +218,9 @@ class InteropQualityMetrics(InteropBinParser):
                 self.data['q' + str(qual + 1)].append(qual_list[qual])
 
         self.df = set_column_sequence(pandas.DataFrame(self.data), self.qcol_sequence)
-    
+
         self.idf = self.make_coordinate_plane(self.df, flatten=True)
+
         for read_num in range(self.num_reads):
             q30 = self.get_qscore_percentage(30, read_num)
             q20 = self.get_qscore_percentage(20, read_num)

@@ -40,14 +40,14 @@ class InteropIndexMetrics(InteropBinParser):
             }
             
         self.total_ix_reads_pf = 0  # sum of all index reads passing filter 
-        self.results = {}        # after parsing, keyed by unique indexes. 
-                                 # value = sum of PF clusters found per unique index.
+        self.results = {}  # after parsing, keyed by unique indexes.
+        # value = sum of PF clusters found per unique index.
 
     def parse_binary(self):
     
         bs = self.bs
-    
-        # Index Metrics (IndexMetrics.bin and IndexMetricOut.bin) 
+
+        # Index Metrics (IndexMetrics.bin and IndexMetricOut.bin)
         #   Reports the indexes count. Format:
         #   Byte 0: file version (1)
         #   Bytes( variable length): record:
