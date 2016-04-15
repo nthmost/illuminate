@@ -91,25 +91,28 @@ class InteropIndexMetrics(InteropBinParser):
                 self.data['project_str'].append(bs.read('bytes:%i' % nextbytes))
 
         except ReadError:
-            #that's all, folks
             pass
 
         self.df = pandas.DataFrame(self.data)
-        self.pivot = self.df.pivot_table('clusters', index=['index_str', 'project_str', 'name_str'], aggfunc='sum')
 
-        # pivot now looks something like this, with any luck:
-        """index_str  project_str       name_str                             
-            AAACAT     CLIA - WF1265 #1  XL1510-XE2346-LS1430-SQ1000-RE1051-B1    8290786
-            CTTGTA     CLIA - WF1265 #1  XL1510-XE2343-LS1429-SQ36-RE1051-A1      8582411
-        """    
-
-        self.total_ix_reads_pf = self.pivot.sum()
-
-        # NEW (0.5.9): results dictionary now includes name_str and project_str 
         self.results = {}
-        for ix in self.pivot.keys():
-            #ix like ('index_str', 'project_str', 'name_str')
-            self.results[ix[0]] = { 'project': ix[1], 'name': ix[2], 'clusters': self.pivot[ix] }
+
+        # data frame is empty if it was a run without any indices
+        if not self.df.empty:
+            self.pivot = self.df.pivot_table('clusters', index=['index_str', 'project_str', 'name_str'], aggfunc='sum')
+
+            # pivot now looks something like this, with any luck:
+            """index_str  project_str       name_str
+                AAACAT     CLIA - WF1265 #1  XL1510-XE2346-LS1430-SQ1000-RE1051-B1    8290786
+                CTTGTA     CLIA - WF1265 #1  XL1510-XE2343-LS1429-SQ36-RE1051-A1      8582411
+            """
+
+            self.total_ix_reads_pf = self.pivot.sum()
+
+            # NEW (0.5.9): results dictionary now includes name_str and project_str
+            for ix in self.pivot.keys():
+                # ix like ('index_str', 'project_str', 'name_str')
+                self.results[ix[0]] = {'project': ix[1], 'name': ix[2], 'clusters': self.pivot[ix]}
 
     def to_dict(self):
         return self.results

@@ -194,8 +194,8 @@ class InteropQualityMetrics(InteropBinParser):
                     self.upper_boundary.append(bs.read('uintle:8'))
                 for remap in range(0, number_of_qual_bins):
                     self.remapped_scores.append(bs.read('uintle:8'))
-                print("[%s] Info: Q-score binning was used with %s bins and these remapped scores: %s" \
-                      % (self.__class__.__name__, number_of_qual_bins, self.remapped_scores))
+                    # print("[%s] Info: Q-score binning was used with %s bins and these remapped scores: %s" \
+                    #     % (self.__class__.__name__, number_of_qual_bins, self.remapped_scores))
 
         if self.apparent_file_version == 6:
             self.number_of_quality_score_bins = number_of_qual_bins

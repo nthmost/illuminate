@@ -18,13 +18,13 @@ BINFILE_DIR_NAME = "InterOp"
 # a set of decreasing priorities.
 
 BIN_FILEMAP = { 'extraction': ["ExtractionMetricsOut.bin", "ExtractionMetrics.bin"],
-                'quality': ["QMetricsOut.bin", "QualityMetricsOut.bin", "QualityMetrics.bin"],
+                'quality': ["QMetricsOut.bin", "QualityMetricsOut.bin", "QualityMetrics.bin", "QMetrics.bin"],
                 'error': ["ErrorMetricsOut.bin", "ErrorMetrics.bin"],
                 'tile': ["TileMetricsOut.bin", "TileMetrics.bin"],
                 'corint': ["CorrectedIntMetricsOut.bin", "CorrectedIntensityMetricsOut.bin", "CorrectedIntMetrics.bin"],
                 'control': ["ControlMetricsOut.bin", "ControlMetrics.bin"],
                 'image': ["ImageMetricsOut.bin", "ImageMetrics.bin"], 
-                'index': ["IndexMetricsOut.bin", "IndexMetrics.bin"] }
+                'index': ["IndexMetricsOut.bin", "IndexMetrics.bin"]}
 
 XML_FILEMAP = { 'runinfo': ["RunInfo.xml"],
                'runparams': ["runParameters.xml"],
