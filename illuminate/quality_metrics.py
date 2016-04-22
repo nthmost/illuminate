@@ -183,7 +183,7 @@ class InteropQualityMetrics(InteropBinParser):
         self.apparent_file_version, recordlen = bs.readlist('2*uintle:8')
         self.check_version(self.apparent_file_version)
 
-        if (self.apparent_file_version == 5 or self.apparent_file_version == 6):
+        if (self.apparent_file_version in [5, 6]):
             self.binning_on = bs.read('uintle:8')
             if (self.binning_on == 1):
                 number_of_qual_bins = bs.read('uintle:8')
@@ -199,7 +199,7 @@ class InteropQualityMetrics(InteropBinParser):
 
         if self.apparent_file_version == 6:
             self.number_of_quality_score_bins = number_of_qual_bins
-        elif self.apparent_file_version == 5:
+        elif self.apparent_file_version in [4, 5]:
             self.number_of_quality_score_bins = self.num_quality_scores
 
         self.set_qcol_sequence()
