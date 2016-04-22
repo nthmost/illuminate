@@ -10,34 +10,53 @@ import illuminate
 
 __author__ = 'Manuel Kohler'
 
+expected_metadata_dict = [({'flowcell_barcode': u'H8FW8ADXX',
+                            'experiment_name': u'exome pool E',
+                            'flowcell_position': u'B',
+                            'runID': u'140213_D00251_0076_BH8FW8ADXX',
+                            'flowcell_layout': {'tilecount': 16, 'lanecount': 2, 'surfacecount': 2, 'swathcount': 2},
+                            'model': 'HiSeq 2500',
+                            'start_datetime': datetime.datetime(2014, 2, 13, 0, 0),
+                            'end_datetime': None},
+                           illuminate.InteropDataset("sampledata/HiSeq-samples/2014-02_13_average_run"))
+    ,
+                          ({'flowcell_barcode': u'000000000-A7M8N',
+                            'experiment_name': u'RU3284:::/locus/data/run_data//3270/3284',
+                            'flowcell_position': '',
+                            'runID': '140211_M00612_0148_000000000-A7M8N',
+                            'flowcell_layout': {'tilecount': 14, 'lanecount': 1, 'surfacecount': 2, 'swathcount': 1},
+                            'model': 'MiSeq',
+                            'start_datetime': '2014-02-11T17:48:52.7792409-08:00',
+                            'end_datetime': '2014-02-11T17:51:27.4294574-08:00'},
+                           illuminate.InteropDataset("sampledata/MiSeq-samples/2014-02_11_50kit_single_read"))
+    ,
+                          ({'flowcell_barcode': u'HW37NBGXX',
+                            'experiment_name': u'rajesh pool 2',
+                            'flowcell_position': u'A',
+                            'runID': u'160404_NS500318_0141_AHW37NBGXX',
+                            'flowcell_layout': {'tilecount': 12, 'lanecount': 4, 'surfacecount': 2, 'swathcount': 3},
+                            'model': 'NextSeq 500',
+                            'start_datetime': datetime.datetime(2016, 4, 4, 0, 0),
+                            'end_datetime': None}, illuminate.InteropDataset("sampledata/NextSeq-samples/2016-04-04"))
+                          ]
 
 @pytest.fixture(scope="session")
 def setup():
     print("*** Which illuminate is used: {}".format(illuminate.__file__))
-    return illuminate.InteropDataset("sampledata/HiSeq-samples/2014-02_13_average_run")
+    miseq = illuminate.InteropDataset("sampledata/MiSeq-samples/2014-02_11_50kit_single_read")
+    hiseq = illuminate.InteropDataset("sampledata/HiSeq-samples/2014-02_13_average_run")
+    nextseq = illuminate.InteropDataset("sampledata/NextSeq-samples/2016-04-04")
+
+    return miseq, hiseq
 
 
-@pytest.fixture(scope="session")
-def setup_miseq():
-    return illuminate.InteropDataset("sampledata/MiSeq-samples/2014-02_11_50kit_single_read")
-
-
-def test_metadata(setup):
-    interop_dataset = setup
-    read_metadata_dict = interop_dataset.Metadata().to_dict()
-    expected_metadata_dict = {'flowcell_barcode': u'H8FW8ADXX', 'experiment_name': u'exome pool E',
-                              'flowcell_position': u'B',
-                              'runID': u'140213_D00251_0076_BH8FW8ADXX',
-                              'flowcell_layout': {'tilecount': 16, 'lanecount': 2, 'surfacecount': 2,
-                                                  'swathcount': 2},
-                              'model': 'HiSeq 2500', 'start_datetime': datetime.datetime(2014, 2, 13, 0, 0),
-                              'end_datetime': None}
-
-    assert read_metadata_dict == expected_metadata_dict
+@pytest.mark.parametrize("expected, interop_dataset", expected_metadata_dict)
+def test_metadata(expected, interop_dataset):
+    assert expected == interop_dataset.Metadata().to_dict()
 
 
 def test_index_metrics(setup):
-    interop_dataset = setup
+    interop_dataset_miseq, interop_dataset = setup
     read_index_metrics_dict = interop_dataset.IndexMetrics().to_dict()
 
     expected_index_metrics = {'AAGAGA-': {'project': 'DefaultProject', 'clusters': 35353636,
@@ -57,7 +76,7 @@ def test_index_metrics(setup):
 
 
 def test_tile_metrics(setup):
-    interop_dataset = setup
+    interop_dataset_miseq, interop_dataset = setup
     read_tile_metrics_dict = interop_dataset.TileMetrics(True).to_dict()
 
     expected_tile_metrics_dict = {'cluster_density': 1069572.15625,
@@ -72,22 +91,23 @@ def test_tile_metrics(setup):
 
 
 def test_quality_metrics(setup):
-    interop_dataset = setup
+    interop_dataset_miseq, interop_dataset = setup
     read_quality_metrics = interop_dataset.QualityMetrics().to_dict()
     expected_quality_metrics = {1: 94.23642906099548, 2: 88.87470808353756, 3: 85.6593561482059}
     assert read_quality_metrics == expected_quality_metrics
 
 
 def test_error_metrics(setup):
-    interop_dataset = setup
+    interop_dataset_miseq, interop_dataset = setup
     try:
+        print("ErrorMetrics")
         print(interop_dataset.ErrorMetrics().df)
     except illuminate.InteropFileNotFoundError:
         print(test_error_metrics.__name__ + ": No ErrorMetricsOut.bin found!")
 
 
 def test_extraction_metrics(setup):
-    interop_dataset = setup
+    interop_dataset_miseq, interop_dataset = setup
 
     read_extraction_metrics = interop_dataset.ExtractionMetrics()
     START_INDEX = 10000
@@ -112,7 +132,7 @@ def test_extraction_metrics(setup):
 
 
 def test_corrcetedint_metrics(setup):
-    interop_dataset = setup
+    interop_dataset_miseq, interop_dataset = setup
     START_INDEX = 31000
     STOP_INDEX = 31002
 
@@ -141,7 +161,7 @@ def test_corrcetedint_metrics(setup):
 
 
 def test_control_metrics(setup):
-    interop_dataset = setup
+    interop_dataset_miseq, interop_dataset = setup
     START_INDEX = 15350
     STOP_INDEX = 15360
 

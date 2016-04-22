@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<RunCompletionStatus>
+    <Version>1</Version>
+    <CompletionStatus>CompletedAsPlanned</CompletionStatus>
+    <RunId>160404_NS500318_0141_AHW37NBGXX</RunId>
+    <PlannedRead1Cycles>81</PlannedRead1Cycles>
+    <PlannedRead2Cycles>0</PlannedRead2Cycles>
+    <PlannedIndex1ReadCycles>6</PlannedIndex1ReadCycles>
+    <PlannedIndex2ReadCycles>0</PlannedIndex2ReadCycles>
+    <CompletedRead1Cycles>81</CompletedRead1Cycles>
+    <CompletedRead2Cycles>0</CompletedRead2Cycles>
+    <CompletedIndex1ReadCycles>6</CompletedIndex1ReadCycles>
+    <CompletedIndex2ReadCycles>0</CompletedIndex2ReadCycles>
+    <ClusterDensity>196.104172</ClusterDensity>
+    <ClustersPassingFilter>93.07328</ClustersPassingFilter>
+    <EstimatedYield>40.25522</EstimatedYield>
+    <ErrorDescription>None</ErrorDescription>
+</RunCompletionStatus>
