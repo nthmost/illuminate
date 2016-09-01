@@ -295,8 +295,10 @@ class InteropMetadata(object):
 
         MiSeq: 150130_M01761_0114_000000000-ACUR0
         NextSeq: 150202_NS500318_0047_AH3KLMBGXX
+        HiSeq 1500: 151104_SNL177_0125_AH55YMADXX
         HiSeq 2000: 130919_SN792_0281_BD2CHRACXX
         HiSeq 2500: 150203_D00535_0052_AC66RWANXX
+        HiSeq 3000: 160322_J00154_0015_AH75KYBBXX
         HiSeq 4000: 150210_K00111_0013_AH2372BBXX
         HiSeq X: 141121_ST-E00107_0356_AH00C3CCXX
         """
@@ -310,10 +312,12 @@ class InteropMetadata(object):
             model = "MiSeq"
         elif self.machine_id.startswith("D"):
             model = "HiSeq 2500"
+        elif self.machine_id.startswith("SNL"):
+            model = "HiSeq 1500"
         elif self.machine_id.startswith("SN"):
             model = "HiSeq 2000"
-        # elif machine_id.startswith("??"):
-        # model = "Hiseq 3000"
+        elif self.machine_id.startswith("J"):
+            model = "HiSeq 3000"
         elif self.machine_id.startswith("K"):
             model = "HiSeq 4000"
         elif self.machine_id.startswith("ST"):
