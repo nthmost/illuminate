@@ -91,7 +91,7 @@ class InteropBinParser(object):
         if flatten:
             idf.index = idf.index.map(sum)
         
-        return idf.sort()
+        return idf.sort_index()
 
     def to_dict(self):
         "Parser subclasses should override this, make it more specifically relevant."
