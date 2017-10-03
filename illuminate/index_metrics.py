@@ -79,7 +79,7 @@ class InteropIndexMetrics(InteropBinParser):
 
                 # next 2 bytes: expected index name length in bytes.
                 nextbytes = bs.read('uintle:16')
-                self.data['index_str'].append(bs.read('bytes:%i' % nextbytes) ) #index string
+                self.data['index_str'].append(bs.read('bytes:%i' % nextbytes)) # index string
 
                 # next 4 or 8 bytes: number of clusters identified as index
                 # (uint32 or uint64)
@@ -90,7 +90,7 @@ class InteropIndexMetrics(InteropBinParser):
 
                 # next 2 bytes: expected sample name length in bytes.
                 nextbytes = bs.read('uintle:16')
-                self.data['name_str'].append(bs.read('bytes:%i' % nextbytes) )      #sample name
+                self.data['name_str'].append(bs.read('bytes:%i' % nextbytes)) # sample name
 
                 # next 2 bytes: expected sample project string length in bytes.
                 nextbytes = bs.read('uintle:16')
