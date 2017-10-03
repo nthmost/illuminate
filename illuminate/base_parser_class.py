@@ -2,7 +2,7 @@
 
 from bitstring import BitString
 try:
-    from StringIO import StringIO
+    from cStringIO import StringIO
 except(ImportError):
     from io import StringIO
 try:
@@ -101,7 +101,7 @@ class InteropBinParser(object):
         """Transforms object's DataFrame into comma-separated / newline delineated data. 
         First line contains row headers.
         """ 
-        output = cStringIO.StringIO()
+        output = StringIO()
         self.df.to_csv(output, index_label='line')
         return output.getvalue()
 
