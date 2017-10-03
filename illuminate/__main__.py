@@ -6,6 +6,7 @@ from bitstring import ReadError
 from docopt import docopt
 from .interop import InteropDataset 
 from .exceptions import InteropFileNotFoundError
+from . import __version__
 
 __doc__="""ILLUMINATE
 
@@ -164,7 +165,7 @@ def print_meta(metaobj, args):
     dmesg('%s\n' % metaobj, 1)
 
 def collect_args():
-    args = docopt(__doc__, version='0.6.3')
+    args = docopt(__doc__, version=__version__)
     main(args)
 
 def main(args):
