@@ -10,7 +10,7 @@ class InteropIndexMetrics(InteropBinParser):
     "ILMN Quality metrics parser (child class of InteropBinParser)."
     
     __version = 0.1             # version of this parser class.
-    supported_versions = [1]    # version(s) of file that this parser supports
+    supported_versions = [1, 2]    # version(s) of file that this parser supports
     codename = 'index'
     
     # this class doesn't require read_config and flowcell_layout, but 
@@ -49,14 +49,14 @@ class InteropIndexMetrics(InteropBinParser):
 
         # Index Metrics (IndexMetrics.bin and IndexMetricOut.bin)
         #   Reports the indexes count. Format:
-        #   Byte 0: file version (1)
+        #   Byte 0: file version (1 / 2)
         #   Bytes( variable length): record:
         #   2 bytes: lane number(unint16)
-        #   2 bytes: tile number(unint16)
+        #   2 bytes: tile number(unint16 / uint32)
         #   2 bytes: read number(unint16)
         #   2 bytes: number of bytes Y for index name(unint16)
         #   Y bytes: index name string (string in UTF8Encoding)
-        #   4 bytes: num of clusters identified as index (uint32)
+        #   4 bytes: num of clusters identified as index (uint32 / uint64)
         #   2 bytes: number of bytes V for sample name(unint16)
         #   V bytes: sample name string (string in UTF8Encoding) 
         #       2 bytes: number of bytes W for sample project(unint16) 
@@ -70,21 +70,27 @@ class InteropIndexMetrics(InteropBinParser):
 
         try:
             while True:
-                lane, tile, read = bs.readlist('3*uintle:16')
-                self.data['lane'].append(lane)  # lane number
-                self.data['tile'].append(tile)  # tile number
-                self.data['read'].append(read)  # read number
+                self.data['lane'].append(bs.read('uintle:16'))  # lane number
+                if self.apparent_file_version == 2:
+                    self.data['tile'].append(bs.read('uintle:32'))  # tile number
+                else:
+                    self.data['tile'].append(bs.read('uintle:16'))  # tile number
+                self.data['read'].append(bs.read('uintle:16'))  # read number
 
                 # next 2 bytes: expected index name length in bytes.
                 nextbytes = bs.read('uintle:16')
-                self.data['index_str'].append(bs.read('bytes:%i' % nextbytes))  # index string
+                self.data['index_str'].append(bs.read('bytes:%i' % nextbytes) ) #index string
 
-                # next 4 bytes: number of clusters identified as index (uint32)
-                self.data['clusters'].append(bs.read('uintle:32'))
+                # next 4 or 8 bytes: number of clusters identified as index
+                # (uint32 or uint64)
+                if self.apparent_file_version == 2:
+                    self.data['clusters'].append(bs.read('uintle:64'))
+                else:
+                    self.data['clusters'].append(bs.read('uintle:32'))
 
                 # next 2 bytes: expected sample name length in bytes.
                 nextbytes = bs.read('uintle:16')
-                self.data['name_str'].append(bs.read('bytes:%i' % nextbytes))  # sample name
+                self.data['name_str'].append(bs.read('bytes:%i' % nextbytes) )      #sample name
 
                 # next 2 bytes: expected sample project string length in bytes.
                 nextbytes = bs.read('uintle:16')
