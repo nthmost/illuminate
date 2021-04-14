@@ -25,8 +25,6 @@ Currently, the following Illumina machines are supported (any number of indices)
   HiSeq
   MiSeq
 
-As of version 0.6.0, illuminate supports all v4 binaries and all previous formats to v4.
-
 The integrated command-line reporter currently serves the following xml files::
 
   RunInfo.xml
@@ -49,18 +47,14 @@ Requirements
 ------------
 
 You'll need a UNIX-like environment to use this package. Both OS X and Linux have been confirmed to work.
-Illuminate relies on five open-source packages available through the Python cheeseshop::
+Illuminate relies on four open-source packages available through the Python cheeseshop::
 
   numpy
   pandas
   bitstring
   docopt
-  xmltodict
 
-Please let the maintainer of this package (Naomi.Most@invitae.com) know if any of these requirements make it difficult to use and integrate Illuminate in your software; this is useful feedback.
-
-Note: if you must use a version of pandas prior to 0.14, you should pin
-your version of illuminate to 0.5.7.3.
+Please let the maintainer of this package know if any of these requirements make it difficult to use and integrate Illuminate in your software; this is useful feedback.
 
 Optional but Recommended: IPython
 ---------------------------------
@@ -104,22 +98,22 @@ The remaining requirements (bitstring and docopt) should come along for the ride
 and you'll be good to go.  Jump down to "Illuminate as a Command Line Tool" 
 to immediately start illuminating your own data.
 
-If you want some sample data to play with, grab Illuminate from its mercurial
-repository on bitbucket.org (see next section).
+If you want some sample data to play with, grab Illuminate from its github repo and look
+in the sampledata/ subfolder.
 
-How To Install Illuminate from BitBucket
-----------------------------------------
+How To Install Illuminate from Source
+--------------------------------------
 
-The latest evelopment versions of illuminate come from its repository on bitbucket.org
+The latest development versions of illuminate come from its repository on github.com
 
-Clone this repository using Mercurial (hg):
+Clone this repository using Git:
 
 .. code-block:: bash
 
-  $ hg clone https://hg@bitbucket.org/invitae/illuminate
+  $ git clone git@github.com:nthmost/illuminate.git
 
 For integrated use in other code as well as for running the command-line utilities, it is 
-recommended (though not required) to use virtualenv to create a virtual Python environment 
+recommended (though not required) to use pipenv to create a virtual Python environment 
 in which to set up this package's dependencies.
 
 Follow the directions on this page (https://pypi.python.org/pypi/virtualenv) for 
@@ -127,8 +121,7 @@ virtualenv, then, within your intended working directory, type:
 
 .. code-block:: bash
 
-  $ virtualenv ve
-  $ source ve/bin/activate
+  $ pipenv shell
 
 Now run the following command within the same directory:
 
@@ -147,7 +140,7 @@ package for your system. For example, on Ubuntu or Debian, you'd do::
 
   $ sudo apt-get install python-dev
 
-With numpy and pandas installed, now type:
+After numpy and pandas have been installed, you can now type:
 
 .. code-block:: bash
 
@@ -155,22 +148,16 @@ With numpy and pandas installed, now type:
 
 When these commands complete, you should be ready to roll.
 
-You'll also have a set of sample MiSeq metrics XML and binaries you can use to test the tool.
-Look in /path/to/illuminate-repo/sampledata
-
 Illuminate as a Command Line Tool
 ---------------------------------
 
-As of version 0.5.5, illuminate has been packaged for use as a command line tool. Installing system-wide via pip
-(i.e. without setting up the virtualenv) will allow you to use `illuminate` anywhere. 
-
-Important note: always check the --help option after installing a new version of Illuminate. 
-Please consider the command-line tool Very Beta until version 1.0.
+Illuminate contains a simple command-line utility that prints out the most 
+commonly desired statistics from Illumina SAV.
  
 This package includes some MiSeq and HiSeq data (metrics and metadata only) from live 
 sequencing runs so you can see how things work.
 
-Activate your virtualenv (if you're going that route):
+Activate your virtualenv (if you haven't already):
 
 .. code-block:: bash
 
@@ -180,45 +167,22 @@ Now enter the following to run the integrated parser against one of the test dat
 
 .. code-block:: bash
 
-  (ve) $ illuminate --tile --quality --index sampledata/MiSeq-samples/2013-04_01_high_PF/
+  (ve) $ python illuminate --tile --quality --index sampledata/MiSeq-samples/2013-04_01_high_PF/
 
-NEW IN 0.5.6: Output raw data to CSV. You'll probably want to use `--outpath` / `-o` as well. 
-
-The string in --outpath should be a relative or absolute directory path that already 
-exists and is writeable by the illuminate user.
-
-For example:
+You can also output to a file by using the --dump=filename option:
 
 .. code-block:: bash
 
-  (ve) $ illuminate --extraction --outpath /data/dump /path/to/dataset
+  (ve) $ python illuminate --dump=RU1234.txt /path/to/dataset
 
-...which produces the file: `/data/dump/runID/extraction.csv`
+And you can suppress command-line output by using the --quiet option.
 
-"runID" comes from the metadata parsing of the XML.  You can set this name yourself, instead:
-
-.. code-block:: bash
-
-  (ve) $ illuminate --extraction -o /data/dump --name RUN_1234 /path/to/dataset
-
-Another option for filename output is --timestamp / -t which stamps each file with a 
-datetime.now() seconds-since-Unix-epoch.  This timestamp will be the same for each
-parsed file per illuminate run (in other words, you'll get matching timestamps for each
-metrics file produced).
-
-You have the ability to get higher verbosity status messages during the parsing process
-by specifying `--verbose` / `-v`.  
-
-The `--debug` / `-d` does nothing (right now) other than produce timestamps and raise the
-verbosity of the output (same as -v). These messages are placed such that you can use
-the timestamps to evaluate the processing time of parsing.
-
-Finally, a fun way to explore the data is to use the `--interactive` / `-i` option to load
+Finally, a fun way to explore the data is to use the --interactive option to load
 the dataset object directly into iPython. (This suppresses the normal printouts.)
 
 .. code-block:: bash
 
-  (ve) $ illuminate -i /path/to/dataset
+  (ve) $ python illuminate -i /path/to/dataset
 
 Within iPython, you'll have the myDataset object at your disposal. This leads us naturally
 to a discussion of how to use illuminate in code.
@@ -318,22 +282,29 @@ arguments to these parsers, like so:
                          flowcell_layout = { 'lanecount': 1, 'surfacecount': 2,
                                              'swathcount': 1, 'tilecount': 14 } )
 
-More Sample Data
-----------------
+Support for More Sequencers
+---------------------------
 
-More sample data from MiSeq and HiSeq machines will be found in the 
-`Downloads <https://bitbucket.org/invitae/illuminate/downloads>`_
-section of this bitbucket repository.
+The ability to support more sequencers comes via the contribution of sample data.  
+If your NGS lab uses sequencers currently not supported by this toolkit, please consider donating the metrics
+portion of the output of a sequencing run.  Make sure that any potential PHI (Accession IDs, etc) has
+been sufficiently scrubbed, if necessary.
 
-If you'd like to contribute sample data, contact the maintainer of 
-this repository (naomi@nthmost.com) along with a brief description.
+If you're interested in getting more sequencers supported, you are welcome to file an Issue here on GitHub
+naming the sequencer type in question and -- ideally -- providing sample data.
+
+If you'd like to contribute sample data, please contact the maintainer of 
+this repository along with a brief description.
 
 Support and Maintenance
 -----------------------
 
+Illumina's metrics data, until recently, could only be parsed and interpreted via Illumina's 
+proprietary "SAV" software which only runs on Windows and can't be sourced programmatically.
+
 This library was developed in-house at InVitae, a CLIA-certified genetic diagnostics 
 company that offers customizable, clinically-relevant sequencing panels, as a response to 
-the need to emulate Illumina SAV's output in a programatically accessible way.
+the need to emulate Illumina SAV's output in a program-accessible way.
 
 `Invitae <https://invitae.com>`_ currently uses these parsers in conjunction with site-specific reporting scripts to 
 produce automated sequencing run metrics as a check on the health of the run and the machines 
@@ -347,5 +318,4 @@ Contributions, extensions, bug reports, suggestions, and swear words all happily
 in that order.
 
 naomi@nthmost.com
-2013-present
-
+Spring 2013 - Spring 2021
