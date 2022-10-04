@@ -27,7 +27,7 @@ BIN_FILEMAP = { 'extraction': ["ExtractionMetricsOut.bin", "ExtractionMetrics.bi
                 'index': ["IndexMetricsOut.bin", "IndexMetrics.bin"]}
 
 XML_FILEMAP = { 'runinfo': ["RunInfo.xml"],
-               'runparams': ["runParameters.xml"],
+               'runparams': ["runParameters.xml", "RunParameters.xml"],
                'reseqstats': ["ResequencingRunStatistics.xml"],
                'completed': ["CompletedJobInfo.xml"] }
 

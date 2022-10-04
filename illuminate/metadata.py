@@ -214,14 +214,20 @@ class InteropMetadata(object):
             self.start_datetime = datetime.strptime(rawdate, '%y%m%d')
             
         self.runID = xml_dict.get('RunID', '')
+        # NovaSeq
+        if self.runID == "":
+            self.runID = xml_dict.get('RunId', '')
         self.experiment_name = xml_dict.get('ExperimentName', '')
         self.flowcell_position = xml_dict.get('FCPosition', '')
         self.flowcell_barcode = xml_dict.get('Barcode', '')
         self.machine_id = xml_dict.get('ScannerID', '')
 
-        # NextSeq
+        # NextSeq / NovaSeq
         if self.machine_id == '':
-            self.machine_id = xml_dict.get('InstrumentID', '')
+            if "InstrumentName" in xml_dict:
+                self.machine_id = xml_dict.get('InstrumentName', '')  # NovaSeq
+            else:
+                self.machine_id = xml_dict.get('InstrumentID', '')  # NextSeq
             # Although there is no A/B position we can still read it out from the run folder name
             self.flowcell_position = self.runID.split('_')[-1][0]
             self.flowcell_barcode = self.rta_run_info['flowcell']
@@ -236,12 +242,13 @@ class InteropMetadata(object):
         root = xmltodict.parse(buf)['RunParameters']
 
         # a dirty hack to figure out which version of this file we're reading.
-        if 'Reads' in list(root['Setup'].keys()):
-            self._parse_runparams(root['Setup'])        # HiSeq
-        elif 'Reads' in list(root.keys()):
+        setup = root.get("Setup")
+        if setup and 'Reads' in setup:
+            self._parse_runparams(setup)                # HiSeq
+        elif 'Reads' in root:
             self._parse_runparams(root)                 # MiSeq
         else:
-            self._parse_runparams(root)                 # NextSeq
+            self._parse_runparams(root)                 # NextSeq / NovaSeq
 
         self.model = self._get_model()
 
@@ -318,7 +325,7 @@ class InteropMetadata(object):
         # retired this line. getting self.machine_id from ScannerID field in _parse_runparams()
         # date, machine_id, run_number, fc_string = os.path.basename(self.runID).split("_")
 
-        if self.machine_id.startswith("NS"):
+        if self.machine_id.startswith("NS") or self.machine_id.startswith("NB"):
             model = "NextSeq 500"
         elif self.machine_id.startswith("ML"):
             model = "MiniSeq"
@@ -334,6 +341,8 @@ class InteropMetadata(object):
             model = "HiSeq 4000"
         elif self.machine_id.startswith("ST"):
             model = "HiSeq X"
+        elif self.machine_id.startswith("A"):
+            model = "NovaSeq 6000"
         else:
             model = "Unidentified"
         return model
