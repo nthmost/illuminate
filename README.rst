@@ -320,4 +320,4 @@ Contributions, extensions, bug reports, suggestions, and swear words all happily
 in that order.
 
 naomi@nthmost.com
-Spring 2013 - Spring 2021
+Spring 2013 - Fall 2024
