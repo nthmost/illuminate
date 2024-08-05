@@ -2,6 +2,8 @@
 Illuminate: shedding light on Illumina sequencing runs
 ******************************************************
 
+![PyPI - Monthly Downloads](<https://img.shields.io/pypi/dm/illuminate>)
+
 Python module and utilities to parse the metrics binaries output by Illumina sequencers.
 
 Illuminate parses the metrics binaries that result from Illumina sequencer runs, and provides usable data in the form of python dictionaries and dataframes.
@@ -318,4 +320,4 @@ Contributions, extensions, bug reports, suggestions, and swear words all happily
 in that order.
 
 naomi@nthmost.com
-Spring 2013 - Spring 2021
+Spring 2013 - Fall 2024
